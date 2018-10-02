@@ -29,7 +29,7 @@ class BlockController extends Controller
         //dd($blockproposer);
 
 
-        $header_query = Header::query();
+        $header_query = Header::query()->orderBy("height", "desc");
         
         $header_query->when($from && $to, function ($q, $from, $to) { 
             return $q->whereBetween('timestamp', [$from, $to]);
