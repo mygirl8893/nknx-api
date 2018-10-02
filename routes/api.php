@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+//get all blocks
 Route::get('blocks', 'BlockController@showAll');
+//get specific block
 Route::get('blocks/{id}', 'BlockController@show');
-Route::get('blocks/{id}/flat', 'BlockController@show_flat');
+

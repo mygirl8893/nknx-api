@@ -18,28 +18,70 @@ use DB;
 
 class BlockController extends Controller
 {
-    /**
-     * Show the profile for the given user.
-     *
-     * @param  int  $id
-     * @return Response
-     */
     public function showAll(Request $request){
-        $filter = $request->get('filter');
+        $latest = $request->get('latest');
+        $paginate = $request->get('per_page',25);
+        $from = $request->get('from', false);
+        $to = $request->get('to', false);
+        $blockproposer = $request->get('blockproposer', false);
+        //flat returns the block model without transactions in one object
+        $flat = $request->get('flat',false);
+        //dd($blockproposer);
+
+
+        $header_query = Header::query();
         
-        $paginate = $request->get('per_page');
-        if(!$paginate){
-            $paginate = 25;
-        }
-        if ($filter){
-            $ids = Header::limit($filter)->orderBy('height','desc')->pluck('block_id')->toArray();
-            $ids_count = count($ids);
-            $ids_ordered = implode(',', $ids);
-            if($ids_count > $paginate){
+        $header_query->when($from && $to, function ($q, $from, $to) { 
+            return $q->whereBetween('timestamp', [$from, $to]);
+        });
+        $header_query->when($from && !$to, function ($q, $from) { 
+            return $q->where('timestamp', ">", $from);
+        });
+        $header_query->when(!$from && $to, function ($q, $to) { 
+            return $q->where('timestamp', "<", $to);
+        });
+        $header_query->when($blockproposer, function ($q, $blockproposer) { 
+            
+            return $q->where('signer',"=",$blockproposer);
+        });
+        $header_query->when($latest, function ($q, $latest) { 
+            return $q->limit($latest);
+        });
+
+
+        $ids = $header_query->pluck('block_id')->toArray();
+        
+
+        $ids_count = count($ids);
+        $ids_ordered = implode(',', $ids);
+        if($ids_count > $paginate){
+            if($flat){
+                $block = Block::whereIn('blocks.id',$ids)
+                ->orderBy('blocks.id', 'desc')
+                ->join(
+                    'headers',
+                    'blocks.id','=','headers.block_id'
+                    )
+                ->select(['blocks.hash','headers.height','headers.prevBlockHash','headers.signature','headers.signer','headers.timestamp','headers.transactionsRoot','headers.version','headers.winningHash','headers.winningHashType'])
+                ->paginate($paginate);
+            }
+            else{
                 $block = Block::whereIn('id',$ids)
                     ->orderBy('id', 'desc')
                     ->with(['header','transactions'])
                     ->paginate($paginate);
+            }
+        }
+        else{
+            if($flat){
+                $block = Block::whereIn('blocks.id',$ids)
+                    ->orderBy('blocks.id', 'desc')
+                    ->join(
+                        'headers',
+                        'blocks.id','=','headers.block_id'
+                        )
+                    ->select(['blocks.hash','headers.height','headers.prevBlockHash','headers.signature','headers.signer','headers.timestamp','headers.transactionsRoot','headers.version','headers.winningHash','headers.winningHashType'])
+                    ->get();
             }
             else{
                 $block = Block::whereIn('id',$ids)
@@ -48,36 +90,9 @@ class BlockController extends Controller
                     ->get();
             }
         }
-        else{
-            $block = Block::with(['header','transactions'])
-                ->orderBy('id', 'desc')
-                ->paginate($paginate);
-        }
-       
-        return response()->json($block);
-    }
-    public function show_flat($id){
-        if(is_numeric($id)){
-            $id = Header::where('height',$id)->pluck('block_id')->toArray();
-            $block = Block::whereIn('blocks.id',$id)
-                ->join(
-                    'headers',
-                    'blocks.id','=','headers.block_id'
-                    )
-                ->select(['blocks.hash','headers.height','headers.prevBlockHash','headers.signature','headers.signer','headers.timestamp','headers.transactionsRoot','headers.version','headers.winningHash','headers.winningHashType'])
-                ->get();
-        }
-        else{
-            $block = Block::where('blocks.hash',$id)
-                ->join(
-                    'headers',
-                    'blocks.id','=','headers.block_id'
-                    )
-                ->select(['blocks.hash','headers.height','headers.prevBlockHash','headers.signature','headers.signer','headers.timestamp','headers.transactionsRoot','headers.version','headers.winningHash','headers.winningHashType'])
-                ->get();
-        }
-        return response()->json($block);
+        
 
+        return response()->json($block);
     }
 
     public function show($id)
@@ -93,9 +108,6 @@ class BlockController extends Controller
             ->with(['header','transactions'])
             ->get();
         }
-        return response()->json($block);
-
-        
-        
+        return response()->json($block); 
     }
 }
