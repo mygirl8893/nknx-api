@@ -20,4 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('blocks', 'BlockController@showAll');
 //get specific block
 Route::get('blocks/{id}', 'BlockController@show');
+//get transactions of specific block
+Route::get('blocks/{id}/transactions', 'BlockController@showBlockTransactions');
 
+
+//get all transactions
+Route::get('transactions', 'TransactionController@showAll');

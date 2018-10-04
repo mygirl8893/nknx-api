@@ -25,44 +25,47 @@ class TransactionController extends Controller
      * @return Response
      */
     public function showAll(Request $request){
-        $filter = $request->get('filter');
-        
-        $paginate = $request->get('per_page');
-        if(!$paginate){
-            $paginate = 25;
-        }
-        if ($filter){
+        $latest = $request->get('latest');
+        //hardcap
+        if(!$latest || $latest > 1000000){
+            $latest = 1000000;
+        };
+       
+        $paginate = $request->get('per_page',25);
+        $withoutPayload = $request->get('withoutpayload',false);
+ 
+        $transactions_query = Transaction::query()->orderBy('id', 'desc');
+        $transactions_query->when($latest, function ($q, $latest) { 
+            return $q->limit($latest);
+        });
 
-            if($filter > $paginate){
-                $transaction = Transaction::orderBy('id', 'desc')
-                    ->limit($filter)
-                    ->with(['attribute','output','payload'])
-                    ->paginate($paginate);
+
+        if($latest > $paginate){
+            if($withoutPayload){
+                $transactions_query
+                    ->with(['attributes','outputs']);
             }
             else{
-                $transaction = Transaction::orderBy('id', 'desc')
-                ->limit($filter)
-                ->with(['attribute','output','payload'])
-                ->get();
+                $transactions_query
+                    ->with(['attributes','outputs','payload']);
             }
+            $transactions = $transactions_query
+                ->simplePaginate($paginate);
         }
         else{
-            $transaction = Transaction::orderBy('id', 'desc')
-                ->with(['attribute','output','payload'])
+ 
+            if($withoutPayload){
+                $transactions_query
+                    ->with(['attributes','outputs']);
+            }
+            else{
+                $transactions_query
+                    ->with(['attributes','outputs','payload']);
+            }
+
+            $transactions = $transactions_query
                 ->get();
         }
-       
-        return response()->json($block);
-    }
-    public function show_flat($id){
-        
-    
-
-    }
-
-    public function show($id)
-    {
-        
-        
+        return response()->json($transactions);
     }
 }
