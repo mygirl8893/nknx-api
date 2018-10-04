@@ -43,11 +43,11 @@ class TransactionController extends Controller
         if($latest > $paginate){
             if($withoutPayload){
                 $transactions_query
-                    ->with(['attributes','outputs']);
+                    ->with(['attributes','outputs','block.header']);
             }
             else{
                 $transactions_query
-                    ->with(['attributes','outputs','payload']);
+                    ->with(['attributes','outputs','payload','block.header']);
             }
             $transactions = $transactions_query
                 ->simplePaginate($paginate);
@@ -56,11 +56,11 @@ class TransactionController extends Controller
  
             if($withoutPayload){
                 $transactions_query
-                    ->with(['attributes','outputs']);
+                    ->with(['attributes','outputs','block.header']);
             }
             else{
                 $transactions_query
-                    ->with(['attributes','outputs','payload']);
+                    ->with(['attributes','outputs','payload','block.header']);
             }
 
             $transactions = $transactions_query

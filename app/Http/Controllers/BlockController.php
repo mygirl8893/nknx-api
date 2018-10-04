@@ -109,13 +109,13 @@ class BlockController extends Controller
         if($withoutPayload){
             $transactions = $block
                 ->transactions()
-                ->with(['outputs','attributes'])
+                ->with(['outputs','attributes','block.header'])
                 ->get();
         }
         else {
             $transactions = $block
                 ->transactions()
-                ->with(['payload','outputs','attributes'])
+                ->with(['payload','outputs','attributes','block.header'])
                 ->get();
         }
         return response()->json($transactions); 
