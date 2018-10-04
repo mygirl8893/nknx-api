@@ -19,12 +19,13 @@ use DB;
 class BlockController extends Controller
 {
     public function showAll(Request $request){
+
         $latest = $request->get('latest');
         if( $latest > 1000){
             $latest = 1000;
         }
 
-        $paginate = $request->get('per_page',25);
+        $paginate = $request->get('per_page',50);
         $from = date($request->get('from', false));
         $to = date($request->get('to', false));
         $blockproposer = $request->get('blockproposer', false);

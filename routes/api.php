@@ -23,3 +23,6 @@ Route::get('blocks/{id}/transactions', 'BlockController@showBlockTransactions');
 
 //get all transactions
 Route::get('transactions', 'TransactionController@showAll');
+
+//get all outputs
+Route::get('outputs', 'OutputController@showAll');
