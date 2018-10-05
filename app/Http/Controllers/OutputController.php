@@ -38,6 +38,9 @@ class OutputController extends Controller
                 })
                 ->groupBy('address')
                 ->orderBy('total','desc');
+            $outputs_query->when($latest, function ($q, $latest) { 
+                return $q->limit($latest);
+            });
             $outputs = $outputs_query
                     ->get();
             return response()->json($outputs);
