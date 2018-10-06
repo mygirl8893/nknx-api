@@ -27,6 +27,7 @@ class TransactionController extends Controller
     public function showAll(Request $request){
         $latest = $request->get('latest');
         $txType = $request->get('txType');
+        $txType = explode(',', $txType);
         $address = $request->get('address');
  
 
@@ -43,7 +44,7 @@ class TransactionController extends Controller
             return $q->limit($latest);
         });
         $transactions_query->when($txType, function ($q, $txType) { 
-            return $q->where("txType","=",$txType);
+            return $q->whereIn("txType",$txType);
         });
         $transactions_query->when($address, function ($q, $address) { 
             return $q->whereHas('outputs', function($q) use ($address){
