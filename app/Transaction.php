@@ -20,6 +20,10 @@ class Transaction extends Model
     {
     	return $this->hasMany('App\Output');
     }
+    public function inputs()
+    {
+    	return $this->hasMany('App\Input');
+    }
     public function payload()
     {
         return $this->hasOne('App\Payload');
@@ -30,6 +34,7 @@ class Transaction extends Model
         static::deleting(function($transaction) { // before delete() method call this
              $transaction->attributes()->delete();
              $transaction->outputs()->delete();
+             $transaction->inputs()->delete();
              $transaction->payload()->delete();
              // do the rest of the cleanup...
         });

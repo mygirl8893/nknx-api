@@ -17,6 +17,7 @@ use App\Transaction;
 use App\Program;
 use App\Attribute;
 use App\Output;
+use App\Input;
 use App\Payload;
 use Log;
 
@@ -73,6 +74,7 @@ class ProcessRemoteBlock implements ShouldQueue
                     foreach($response["result"]["transactions"] as $transaction) {
                         $attributes = [];
                         $outputs = [];
+                        $inputs = [];
                         $newTransaction = $block->transactions()->save(new Transaction($transaction));
                     
                         foreach((array)$transaction["attributes"] as $attribute){
@@ -82,8 +84,12 @@ class ProcessRemoteBlock implements ShouldQueue
                         foreach((array)$transaction["outputs"] as $output){
                             $outputs[] = new Output($output);
                         }
+                        foreach((array)$transaction["inputs"] as $input){
+                            $inputs[] = new Input($input);
+                        }
                         $newTransaction->attributes()->saveMany($attributes);
                         $newTransaction->outputs()->saveMany($outputs);
+                        $newTransaction->inputs()->saveMany($inputs);
                         if(!empty($transaction["payload"])) {
                             $newTransaction->payload()->save(new Payload($transaction["payload"]));
                         }
