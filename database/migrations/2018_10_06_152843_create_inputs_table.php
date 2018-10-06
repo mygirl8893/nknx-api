@@ -17,6 +17,7 @@ class CreateInputsTable extends Migration
                 $table->increments('id')->index();
                 $table->string('referTxID');
                 $table->integer('referTxOutputIndex');
+                $table->integer('transaction_id');
                 $table->timestamps();
         });
     }
