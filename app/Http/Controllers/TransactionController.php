@@ -32,6 +32,9 @@ class TransactionController extends Controller
        
         $paginate = $request->get('per_page',50);
         $withoutPayload = $request->get('withoutpayload',false);
+        $withoutOutputs = $request->get('withoutoutputs',false);
+        $withoutInputs = $request->get('withoutinputs',false);
+        $withoutAttributes = $request->get('withoutattributes',false);
  
         $transactions_query = Transaction::query()->orderBy('id', 'desc');
         $transactions_query->when($latest, function ($q, $latest) { 
@@ -46,30 +49,26 @@ class TransactionController extends Controller
             });
             return $q->where("address","=",$address);
         });
+        $transactions_query->when(!$withoutPayload, function ($q) { 
+            return $q->with('payload');
+        });
+        $transactions_query->when(!$withoutOutputs, function ($q) { 
+            return $q->with('outputs');
+        });
+        $transactions_query->when(!$withoutInputs, function ($q) { 
+            return $q->with('inputs');
+        });
+        $transactions_query->when(!$withoutAttributes, function ($q) { 
+            return $q->with('attributes');
+        });
+
+        $transactions_query->with('block.header');
 
         if($latest > $paginate){
-            if($withoutPayload){
-                $transactions_query
-                    ->with(['attributes','outputs','block.header']);
-            }
-            else{
-                $transactions_query
-                    ->with(['attributes','outputs','payload','block.header']);
-            }
             $transactions = $transactions_query
                 ->simplePaginate($paginate);
         }
         else{
- 
-            if($withoutPayload){
-                $transactions_query
-                    ->with(['attributes','outputs','block.header']);
-            }
-            else{
-                $transactions_query
-                    ->with(['attributes','outputs','payload','block.header']);
-            }
-
             $transactions = $transactions_query
                 ->get();
         }
