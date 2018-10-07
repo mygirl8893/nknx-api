@@ -18,12 +18,6 @@ use DB;
 
 class OutputController extends Controller
 {
-    /**
-     * Show the profile for the given user.
-     *
-     * @param  int  $id
-     * @return Response
-     */
     public function showAll(Request $request){
         $by_miner = $request->get('by_miner',false);
         $latest = $request->get('latest');

@@ -66,34 +66,34 @@ class ProcessRemoteBlock implements ShouldQueue
                 $apiRequest = $client->Post('http://testnet-node-0001.nkn.org:30003', $requestContent);
                 
                 $response = json_decode($apiRequest->getBody(), true);
-               // dd($response);
-                    $block = new Block($response["result"]);
-                    $block->save();
-                    $newHeader = $block->header()->save(new Header($response["result"]["header"]));
-                    $newHeader->program()->save(new Program($response["result"]["header"]["program"]));
-                    foreach($response["result"]["transactions"] as $transaction) {
-                        $attributes = [];
-                        $outputs = [];
-                        $inputs = [];
-                        $newTransaction = $block->transactions()->save(new Transaction($transaction));
-                    
-                        foreach((array)$transaction["attributes"] as $attribute){
-                            $attributes[] = new Attribute($attribute);
-                        }
-                        
-                        foreach((array)$transaction["outputs"] as $output){
-                            $outputs[] = new Output($output);
-                        }
-                        foreach((array)$transaction["inputs"] as $input){
-                            $inputs[] = new Input($input);
-                        }
-                        $newTransaction->attributes()->saveMany($attributes);
-                        $newTransaction->outputs()->saveMany($outputs);
-                        $newTransaction->inputs()->saveMany($inputs);
-                        if(!empty($transaction["payload"])) {
-                            $newTransaction->payload()->save(new Payload($transaction["payload"]));
-                        }
+                $block = new Block($response["result"]);
+                $block->transaction_count = count($response["result"]["transactions"]);
+                $block->save();
+                $newHeader = $block->header()->save(new Header($response["result"]["header"]));
+                $newHeader->program()->save(new Program($response["result"]["header"]["program"]));
+                foreach($response["result"]["transactions"] as $transaction) {
+                    $attributes = [];
+                    $outputs = [];
+                    $inputs = [];
+                    $newTransaction = $block->transactions()->save(new Transaction($transaction));
+                
+                    foreach((array)$transaction["attributes"] as $attribute){
+                        $attributes[] = new Attribute($attribute);
                     }
+                    
+                    foreach((array)$transaction["outputs"] as $output){
+                        $outputs[] = new Output($output);
+                    }
+                    foreach((array)$transaction["inputs"] as $input){
+                        $inputs[] = new Input($input);
+                    }
+                    $newTransaction->attributes()->saveMany($attributes);
+                    $newTransaction->outputs()->saveMany($outputs);
+                    $newTransaction->inputs()->saveMany($inputs);
+                    if(!empty($transaction["payload"])) {
+                        $newTransaction->payload()->save(new Payload($transaction["payload"]));
+                    }
+                }
 
 
         

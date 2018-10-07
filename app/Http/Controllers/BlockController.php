@@ -30,11 +30,10 @@ class BlockController extends Controller
         $to = date($request->get('to', false));
         $blockproposer = $request->get('blockproposer', false);
         if(!$latest && !$from && !$to && !$blockproposer){
-                    $block = Block::orderBy('id', 'desc')
-                        ->limit(1000000)
-                        ->with(['header'])
-                        ->withCount('transactions')
-                        ->simplePaginate($paginate);
+            $block = Block::orderBy('id', 'desc')
+                ->limit(1000000)
+                ->with(['header'])
+                ->simplePaginate($paginate);
             return response()->json($block);
         }
         else{
@@ -56,7 +55,7 @@ class BlockController extends Controller
             $header_query->when($latest, function ($q, $latest) { 
                 return $q->limit($latest);
             });
-            //dd($header_query->toSql());
+
             $ids = $header_query->pluck('block_id')->toArray();
             $ids_count = count($ids);
             $ids_ordered = implode(',', $ids);
@@ -65,7 +64,6 @@ class BlockController extends Controller
                     $block = Block::whereIn('id',$ids)
                         ->orderBy('id', 'desc')
                         ->with(['header'])
-                        ->withCount('transactions')
                         ->simplePaginate($paginate);      
             }
             else{
@@ -73,7 +71,6 @@ class BlockController extends Controller
                     $block = Block::whereIn('id',$ids)
                         ->orderBy('id', 'desc')
                         ->with(['header'])
-                        ->withCount('transactions')
                         ->get();
  
             }
@@ -122,4 +119,5 @@ class BlockController extends Controller
         return response()->json($transactions); 
 
     }
+
 }

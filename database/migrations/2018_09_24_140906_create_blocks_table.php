@@ -16,6 +16,7 @@ class CreateBlocksTable extends Migration
         Schema::create('blocks', function (Blueprint $table) {
             $table->increments('id');
             $table->string('hash');
+            $table->integer('transaction_count');
             $table->timestamps();
         });
     }

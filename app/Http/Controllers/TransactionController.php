@@ -18,12 +18,6 @@ use DB;
 
 class TransactionController extends Controller
 {
-    /**
-     * Show the profile for the given user.
-     *
-     * @param  int  $id
-     * @return Response
-     */
     public function showAll(Request $request){
         $latest = $request->get('latest');
         $txType = $request->get('txType');
@@ -80,50 +74,5 @@ class TransactionController extends Controller
                 ->get();
         }
         return response()->json($transactions);
-    }
-
-    public function nknX_showAllTransfers(Request $request){
-       /* $latest = $request->get('latest');
-        $address = $request->get('address');
- 
-
-        //hardcap
-        if(!$latest || $latest > 1000000){
-            $latest = 1000000;
-        };
-
-
- 
-        $transactions_query = Transaction::query()->orderBy('id', 'desc');
-        //get all "transfers"
-        $transactions_query->where("txType",16)
-
-        $transactions_query->join('transactions', 'votes.userId', '=', 'friend.friendId')
-
-        
-
-
-        $transactions_query->when($latest, function ($q, $latest) { 
-            return $q->limit($latest);
-        });
-
-        $transactions_query->when($txType, function ($q, $txType) { 
-            return $q->whereIn("txType",$txType);
-        });
-        $transactions_query->when($address, function ($q, $address) { 
-            return $q->whereHas('outputs', function($q) use ($address){
-                $q->where('address', $address);
-            });
-            return $q->where("address","=",$address);
-        });
-
-
-
-            $transactions_query
-                ->with(['attributes','outputs','block.header']);
-            $transactions = $transactions_query
-  
-        }
-        return response()->json($transactions);*/
     }
 }
