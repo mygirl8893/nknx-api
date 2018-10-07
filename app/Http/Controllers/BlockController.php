@@ -78,19 +78,40 @@ class BlockController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id,Request $request)
     {
+        $addNextBlock = $request->get('addnextblock',false);
+        $withoutTransactions = $request->get('withouttransactions',false);
+        
+        //get block id
+        //look for Block who has  
+
+
         if(is_numeric($id)){
             $id = Header::where('height',$id)->pluck('block_id')->toArray();
             $block = Block::where('id',$id)
-                ->with(['header','transactions'])
+                ->when(!$withoutTransactions, function ($q) { 
+                    return $q->with('transactions');
+                })
+                ->with('header')
                 ->get();
         }
         else{
+            
             $block = Block::where('hash',$id)
-            ->with(['header','transactions'])
-            ->get();
+                ->when(!$withoutTransactions, function ($q) { 
+                    return $q->with('transactions');
+                })
+                ->with('header')
+                ->get();
         }
+        
+        $nextBlock = Header::where('prevBlockHash',$block[0]->hash)->with('block')->get();
+        if(count($nextBlock)){
+            $nextBlock = $nextBlock[0]->block->hash;
+            $block[0]->header->nextBlockHash = $nextBlock;
+        }
+        
         return response()->json($block); 
     }
     public function showBlockTransactions($id,Request $request){
