@@ -24,6 +24,7 @@ Route::get('blocks/{id}/transactions', 'BlockController@showBlockTransactions');
 
 //get all transactions
 Route::get('transactions', 'TransactionController@showAll');
+Route::get('transactions/{id}', 'TransactionController@show');
 
 Route::get('transfers', 'TransferController@showAll');
 

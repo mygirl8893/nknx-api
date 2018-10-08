@@ -74,4 +74,36 @@ class TransactionController extends Controller
         }
         return response()->json($transactions);
     }
+
+    public function show($id,Request $request)
+    {
+
+        $withoutPayload = $request->get('withoutpayload',false);
+        $withoutOutputs = $request->get('withoutoutputs',false);
+        $withoutInputs = $request->get('withoutinputs',false);
+        $withoutAttributes = $request->get('withoutattributes',false);
+        
+
+
+        $transactions_query = Transaction::query()->where('hash',$id);
+        
+        $transactions_query->when(!$withoutPayload, function ($q) { 
+            return $q->with('payload');
+        });
+        $transactions_query->when(!$withoutOutputs, function ($q) { 
+            return $q->with('outputs');
+        });
+        $transactions_query->when(!$withoutInputs, function ($q) { 
+            return $q->with('inputs');
+        });
+        $transactions_query->when(!$withoutAttributes, function ($q) { 
+            return $q->with('attributes');
+        });
+
+        $transactions_query->with('block.header');
+        $transactions = $transactions_query
+            ->get();
+        
+        return response()->json($transactions); 
+    }
 }
