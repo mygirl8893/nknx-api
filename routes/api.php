@@ -26,6 +26,8 @@ Route::get('blocks/{id}/transactions', 'BlockController@showBlockTransactions');
 Route::get('transactions', 'TransactionController@showAll');
 Route::get('transactions/{id}', 'TransactionController@show');
 
+Route::get('payloads/{tId}', 'PayloadController@show');
+
 Route::get('transfers', 'TransferController@showAll');
 
 //get all outputs
