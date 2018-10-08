@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $fillable = ['hash','payloadVersion','txType'];
+    protected $fillable = ['hash','payloadVersion','txType','sender'];
 
     public function block()
     {

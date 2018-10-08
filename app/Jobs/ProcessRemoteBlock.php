@@ -75,7 +75,6 @@ class ProcessRemoteBlock implements ShouldQueue
                     $attributes = [];
                     $outputs = [];
                     $inputs = [];
-                    $newTransaction = $block->transactions()->save(new Transaction($transaction));
                 
                     foreach((array)$transaction["attributes"] as $attribute){
                         $attributes[] = new Attribute($attribute);
@@ -84,9 +83,32 @@ class ProcessRemoteBlock implements ShouldQueue
                     foreach((array)$transaction["outputs"] as $output){
                         $outputs[] = new Output($output);
                     }
+
                     foreach((array)$transaction["inputs"] as $input){
                         $inputs[] = new Input($input);
+                        if($transaction["txType"]==16){
+                            $requestContentTransaction = [
+                                'headers' => [
+                                    'Accept' => 'application/json',
+                                    'Content-Type' => 'application/json'
+                                ],
+                                'json' => [
+                                    "id" => 1,
+                                    "method" => "gettransaction",
+                                    "params" => [
+                                        "hash" => $input['referTxID'],
+                                    ],
+                                    "jsonrpc" => "2.0"
+                                ]
+                            ];
+                            $senderRequest = $client->Post('http://testnet-node-0001.nkn.org:30003', $requestContentTransaction);
+                            $transactionResponse = json_decode($senderRequest->getBody(), true);
+                            $transaction["sender"] = $transactionResponse["result"]["outputs"][$input['referTxOutputIndex']]['address'];
+                        }
                     }
+
+                    $newTransaction = $block->transactions()->save(new Transaction($transaction));
+
                     $newTransaction->attributes()->saveMany($attributes);
                     $newTransaction->outputs()->saveMany($outputs);
                     $newTransaction->inputs()->saveMany($inputs);
