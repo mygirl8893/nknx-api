@@ -46,8 +46,7 @@ class TransactionController extends Controller
         $transactions_query->when($address, function ($q, $address) { 
             return $q->whereHas('outputs', function($q) use ($address){
                 $q->where('address', $address);
-            });
-            return $q->where("address","=",$address);
+            })->orWhere('sender', $address);
         });
         $transactions_query->when(!$withoutPayload, function ($q) { 
             return $q->with('payload');

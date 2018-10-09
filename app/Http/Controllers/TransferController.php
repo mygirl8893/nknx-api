@@ -18,8 +18,5 @@ use DB;
 
 class TransferController extends Controller
 {
-    public function showAll(Request $request){
-
-    }
 }
 
