@@ -32,3 +32,7 @@ Route::get('transfers', 'TransferController@showAll');
 
 //get all outputs
 Route::get('outputs', 'OutputController@showAll');
+
+
+Route::post('auth/register', 'AuthController@register');
+Route::get('auth/verify/{token}', 'AuthController@verifyUser');
