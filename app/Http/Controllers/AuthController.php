@@ -34,6 +34,25 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function resendVerification()
+    {
+        $user = User::find(Auth::user()->id);
+
+        VerifyUser::where('user_id', $user->id)->delete();
+        
+        $verifyUser = VerifyUser::create([
+            'user_id' => $user->id,
+            'token' => str_random(40)
+        ]);
+
+        Mail::to($user->email)->send(new VerifyMail($user));
+
+        return response([
+            'status' => 'success',
+            'data' => ''
+        ], 200);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
