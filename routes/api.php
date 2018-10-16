@@ -34,6 +34,7 @@ Route::get('transfers', 'TransferController@showAll');
 Route::get('outputs', 'OutputController@showAll');
 
 
+
 Route::post('auth/register', 'AuthController@register');
 Route::get('auth/verify/{token}', 'AuthController@verifyUser');
 
@@ -41,11 +42,15 @@ Route::post('auth/reset/{token}', 'AuthController@setNewPasswordFromToken');
 Route::post('auth/reset', 'AuthController@resetPassword');
 
 
+
 Route::post('auth/login', 'AuthController@login');
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('auth/user', 'AuthController@user');
   Route::post('auth/logout', 'AuthController@logout');
   Route::get('auth/resendVerification', 'AuthController@resendVerification');
+  Route::resource('nodes', 'NodeController')->except([
+    'create', 'edit', 'update'
+  ]);
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){
   Route::get('auth/refresh', 'AuthController@refresh');

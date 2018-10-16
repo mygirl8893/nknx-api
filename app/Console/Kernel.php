@@ -9,7 +9,9 @@ use GuzzleHttp\Exception\RequestException;
 
 use App\Header;
 use App\Block;
+use App\Node;
 use App\Jobs\ProcessRemoteBlock;
+use App\Jobs\UpdateNode;
 use Log;
 
 class Kernel extends ConsoleKernel
@@ -31,6 +33,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
         $schedule->call(function () {
             //get current blockchain height
             $currentBlockchainHeight = 0;
@@ -133,6 +136,13 @@ class Kernel extends ConsoleKernel
 
             //push fetchBlock Job to queue
         })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
+
+        $schedule->call(function () {
+            $nodes= Node::all();
+            foreach ($nodes as $node) {
+                UpdateNode::dispatch($node->id);
+            }
+        })->everyMinute()->name('UpdateAllBlocks')->withoutOverlapping();
     }
 
     /**

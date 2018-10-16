@@ -35,4 +35,8 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\PasswordReset');
     }
+    public function nodes()
+    {
+    	return $this->hasMany('App\Node');
+    }
 }
