@@ -14,8 +14,8 @@ class CreateNodesTable extends Migration
     public function up()
     {
         Schema::create('nodes', function (Blueprint $table) {
-            $table->BigInteger('id')->unique()->index();
-            $table->string('label');
+            $table->BigInteger('id')->unsigned()->unique()->index();
+            $table->string('label')->nullable()->default("");
             $table->integer('state');
             $table->string('syncState');
             $table->integer('port');
