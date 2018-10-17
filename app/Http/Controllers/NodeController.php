@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Node;
+use App\User;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
@@ -19,7 +20,7 @@ class NodeController extends Controller
     public function index()
     {
         // get all the nodes
-        $nodes = Node::where('user_id',Auth::user()->id)->get();
+        $nodes = Node::all();
         return response()->json($nodes);
 
     }
@@ -32,6 +33,7 @@ class NodeController extends Controller
      */
     public function store(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
         $ip = $request->input('ip');
         $label = $request->input('label','');
         if (!$ip ) {
@@ -72,7 +74,7 @@ class NodeController extends Controller
                 $node = new Node($response["result"]);
                 $node->online = true;
                 $node->label = $label;
-                $node->user_id =  Auth::user()->id;
+                $node->user_id =  $user->id;
                 //get version
                 $requestContent = [
                     'headers' => [
