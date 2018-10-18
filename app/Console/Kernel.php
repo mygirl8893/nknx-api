@@ -10,8 +10,10 @@ use GuzzleHttp\Exception\RequestException;
 use App\Header;
 use App\Block;
 use App\Node;
+use App\WalletAddress;
 use App\Jobs\ProcessRemoteBlock;
 use App\Jobs\UpdateNode;
+use App\Jobs\UpdateWalletAddress;
 use Log;
 
 class Kernel extends ConsoleKernel
@@ -33,6 +35,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
 
         $schedule->call(function () {
             //get current blockchain height
@@ -143,6 +146,15 @@ class Kernel extends ConsoleKernel
                 UpdateNode::dispatch($node->id);
             }
         })->everyMinute()->name('UpdateAllBlocks')->withoutOverlapping();
+
+        $schedule->call(function () {
+            $walletAddresses= WalletAddress::all();
+            foreach ($walletAddresses as $walletAddress){
+                UpdateWalletAddress::dispatch($walletAddress->id);
+            }
+        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
+
+
     }
 
     /**

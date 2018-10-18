@@ -51,6 +51,9 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::resource('nodes', 'NodeController')->except([
     'create', 'edit', 'update'
   ]);
+  Route::resource('walletAddresses', 'WalletAddressController')->except([
+    'create', 'edit', 'update'
+  ]);
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){
   Route::get('auth/refresh', 'AuthController@refresh');

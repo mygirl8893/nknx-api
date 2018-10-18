@@ -39,4 +39,8 @@ class User extends Authenticatable
     {
     	return $this->hasMany('App\Node');
     }
+    public function walletAddresses()
+    {
+    	return $this->hasMany('App\WalletAddress');
+    }
 }

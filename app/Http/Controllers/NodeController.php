@@ -20,7 +20,8 @@ class NodeController extends Controller
     public function index()
     {
         // get all the nodes
-        $nodes = Node::all();
+        $user = JWTAuth::parseToken()->authenticate();
+        $nodes = Node::where('user_id',$user->id)->get();
         return response()->json($nodes);
 
     }
