@@ -42,7 +42,6 @@ Route::post('auth/reset/{token}', 'AuthController@setNewPasswordFromToken');
 Route::post('auth/reset', 'AuthController@resetPassword');
 
 
-
 Route::post('auth/login', 'AuthController@login');
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('auth/user', 'AuthController@user');
@@ -55,6 +54,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::resource('walletAddresses', 'WalletAddressController')->except([
     'create', 'edit', 'update'
   ]);
+  Route::get('walletAddresses/{walletAddress}/miningOutput', 'WalletAddressController@getMiningOutput');
   
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){

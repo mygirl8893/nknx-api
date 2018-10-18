@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\WalletAddress;
-use App\User;
+use App\Output;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 use JWTAuth;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use DB;
 
 class WalletAddressController extends Controller
 {
@@ -139,4 +141,18 @@ class WalletAddressController extends Controller
             return response()->json(error);
         return response()->json(null); 
     }
+
+    public function getMiningOutput(WalletAddress $walletAddress){
+        $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
+        ->whereHas('transaction', function($q){
+            $q->where('txType', 0);
+        })
+        ->where("address",$walletAddress->address)
+        ->orderBy(DB::raw('DATE(created_at)'), 'desc')
+        ->groupBy(DB::raw('DATE(created_at)'));
+        $outputs = $outputs_query
+                ->get();
+        return response()->json($outputs);
+    }
+
 }
