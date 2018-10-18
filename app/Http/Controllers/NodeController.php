@@ -193,4 +193,17 @@ class NodeController extends Controller
             return response()->json(error);
         return response()->json(null); 
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyAll()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        Node::where('user_id',$user->id)->delete();
+        return response()->json(null); 
+    }
 }
