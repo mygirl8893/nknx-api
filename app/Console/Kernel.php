@@ -256,7 +256,7 @@ class Kernel extends ConsoleKernel
                 CrawledNode::create(array('ip' => $node));
             }
             dd(count($nodes));
-        })->everyFifteenMinutes()->name('CrawlNodes')->withoutOverlapping();
+        })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
 
     }
