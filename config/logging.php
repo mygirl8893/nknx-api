@@ -49,14 +49,17 @@ return [
             'path' => storage_path('logs/SyncWithBlockchain.log'),
             'level' => 'info',
         ],
-
+        'nodeCrawler' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/NodeCrawler.log'),
+            'level' => 'info',
+        ],
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
             'days' => 7,
         ],
-
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
