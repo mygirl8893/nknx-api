@@ -163,8 +163,9 @@ class Kernel extends ConsoleKernel
             
             $lastNode = "";
             $blacklist = array();
+            $retries = array();
             $index = 0;
-            $retryCount = 0;
+
             $requestContent = [
                 'timeout' => 1,
                 'headers' => [
@@ -188,7 +189,6 @@ class Kernel extends ConsoleKernel
                     if(!filter_var($nodes[$index], FILTER_VALIDATE_IP)){
                         //Log::channel('nodeCrawler')->warning('invalid ip!');
                         array_splice($nodes,$index,1);
-                        $retryCount = 0;
                     }
                     else{
                         $apiRequest = $client->Post('http://'.$nodes[$index].':30003', $requestContent); 
@@ -203,7 +203,6 @@ class Kernel extends ConsoleKernel
                                 }
                             }
                         }
-                        $retryCount = 0;
                         $index++;
                     }
                 } catch (RequestException $re){
@@ -213,40 +212,48 @@ class Kernel extends ConsoleKernel
                             //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
                             array_push($blacklist,$nodes[$index]);
                             array_splice($nodes,$index,1);
-                            $retryCount = 0;
                             break;
                         case 28: 
                             //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
                             array_push($blacklist,$nodes[$index]);
                             array_splice($nodes,$index,1);
-                            $retryCount = 0;
                             break;
                         case 7:
-                            $retryCount++;
                             if($lastNode == $nodes[$index]){
                                 array_push($blacklist,$nodes[$index]);
                                 array_splice($nodes,$index,1);
-                                $retryCount = 0;
                             }
                             else{
                                 //Log::channel('nodeCrawler')->error('connection refused from ' . $nodes[$index] . "!");
+                                $count = 0;
+                                foreach ($retries as $item) {
+                                    if ($item == $nodes[$index]) {
+                                        $count++;
+                                    }
+                                }
+                                if($count >=10){
+                                    //Log::channel('nodeCrawler')->error('Too many retries for '.$nodes[$index] . " ignoring its neighbors.");
+                                    array_push($blacklist,$nodes[$index]);
+                                    $index++;
+                                }
+                                else{
 
-                                //Log::channel('nodeCrawler')->error($nodes[$index] . " has to cool down - moving at the end of list");
-                                //end of list
-                                $lastNode = $nodes[$index];
-                                array_push($nodes,$nodes[$index]);
-                                array_splice($nodes,$index,1);
-                                $retryCount = 0;
+                                    //Log::channel('nodeCrawler')->error($nodes[$index] . " has to cool down - moving at the end of list");
+                                    //end of list
+                                    $lastNode = $nodes[$index];
+                                    array_push($nodes,$nodes[$index]);
+                                    array_push($retries,$nodes[$index]);
+                                    array_splice($nodes,$index,1);
+
+
+                                }
+
                             }
-                            
-
-
                             break;
                         default:
                             //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
                             array_push($blacklist,$nodes[$index]);
                             array_splice($nodes,$index,1);
-                            $retryCount = 0;
                             break;
                     }
 
