@@ -155,7 +155,7 @@ class Kernel extends ConsoleKernel
         })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
         
         $schedule->call(function () {
-
+            Log::channel('nodeCrawler')->notice("Node crawling started");
             $nodes = CrawledNode::all()->pluck('ip')->toArray();
             if(count($nodes)==0){
                 $nodes = array("35.197.90.102");
@@ -258,6 +258,7 @@ class Kernel extends ConsoleKernel
                     }
 
                 }
+                
             }
 
             //delete all old nodes
@@ -284,7 +285,7 @@ class Kernel extends ConsoleKernel
                 $updatedDbNode->fill($response);
                 $updatedDbNode->save();
             }
-
+            Log::channel('nodeCrawler')->notice("Node crawling successful");
 
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
