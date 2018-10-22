@@ -208,7 +208,6 @@ class Kernel extends ConsoleKernel
                     }
                 } catch (RequestException $re){
                     //okay, we tried enough - node is offline
-                    dd($re);
                     switch($re->getHandlerContext()['errno']){
                         case 0: 
                             //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
