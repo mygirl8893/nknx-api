@@ -153,8 +153,9 @@ class Kernel extends ConsoleKernel
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
         })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
-
+        
         $schedule->call(function () {
+
             $nodes = CrawledNode::all()->pluck('ip')->toArray();
             if(count($nodes)==0){
                 $nodes = array("35.197.90.102");
@@ -207,6 +208,7 @@ class Kernel extends ConsoleKernel
                     }
                 } catch (RequestException $re){
                     //okay, we tried enough - node is offline
+                    dd($re);
                     switch($re->getHandlerContext()['errno']){
                         case 0: 
                             //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
@@ -251,11 +253,33 @@ class Kernel extends ConsoleKernel
 
                 }
             }
-            CrawledNode::truncate();
+
+            //delete all old nodes
+            CrawledNode::whereNotIn('ip', $nodes)->delete();
+
+            //update or create new one
             foreach ($nodes as $node){
-                CrawledNode::create(array('ip' => $node));
+                $dbNode = CrawledNode::firstOrNew(array('ip' => $node));
+                $dbNode->save();
             }
-            dd(count($nodes));
+
+            $newDbNodes = CrawledNode::whereNull('latitude')->pluck('ip')->toArray();
+
+            foreach ($newDbNodes as $newDbNode){
+                //get the geolocation
+
+                $client = new GuzzleHttpClient();
+                $apiRequest = $client->Get('http://api.ipstack.com/'.$newDbNode.'?access_key='.env('IPSTACK_KEY', ''));
+                $response = json_decode($apiRequest->getBody(), true);
+                unset($response["ip"]);
+                
+                //update the values
+                $updatedDbNode = CrawledNode::where('ip', $newDbNode)->first();
+                $updatedDbNode->fill($response);
+                $updatedDbNode->save();
+            }
+
+
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
 
