@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
+/*
         $schedule->call(function () {
             //get current blockchain height
             $currentBlockchainHeight = 0;
@@ -152,7 +152,7 @@ class Kernel extends ConsoleKernel
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
-        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
+        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping(); */
         
         $schedule->call(function () {
             Log::channel('nodeCrawler')->notice("Node crawling started");
@@ -182,7 +182,7 @@ class Kernel extends ConsoleKernel
                 ]
             ];
 
-            while($index <=  (count($nodes)-1)){
+            while($index <=  1){
                 $client = new GuzzleHttpClient();
                 //Log::channel('nodeCrawler')->notice($index.":".count($nodes));
                 try {
@@ -276,7 +276,7 @@ class Kernel extends ConsoleKernel
                 //get the geolocation
 
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Get('http://api.ipstack.com/'.$newDbNode.'?access_key='.env('IPSTACK_KEY', ''));
+                $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.env('IPGEOLOCATION_KEY', '').'&ip='.$newDbNode);
                 $response = json_decode($apiRequest->getBody(), true);
                 unset($response["ip"]);
                 
