@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-/*
+
         $schedule->call(function () {
             //get current blockchain height
             $currentBlockchainHeight = 0;
@@ -152,7 +152,7 @@ class Kernel extends ConsoleKernel
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
-        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping(); */
+        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping(); 
         
         $schedule->call(function () {
             Log::channel('nodeCrawler')->notice("Node crawling started");
