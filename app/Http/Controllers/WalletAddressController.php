@@ -74,7 +74,7 @@ class WalletAddressController extends Controller
                 $walletAddress->address = $address; 
                 $walletAddress->user_id = $user->id; 
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post('http://testnet-node-0002.nkn.org:30003', $requestContent);        
+                $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);        
                 $response = json_decode($apiRequest->getBody(), true);
 
                 foreach($response["result"] AS $unspendoutput) {

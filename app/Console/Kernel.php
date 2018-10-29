@@ -57,7 +57,7 @@ class Kernel extends ConsoleKernel
             ];
             try {
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post('http://testnet-node-0002.nkn.org:30003', $requestContent);        
+                $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);        
                 $response = json_decode($apiRequest->getBody());
                 $currentBlockchainHeight = $response->result;
             } catch (RequestException $re) {
@@ -106,7 +106,7 @@ class Kernel extends ConsoleKernel
                             ]
                         ];
                         $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post('http://testnet-node-0002.nkn.org:30003', $requestContent);
+                        $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
                         $response = json_decode($apiRequest->getBody(), true);
 
                         //so, lets delete the block
