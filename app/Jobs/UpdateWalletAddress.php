@@ -61,7 +61,7 @@ class UpdateWalletAddress implements ShouldQueue
 
             try {
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post('http://testnet-node-0001.nkn.org:30003', $requestContent);        
+                $apiRequest = $client->Post('http://testnet-node-0002.nkn.org:30003', $requestContent);        
                 $response = json_decode($apiRequest->getBody(), true);
 
                 foreach($response["result"] AS $unspendoutput) {
