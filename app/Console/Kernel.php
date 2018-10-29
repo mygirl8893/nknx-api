@@ -10,6 +10,7 @@ use GuzzleHttp\Exception\RequestException;
 use App\Header;
 use App\Block;
 use App\Node;
+use App\CachedNode;
 use App\WalletAddress;
 use App\CrawledNode;
 use App\Jobs\ProcessRemoteBlock;
@@ -152,13 +153,13 @@ class Kernel extends ConsoleKernel
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
-        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
+        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping(); 
         
         $schedule->call(function () {
             Log::channel('nodeCrawler')->notice("Node crawling started");
             $nodes = CrawledNode::all()->pluck('ip')->toArray();
             if(count($nodes)==0){
-                $nodes = array("35.197.90.102");
+                $nodes = array("35.197.90.102","35.187.152.66","35.187.201.101","35.198.198.253","146.148.24.130","35.242.233.86","35.204.197.53","35.192.235.226");
             }
             
             $lastNode = "";
@@ -266,24 +267,42 @@ class Kernel extends ConsoleKernel
 
             //update or create new one
             foreach ($nodes as $node){
-                $dbNode = CrawledNode::firstOrNew(array('ip' => $node));
-                $dbNode->save();
+                CrawledNode::updateOrCreate(array('ip' => $node));
             }
 
+            //get new Nodes without geolocation
             $newDbNodes = CrawledNode::whereNull('latitude')->pluck('ip')->toArray();
 
+            //for each of them
             foreach ($newDbNodes as $newDbNode){
-                //get the geolocation
+                //look up the cache
+                $cachedNode = CachedNode::where('ip', $newDbNode)->first();
 
-                $client = new GuzzleHttpClient();
-                $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.env('IPGEOLOCATION_KEY', '').'&ip='.$newDbNode);
-                $response = json_decode($apiRequest->getBody(), true);
-                unset($response["ip"]);
+                //if node is cached get it
+                if($cachedNode){
+                    $cachedNode = $cachedNode->toArray();
+                    $response = $cachedNode;
+                }
+                //if not ask the api
+                else{
+                    $client = new GuzzleHttpClient();
+                    $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.env('IPGEOLOCATION_KEY', '').'&ip='.$newDbNode);
+                    $response = json_decode($apiRequest->getBody(), true);
+                    unset($response["ip"]);
+                }
                 
                 //update the values
                 $updatedDbNode = CrawledNode::where('ip', $newDbNode)->first();
                 $updatedDbNode->fill($response);
                 $updatedDbNode->save();
+                //update or create cache entry
+                $response["ip"] = $newDbNode;
+
+                $dbCachedNode = CrawledNode::firstOrCreate(array('ip' => $newDbNode));
+                $dbCachedNode->fill($response);
+                $dbCachedNode->save();
+
+
             }
             Log::channel('nodeCrawler')->notice("Node crawling successful");
 
