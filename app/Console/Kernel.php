@@ -16,6 +16,7 @@ use App\CrawledNode;
 use App\Jobs\ProcessRemoteBlock;
 use App\Jobs\UpdateNode;
 use App\Jobs\UpdateWalletAddress;
+use Carbon\Carbon;
 use Log;
 
 class Kernel extends ConsoleKernel
@@ -37,7 +38,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
+        
         $schedule->call(function () {
             //get current blockchain height
             $currentBlockchainHeight = 0;
@@ -313,6 +314,9 @@ class Kernel extends ConsoleKernel
 
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
+        $schedule->call(function () {
+            CachedNode::where('updated_at', '<', Carbon::now()->subMonth())->delete();
+        })->monthly()->name('CleanUpCachedNodes'); 
 
     }
 
