@@ -269,6 +269,10 @@ class Kernel extends ConsoleKernel
             foreach ($nodes as $node){
                 CrawledNode::updateOrCreate(array('ip' => $node));
                 //if the ip is in the cache refresh it
+                $tempDbCachedNode = CachedNode::where('ip', $node)->first();
+                if($tempDbCachedNode){
+                    $tempDbCachedNode->touch();
+                }
             }
 
             //get new Nodes without geolocation
