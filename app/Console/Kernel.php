@@ -268,6 +268,7 @@ class Kernel extends ConsoleKernel
             //update or create new one
             foreach ($nodes as $node){
                 CrawledNode::updateOrCreate(array('ip' => $node));
+                //if the ip is in the cache refresh it
             }
 
             //get new Nodes without geolocation
@@ -298,7 +299,7 @@ class Kernel extends ConsoleKernel
                 //update or create cache entry
                 $response["ip"] = $newDbNode;
 
-                $dbCachedNode = CrawledNode::firstOrCreate(array('ip' => $newDbNode));
+                $dbCachedNode = CachedNode::firstOrCreate(array('ip' => $newDbNode));
                 $dbCachedNode->fill($response);
                 $dbCachedNode->save();
 
