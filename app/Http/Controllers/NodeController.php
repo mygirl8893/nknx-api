@@ -72,6 +72,8 @@ class NodeController extends Controller
                 $apiRequest = $client->Post($ip . ':30003', $requestContent);        
                 $response = json_decode($apiRequest->getBody(), true);
 
+                unset($response["result"]["ID"]);
+
                 $node = new Node($response["result"]);
                 $node->online = true;
                 $node->label = $label;

@@ -62,7 +62,7 @@ class UpdateNode implements ShouldQueue
                 $client = new GuzzleHttpClient();
                 $apiRequest = $client->Post($node->addr . ':30003', $requestContent);        
                 $response = json_decode($apiRequest->getBody(), true);
-
+                unset($response["result"]["ID"]);
                 $node->fill($response["result"]);
                 $node->online = true;
 
