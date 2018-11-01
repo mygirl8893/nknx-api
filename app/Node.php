@@ -13,5 +13,10 @@ class Node extends Model
     {
         return $this->belongsTo('App\User', 'user_id');
     }
+    public function getAddrAttribute($value)
+    {
+        preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $value, $matches);
+        return($matches[0]);
+    }
 }
 

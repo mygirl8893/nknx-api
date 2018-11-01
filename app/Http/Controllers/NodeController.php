@@ -44,7 +44,7 @@ class NodeController extends Controller
                 'msg' => 'ip is not provided'
             ], 400);
         }
-        else if (Node::where('addr', $ip)->first()){
+        else if (Node::where('addr','LIKE', '%'.$ip.'%')->first()){
             return response([
                 'status' => 'error',
                 'error' => 'duplicate.ip',
