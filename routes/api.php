@@ -31,6 +31,10 @@ Route::get('transactions/{id}', 'TransactionController@show');
 Route::get('payloads/{tId}', 'PayloadController@show');
 
 Route::get('transfers', 'TransferController@showAll');
+Route::get('statistics/daily/blocks', 'StatisticController@blocks_daily');
+Route::get('statistics/daily/transactions', 'StatisticController@transactions_daily');
+Route::get('statistics/daily/transfers', 'StatisticController@transfers_daily');
+
 
 //get all outputs
 Route::get('outputs', 'OutputController@showAll');
