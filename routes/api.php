@@ -35,6 +35,8 @@ Route::get('transfers', 'TransferController@showAll');
 //get all outputs
 Route::get('outputs', 'OutputController@showAll');
 
+Route::get('addresses', 'AddressController@showAll');
+
 Route::get('crawledNodes', 'CrawledNodesController@showAll');
 
 Route::post('auth/register', 'AuthController@register');
