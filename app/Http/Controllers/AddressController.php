@@ -20,14 +20,12 @@ class AddressController extends Controller
 {
     public function showAll(Request $request){
 
-
         $outputs= output::query()
             ->selectRaw('address, max(created_at) as last_transaction, count(address) as transactions,min(created_at) as first_transaction')
             ->orderBy('id', 'desc')
             ->whereNotNull('address')
-            ->limit(25)
             ->groupBy('address')
-            ->get();
+            ->simplePaginate(50);
         return response()->json($outputs);
     }
 
