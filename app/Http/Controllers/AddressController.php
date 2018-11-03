@@ -22,8 +22,7 @@ class AddressController extends Controller
 
         $outputs= output::query()
             ->selectRaw('address, max(created_at) as last_transaction, count(address) as transactions,min(created_at) as first_transaction')
-            ->orderBy('id', 'desc')
-            ->whereNotNull('address')
+            ->orderBy('last_transaction', 'desc')
             ->groupBy('address')
             ->simplePaginate(50);
         return response()->json($outputs);
