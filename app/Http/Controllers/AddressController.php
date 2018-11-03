@@ -28,4 +28,15 @@ class AddressController extends Controller
         return response()->json($outputs);
     }
 
+    public function show($address,Request $request){
+
+        $outputs= output::query()
+            ->where('address',$address)
+            ->selectRaw('address, max(created_at) as last_transaction, count(address) as transactions,min(created_at) as first_transaction')
+            ->orderBy('last_transaction', 'desc')
+            ->groupBy('address')
+            ->first();
+        return response()->json($outputs);
+    }
+
 }
