@@ -35,20 +35,23 @@ class NodeController extends Controller
     public function store(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $ip = $request->input('ip');
+        $alias = $request->input('ip');
         $label = $request->input('label','');
-        if (!$ip ) {
+        if(substr($alias, -1) == '/') {
+            $alias = substr($alias, 0, -1);
+        }
+        if (!$alias ) {
             return response([
                 'status' => 'error',
                 'error' => 'ip.empty',
-                'msg' => 'ip is not provided'
+                'msg' => 'ip or alias is not provided'
             ], 400);
         }
-        else if (Node::where('addr','LIKE', '%'.$ip.'%')->first()){
+        else if (Node::where('alias','LIKE', '%'.$alias.'%')->first()){
             return response([
                 'status' => 'error',
-                'error' => 'duplicate.ip',
-                'msg' => 'ip already in database'
+                'error' => 'duplicate.alias',
+                'msg' => 'alias already in database'
             ], 400);
         } else {
             //get main node data
@@ -69,7 +72,7 @@ class NodeController extends Controller
             ];
             try {
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post($ip . ':30003', $requestContent);        
+                $apiRequest = $client->Post($alias . ':30003', $requestContent);        
                 $response = json_decode($apiRequest->getBody(), true);
 
                 unset($response["result"]["ID"]);
@@ -77,6 +80,7 @@ class NodeController extends Controller
                 $node = new Node($response["result"]);
                 $node->online = true;
                 $node->label = $label;
+                $node->alias = $alias;
                 $node->user_id =  $user->id;
                 //get version
                 $requestContent = [
@@ -97,7 +101,7 @@ class NodeController extends Controller
 
                 try {
                     $client = new GuzzleHttpClient();
-                    $apiRequest = $client->Post($ip.':30003', $requestContent);        
+                    $apiRequest = $client->Post($alias.':30003', $requestContent);        
                     $response = json_decode($apiRequest->getBody(), true);
                     $node->softwareVersion = $response["result"];
 
@@ -118,7 +122,7 @@ class NodeController extends Controller
                     ];
                     try {
                         $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post($ip.':30003', $requestContent);        
+                        $apiRequest = $client->Post($alias.':30003', $requestContent);        
                         $response = json_decode($apiRequest->getBody(), true);
                         $node->latestBlockHeight = $response["result"];
 
