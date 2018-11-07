@@ -42,6 +42,9 @@ class UpdateNode implements ShouldQueue
         if (!$node) {
             
         } else {
+            if(!$node->alias){
+                $node->alias = $node->addr;
+            }
             //get main node data
             $requestContent = [
                 'timeout' => 0.5,
