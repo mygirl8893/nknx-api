@@ -35,77 +35,56 @@ class NodeController extends Controller
     public function store(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $alias = $request->input('ip');
+        $aliases = explode(',', $request->input('ip'));
         $label = $request->input('label','');
-        if(substr($alias, -1) == '/') {
-            $alias = substr($alias, 0, -1);
-        }
-        if (!$alias ) {
+        $multiAliases = [];
+        $failedAliases = [];
+        $savedAliases = [];
+        if (!count($aliases) ) {
             return response([
                 'status' => 'error',
                 'error' => 'ip.empty',
-                'msg' => 'ip or alias is not provided'
+                'msg' => 'no ips or aliases is not provided'
             ], 400);
         }
-        else if (Node::where('alias','LIKE', '%'.$alias.'%')->first()){
-            return response([
-                'status' => 'error',
-                'error' => 'duplicate.alias',
-                'msg' => 'alias already in database'
-            ], 400);
-        } else {
-            //get main node data
-            $requestContent = [
-                'timeout' => 0.5,
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json'
-                ],
-                'json' => [
-                    "id" => 1,
-                    "method" => "getnodestate",
-                    "params" => [
-                        "provider" => "nknx",
-                    ],
-                    "jsonrpc" => "2.0"
-                ]
-            ];
-            try {
-                $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post($alias . ':30003', $requestContent);        
-                $response = json_decode($apiRequest->getBody(), true);
+        foreach ($aliases as $alias) {
+        
+            if(substr($alias, -1) == '/') {
+                $alias = substr($alias, 0, -1);
+            }
 
-                unset($response["result"]["ID"]);
-
-                $node = new Node($response["result"]);
-                $node->online = true;
-                $node->label = $label;
-                $node->alias = $alias;
-                $node->user_id =  $user->id;
-                //get version
+            if (Node::where('alias','LIKE', '%'.$alias.'%')->first()){
+                array_push($multiAliases,$alias);
+            } else {
+                //get main node data
                 $requestContent = [
+                    'timeout' => 0.5,
                     'headers' => [
                         'Accept' => 'application/json',
                         'Content-Type' => 'application/json'
                     ],
                     'json' => [
                         "id" => 1,
-                        "method" => "getversion",
+                        "method" => "getnodestate",
                         "params" => [
                             "provider" => "nknx",
                         ],
                         "jsonrpc" => "2.0"
                     ]
                 ];
-
-
                 try {
                     $client = new GuzzleHttpClient();
-                    $apiRequest = $client->Post($alias.':30003', $requestContent);        
+                    $apiRequest = $client->Post($alias . ':30003', $requestContent);        
                     $response = json_decode($apiRequest->getBody(), true);
-                    $node->softwareVersion = $response["result"];
 
-                    //get latestblockheight
+                    unset($response["result"]["ID"]);
+
+                    $node = new Node($response["result"]);
+                    $node->online = true;
+                    $node->label = $label;
+                    $node->alias = $alias;
+                    $node->user_id =  $user->id;
+                    //get version
                     $requestContent = [
                         'headers' => [
                             'Accept' => 'application/json',
@@ -113,52 +92,67 @@ class NodeController extends Controller
                         ],
                         'json' => [
                             "id" => 1,
-                            "method" => "getlatestblockheight",
+                            "method" => "getversion",
                             "params" => [
                                 "provider" => "nknx",
                             ],
                             "jsonrpc" => "2.0"
                         ]
                     ];
+
+
                     try {
                         $client = new GuzzleHttpClient();
                         $apiRequest = $client->Post($alias.':30003', $requestContent);        
                         $response = json_decode($apiRequest->getBody(), true);
-                        $node->latestBlockHeight = $response["result"];
+                        $node->softwareVersion = $response["result"];
 
-                        $node->save();
+                        //get latestblockheight
+                        $requestContent = [
+                            'headers' => [
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json'
+                            ],
+                            'json' => [
+                                "id" => 1,
+                                "method" => "getlatestblockheight",
+                                "params" => [
+                                    "provider" => "nknx",
+                                ],
+                                "jsonrpc" => "2.0"
+                            ]
+                        ];
+                        try {
+                            $client = new GuzzleHttpClient();
+                            $apiRequest = $client->Post($alias.':30003', $requestContent);        
+                            $response = json_decode($apiRequest->getBody(), true);
+                            $node->latestBlockHeight = $response["result"];
 
-                        return response([
-                            'status' => 'success',
-                            'data' => $node
-                        ]);
-                        
+                            $node->save();
+                            array_push($savedAliases,$node);
+
+                        } catch (RequestException $re) {
+                            array_push($failedAliases,$alias);
+                        }
         
                     } catch (RequestException $re) {
-                        return response([
-                            'status' => 'error',
-                            'error' => 'node.unreachable',
-                            'msg' => 'node not reachable'
-                        ], 400);
+                        array_push($failedAliases,$alias);
                     }
-    
+
                 } catch (RequestException $re) {
-                    return response([
-                        'status' => 'error',
-                        'error' => 'node.unreachable',
-                        'msg' => 'node not reachable'
-                    ], 400);
-                }
-
-            } catch (RequestException $re) {
-                return response([
-                    'status' => 'error',
-                    'error' => 'node.unreachable',
-                    'msg' => 'node not reachable'
-                ], 400);
-            }  
-
+                    array_push($failedAliases,$alias);
+                }  
+            }
         }
+
+        return response([
+            'status' => 'success',
+            'data' => [
+                'saved' => $savedAliases,
+                'failed' => $failedAliases,
+                'duplicate' => $multiAliases
+            ]
+        ],200);
     }
 
     /**
