@@ -9,7 +9,7 @@ class PortCheckController extends Controller
     {
         $host = $request->input('address');
         set_time_limit(1);
-        $ports = array(30000, 30001, 30002, 30003);
+        $ports = array(30001, 30002, 30003);
         $response = [];
 
         foreach ($ports as $port)
