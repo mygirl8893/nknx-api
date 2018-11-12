@@ -21,13 +21,13 @@ class PortCheckController extends Controller
         else{
             $host = $address;
         }
-        set_time_limit(1);
+        set_time_limit(3);
         $ports = array(30001, 30002, 30003);
         $response = [];
 
         foreach ($ports as $port)
         {
-            $connection = @fsockopen($host, $port,$errno,$errstr,0.1);
+            $connection = @fsockopen($host, $port,$errno,$errstr,1);
 
             if (is_resource($connection))
             {
