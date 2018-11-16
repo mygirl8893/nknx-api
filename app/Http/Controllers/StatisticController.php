@@ -19,7 +19,12 @@ use DB;
 class StatisticController extends Controller
 {
     public function blocks_daily(Request $request){
+        $pubkey = $request->get('pubkey',false);
+
         $headers_query = Header::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
+        ->when($pubkey, function ($q, $pubkey) { 
+            return $q->where('signer',$pubkey);
+        })
         ->orderBy(DB::raw('DATE(timestamp)'), 'desc')
         ->groupBy(DB::raw('DATE(timestamp)'));
         $headers = $headers_query
