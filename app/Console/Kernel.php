@@ -292,7 +292,7 @@ class Kernel extends ConsoleKernel
                 //if not ask the api
                 else{
                     $client = new GuzzleHttpClient();
-                    $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.env('IPGEOLOCATION_KEY', '').'&ip='.$newDbNode);
+                    $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.config('geolocation.ipgeolocation_key').'&ip='.$newDbNode);
                     $response = json_decode($apiRequest->getBody(), true);
                     unset($response["ip"]);
                 }
