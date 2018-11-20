@@ -753,22 +753,92 @@ $.ajax(settings).done(function (response) {
 
 ```json
 [
-    "35.187.201.101",
-    "35.198.198.253",
-    "35.204.197.53",
-    "46.101.107.63",
-    "138.68.71.110",
-    "188.166.20.95",
-    "159.89.119.116",
-    "46.101.4.189",
-    "165.227.239.201",
-    "178.128.244.97"
+    {
+        "id": 3,
+        "ip": "35.187.201.101",
+        "created_at": "2018-11-01 08:29:37",
+        "updated_at": "2018-11-01 08:29:39",
+        "continent_code": "NA",
+        "continent_name": "North America",
+        "country_code2": "US",
+        "country_code3": "USA",
+        "country_name": "United States",
+        "country_capital": "Washington",
+        "state_prov": "Virginia",
+        "district": "Loudoun",
+        "city": "Ashburn",
+        "zipcode": "20149",
+        "latitude": "39.04380000",
+        "longitude": "-77.48740000",
+        "is_eu": "0",
+        "calling_code": "+1",
+        "country_tld": ".us",
+        "isp": "Google LLC",
+        "connection_type": "",
+        "organization": "Google LLC",
+        "geoname_id": "4744870"
+    },
+    {
+        "id": 4,
+        "ip": "35.198.198.253",
+        "created_at": "2018-11-01 08:29:37",
+        "updated_at": "2018-11-01 08:29:39",
+        "continent_code": "AS",
+        "continent_name": "Asia",
+        "country_code2": "SG",
+        "country_code3": "SGP",
+        "country_name": "Singapore",
+        "country_capital": "Singapore",
+        "state_prov": "Central Singapore",
+        "district": "Queenstown Estate",
+        "city": "Singapore",
+        "zipcode": "",
+        "latitude": "1.27623000",
+        "longitude": "103.80000000",
+        "is_eu": "0",
+        "calling_code": "+65",
+        "country_tld": ".sg",
+        "isp": "Google LLC",
+        "connection_type": "",
+        "organization": "Google LLC",
+        "geoname_id": "1884386"
+    },
+    {
+        "id": 7,
+        "ip": "35.204.197.53",
+        "created_at": "2018-11-01 08:29:37",
+        "updated_at": "2018-11-01 08:29:39",
+        "continent_code": "NA",
+        "continent_name": "North America",
+        "country_code2": "US",
+        "country_code3": "USA",
+        "country_name": "United States",
+        "country_capital": "Washington",
+        "state_prov": "Virginia",
+        "district": "Loudoun",
+        "city": "Ashburn",
+        "zipcode": "20149",
+        "latitude": "39.04380000",
+        "longitude": "-77.48740000",
+        "is_eu": "0",
+        "calling_code": "+1",
+        "country_tld": ".us",
+        "isp": "Google LLC",
+        "connection_type": "",
+        "organization": "Google LLC",
+        "geoname_id": "4744870"
+    }
 ]
 ```
 
 ### HTTP Request
 `GET api/crawledNodes`
 
+#### Query Parameters
+
+Parameter | Status | Description
+--------- | ------- | ------- | -----------
+    withLocation |  optional  | Add location data to the result
 
 <!-- END_49cd414c82b7c000ffe2bbd23daeda0f -->
 
@@ -6577,16 +6647,16 @@ $.ajax(settings).done(function (response) {
             "first_transaction": "2018-11-13 20:25:05"
         },
         {
-            "address": "NexC22HjVnnGTa6kLX4m55cXSpRkyHGDEX",
-            "last_transaction": "2018-11-17 12:19:04",
-            "transactions": 482,
-            "first_transaction": "2018-10-13 11:18:03"
-        },
-        {
             "address": "NRxTyT2MfvmmbW22bg2V9M7BVJBt2z5LXJ",
             "last_transaction": "2018-11-17 12:19:04",
             "transactions": 14,
             "first_transaction": "2018-11-13 16:43:05"
+        },
+        {
+            "address": "NexC22HjVnnGTa6kLX4m55cXSpRkyHGDEX",
+            "last_transaction": "2018-11-17 12:19:04",
+            "transactions": 482,
+            "first_transaction": "2018-10-13 11:18:03"
         },
         {
             "address": "NT9JetrMu1FeRjXbxsvHmzrmBzh7S7vBk1",
