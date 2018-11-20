@@ -16,6 +16,11 @@ use App\Payload;
 
 use DB;
 
+/**
+ * @group Transactions
+ *
+ * Endpoints for querying transactions
+ */
 class TransactionController extends Controller
 {
     public function showAll(Request $request){

@@ -10,6 +10,11 @@ use GuzzleHttp\Exception\RequestException;
 use JWTAuth;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group User Nodes
+ *
+ * Endpoints for querying user nodes
+ */
 class NodeController extends Controller
 {
     /**

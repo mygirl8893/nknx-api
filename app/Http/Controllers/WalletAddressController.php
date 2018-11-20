@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use DB;
 
+/**
+ * @group User Wallets
+ *
+ * Endpoints for querying stored user wallets
+ */
 class WalletAddressController extends Controller
 {
     /**

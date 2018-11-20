@@ -16,6 +16,12 @@ use App\Payload;
 
 use DB;
 
+/**
+ * @group Statistics
+ *
+ * Endpoints for NKN Network statistics
+ */
+
 class StatisticController extends Controller
 {
     public function blocks_daily(Request $request){

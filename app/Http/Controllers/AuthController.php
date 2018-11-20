@@ -13,8 +13,19 @@ use Mail;
 use JWTAuth;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group Auth and User management
+ *
+ * APIs for managing users
+ */
 class AuthController extends Controller
 {
+    /**
+	 * Register a user
+	 *
+	 * Creates an initial user entity in the database and also starts verification process
+	 *
+	 */
     public function register(RegisterFormRequest $request)
     {
         $user = new User;
@@ -36,6 +47,12 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+	 * Resend verification mail
+	 *
+	 * Recreates VerifyUser entity and resends the verification mail
+	 *
+	 */
     public function resendVerification()
     {
         $user = User::find(Auth::user()->id);
@@ -55,8 +72,13 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+	 * Reset password
+	 *
+	 * Creates a password reset mail and an entry in the database
+	 *
+	 */
     public function resetPassword(Request $request){
-        //creates a password reset mail and an entry in the database
         $user = User::where('email', $request->email)->latest()->first();
         $passwordReset = PasswordReset::create([
             'user_id' => $user->id,
@@ -71,6 +93,12 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+	 * Set new password
+	 *
+	 * Sets a new password for a user from a provided token
+	 *
+	 */
     public function setNewPasswordFromToken(Request $request, $token){
         $passwordReset = PasswordReset::where('token', $token)->latest()->first();
         if(isset($passwordReset) ){
@@ -91,6 +119,12 @@ class AuthController extends Controller
         }
     }
 
+    /**
+	 * Login
+	 *
+	 * Logs a user in
+	 *
+	 */
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -106,7 +140,25 @@ class AuthController extends Controller
             ])
             ->header('Authorization', $token);
     }
-
+    
+    /**
+	 * User
+	 *
+	 * Returns the current logged in User
+     * @authenticated
+     * @response {
+     *      "status": "success",
+     *      "data": {
+     *          "id" : 1,
+     *          "name": "ChrisT",
+     *          "email": "test@nknx.org",
+     *          "verified": true,
+     *          "created_at": "2018-10-15 09:50:55",
+     *          "updated_at": "2018-10-15 09:51:37"
+     *      } 
+     * }
+	 *
+	 */
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
@@ -115,6 +167,13 @@ class AuthController extends Controller
                 'data' => $user
             ]);
     }
+
+    /**
+	 * Refresh
+	 *
+	 * Refreshes the current users session
+	 *
+	 */
     public function refresh()
     {
         return response([
@@ -122,6 +181,12 @@ class AuthController extends Controller
             ]);
     }
 
+    /**
+	 * Verify email
+	 *
+	 * Accepts a token provided in an eMail link and verifies the user entity
+	 *
+	 */
     public function verifyUser($token)
     {
         $verifyUser = VerifyUser::where('token', $token)->latest()->first();
@@ -142,6 +207,12 @@ class AuthController extends Controller
         return redirect('/login')->with('status', $status);
     }
 
+    /**
+	 * Logout
+	 *
+	 * Logs a user out
+	 *
+	 */
     public function logout()
     {
         JWTAuth::invalidate();

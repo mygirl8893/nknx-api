@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
+/**
+ * @group Port check
+ *
+ * Endpoints for the port checker
+ */
 class PortCheckController extends Controller
 {
     public function checkPort(Request $request)

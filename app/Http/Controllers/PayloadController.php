@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Payload;
 
+/**
+ * @group Payloads
+ *
+ * Endpoints for querying transaction-payloads
+ */
 class PayloadController extends Controller
 {
     public function show($tId)

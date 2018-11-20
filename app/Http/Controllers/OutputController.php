@@ -16,6 +16,11 @@ use App\Payload;
 
 use DB;
 
+/**
+ * @group Outputs
+ *
+ * Endpoints for querying transaction-outputs
+ */
 class OutputController extends Controller
 {
     public function showAll(Request $request){
