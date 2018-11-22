@@ -225,9 +225,9 @@ Creates an initial user entity in the database and also starts verification proc
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/register"     -d "email"="CuKIVg1fz3fydvz3" \
-    -d "name"="sZmG7D4fsRuI1ulR" \
-    -d "password"="9YIm8ivuHIEWaaF6" 
+curl -X POST "https://nknx.org/api/auth/register"     -d "email"="axZ0YqeldSFCwsfI" \
+    -d "name"="31Zgh1ZAWaGZkAvE" \
+    -d "password"="4KwuvXOZu6iT7HPz" 
 ```
 
 ```javascript
@@ -237,9 +237,9 @@ var settings = {
     "url": "https://nknx.org/api/auth/register",
     "method": "POST",
     "data": {
-        "email": "CuKIVg1fz3fydvz3",
-        "name": "sZmG7D4fsRuI1ulR",
-        "password": "9YIm8ivuHIEWaaF6"
+        "email": "axZ0YqeldSFCwsfI",
+        "name": "31Zgh1ZAWaGZkAvE",
+        "password": "4KwuvXOZu6iT7HPz"
     },
     "headers": {
     }
@@ -332,7 +332,7 @@ Sets a new password for a user from a provided token
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/reset/{token}"     -d "password"="HrvIFQYucGhjzdTX" 
+curl -X POST "https://nknx.org/api/auth/reset/{token}"     -d "password"="p2SmYiEM73ltkj14" 
 ```
 
 ```javascript
@@ -342,7 +342,7 @@ var settings = {
     "url": "https://nknx.org/api/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "HrvIFQYucGhjzdTX"
+        "password": "p2SmYiEM73ltkj14"
     },
     "headers": {
     }
@@ -381,7 +381,7 @@ Creates a password reset mail and an entry in the database
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/reset"     -d "email"="bha5ahPAkdlJ5pN1" 
+curl -X POST "https://nknx.org/api/auth/reset"     -d "email"="BnTHh3SkNsVhOmU3" 
 ```
 
 ```javascript
@@ -391,7 +391,7 @@ var settings = {
     "url": "https://nknx.org/api/auth/reset",
     "method": "POST",
     "data": {
-        "email": "bha5ahPAkdlJ5pN1"
+        "email": "BnTHh3SkNsVhOmU3"
     },
     "headers": {
     }
@@ -430,8 +430,8 @@ Logs a user in
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/login"     -d "email"="7z29Z5OfPVC0W9op" \
-    -d "password"="QJ0Zxpsg8QZO7HUF" 
+curl -X POST "https://nknx.org/api/auth/login"     -d "email"="GwhufUVPdUISRpnh" \
+    -d "password"="0fO6jem6vBi4dPQd" 
 ```
 
 ```javascript
@@ -441,8 +441,8 @@ var settings = {
     "url": "https://nknx.org/api/auth/login",
     "method": "POST",
     "data": {
-        "email": "7z29Z5OfPVC0W9op",
-        "password": "QJ0Zxpsg8QZO7HUF"
+        "email": "GwhufUVPdUISRpnh",
+        "password": "0fO6jem6vBi4dPQd"
     },
     "headers": {
     }
@@ -1459,18 +1459,16 @@ $.ajax(settings).done(function (response) {
 > Example response:
 
 ```json
-[
-    {
-        "id": 949076,
-        "sigchain": "10441a2084c179dd18175e0ef6180fedb3866ed50298c24b976a8e76d71906081e440c162220f91c287958908c910c40791591da64c75296691dd0e7bd45fe113204850b65f42a21037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3a450a2093f7f6e2b8e53af0ccd356007c2beb6d2de8e7b57ec4a2bcab2babb5984dc703122102254f8cf6fa4db6ae24cb84dddb842733f1fc94942f7c49a2a7e57bb3cf886e783a89010a2093c242a8ce92a09267d00f63a2ddbf3789c0a552dd9bb87ae9d82cf88399c6fc122103c97def470c2096e506dec005e6520ae02bc88271ef4ed0d3ef1d397b54ad5db018012a40a211b447046fe0f746e90e517afb5e24dd06c22f120a36d39b11dd266f912c91a22d7781a503594be3e6b7286718ae4a3f9ffe9f20937c455d82c7ab2bcdc0353a89010a20d3d1dac943ba8668a2477f2f228b7e32a24d29e679a52bc9426bab084a785e34122103098fb8e266c3a5cb8519624d5f3cdff3f5431279476d2ef63bbf16d80627d9d518012a4028626993630c3c3ee71467263fdfb0e63d3427e7aec35ee1f88c8a47eded73f74eb2b5c4dab9d115d4939452be95c0ff78bdf5f1525d176b7bdcadb6d9ab9d723a89010a20f3dd214b14e5745d72576ef9311006310fbe9f94135f5c4420b40c6425ef2482122102bac5f29266d66cc9f2c7931d4248f857d691e3066edbe6ffe5ad1781256b9c2a18012a403ef0cb3c3de3b10edd90cbe49089ad52f5f7081481dfc67eacd1c1a1234bc2fe33a2c8c285a689ee3de7ce35170e610cf13b0f1c91d2e7baf3e937e890bba9dd3a89010a2004086825a35d3ce0706b7f46a53a92dbad2811446200cd9d83d1630e812201a1122102dc69b3af8f97b47e078fc82d4835621cb0be1b6d0ea98c69b6e9a17b99e768cd18012a40ef902a2d57517f639befc6c49d42095b1dbe2dd80cb1d7857d92b7c9417073c1076f371f9843f58491738b16cf4f2c935311d6a859232671719b2ac7d17d83153a89010a20049048ca3122c248ec1d6e7f1194398103420cbd708468afa0ed3d6f74dbe2bf1221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d18012a4006b2dd4b088faede74d8fd987980ea691344df151f95e36261ca918b572450783ee8fe4451b7195681ddf104dca63d42e3407b4c078c71f479f73cba39bde63a3a450a2004ab4b2bf3fd74701847506a146847552443d781355eba9b346b17a97d7fa1201221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d",
-        "submitter": "35a84af592cf5c45099b1711931028d72d2fa54a",
-        "transaction_id": 1190084,
-        "created_at": "2018-11-17 12:45:08",
-        "updated_at": "2018-11-17 12:45:08",
-        "name": null,
-        "registrant": null
-    }
-]
+{
+    "id": 949076,
+    "sigchain": "10441a2084c179dd18175e0ef6180fedb3866ed50298c24b976a8e76d71906081e440c162220f91c287958908c910c40791591da64c75296691dd0e7bd45fe113204850b65f42a21037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3a450a2093f7f6e2b8e53af0ccd356007c2beb6d2de8e7b57ec4a2bcab2babb5984dc703122102254f8cf6fa4db6ae24cb84dddb842733f1fc94942f7c49a2a7e57bb3cf886e783a89010a2093c242a8ce92a09267d00f63a2ddbf3789c0a552dd9bb87ae9d82cf88399c6fc122103c97def470c2096e506dec005e6520ae02bc88271ef4ed0d3ef1d397b54ad5db018012a40a211b447046fe0f746e90e517afb5e24dd06c22f120a36d39b11dd266f912c91a22d7781a503594be3e6b7286718ae4a3f9ffe9f20937c455d82c7ab2bcdc0353a89010a20d3d1dac943ba8668a2477f2f228b7e32a24d29e679a52bc9426bab084a785e34122103098fb8e266c3a5cb8519624d5f3cdff3f5431279476d2ef63bbf16d80627d9d518012a4028626993630c3c3ee71467263fdfb0e63d3427e7aec35ee1f88c8a47eded73f74eb2b5c4dab9d115d4939452be95c0ff78bdf5f1525d176b7bdcadb6d9ab9d723a89010a20f3dd214b14e5745d72576ef9311006310fbe9f94135f5c4420b40c6425ef2482122102bac5f29266d66cc9f2c7931d4248f857d691e3066edbe6ffe5ad1781256b9c2a18012a403ef0cb3c3de3b10edd90cbe49089ad52f5f7081481dfc67eacd1c1a1234bc2fe33a2c8c285a689ee3de7ce35170e610cf13b0f1c91d2e7baf3e937e890bba9dd3a89010a2004086825a35d3ce0706b7f46a53a92dbad2811446200cd9d83d1630e812201a1122102dc69b3af8f97b47e078fc82d4835621cb0be1b6d0ea98c69b6e9a17b99e768cd18012a40ef902a2d57517f639befc6c49d42095b1dbe2dd80cb1d7857d92b7c9417073c1076f371f9843f58491738b16cf4f2c935311d6a859232671719b2ac7d17d83153a89010a20049048ca3122c248ec1d6e7f1194398103420cbd708468afa0ed3d6f74dbe2bf1221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d18012a4006b2dd4b088faede74d8fd987980ea691344df151f95e36261ca918b572450783ee8fe4451b7195681ddf104dca63d42e3407b4c078c71f479f73cba39bde63a3a450a2004ab4b2bf3fd74701847506a146847552443d781355eba9b346b17a97d7fa1201221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d",
+    "submitter": "35a84af592cf5c45099b1711931028d72d2fa54a",
+    "transaction_id": 1190084,
+    "created_at": "2018-11-17 12:45:08",
+    "updated_at": "2018-11-17 12:45:08",
+    "name": null,
+    "registrant": null
+}
 ```
 
 ### HTTP Request
@@ -1517,7 +1515,7 @@ $.ajax(settings).done(function (response) {
 
 ```json
 {
-    "30001": "open",
+    "30001": "closed",
     "30002": "open",
     "30003": "open"
 }
@@ -1995,64 +1993,62 @@ $.ajax(settings).done(function (response) {
 > Example response:
 
 ```json
-[
-    {
-        "id": 1190084,
-        "hash": "9946d19e6a2fa035e3456de5836207569b11204593783f62f7838ea99d41fcf2",
-        "payloadVersion": 0,
-        "txType": 66,
-        "block_id": 240758,
-        "sender": null,
+{
+    "id": 1190084,
+    "hash": "9946d19e6a2fa035e3456de5836207569b11204593783f62f7838ea99d41fcf2",
+    "payloadVersion": 0,
+    "txType": 66,
+    "block_id": 240758,
+    "sender": null,
+    "created_at": "2018-11-17 12:45:08",
+    "updated_at": "2018-11-17 12:45:08",
+    "payload": {
+        "id": 949076,
+        "sigchain": "10441a2084c179dd18175e0ef6180fedb3866ed50298c24b976a8e76d71906081e440c162220f91c287958908c910c40791591da64c75296691dd0e7bd45fe113204850b65f42a21037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3a450a2093f7f6e2b8e53af0ccd356007c2beb6d2de8e7b57ec4a2bcab2babb5984dc703122102254f8cf6fa4db6ae24cb84dddb842733f1fc94942f7c49a2a7e57bb3cf886e783a89010a2093c242a8ce92a09267d00f63a2ddbf3789c0a552dd9bb87ae9d82cf88399c6fc122103c97def470c2096e506dec005e6520ae02bc88271ef4ed0d3ef1d397b54ad5db018012a40a211b447046fe0f746e90e517afb5e24dd06c22f120a36d39b11dd266f912c91a22d7781a503594be3e6b7286718ae4a3f9ffe9f20937c455d82c7ab2bcdc0353a89010a20d3d1dac943ba8668a2477f2f228b7e32a24d29e679a52bc9426bab084a785e34122103098fb8e266c3a5cb8519624d5f3cdff3f5431279476d2ef63bbf16d80627d9d518012a4028626993630c3c3ee71467263fdfb0e63d3427e7aec35ee1f88c8a47eded73f74eb2b5c4dab9d115d4939452be95c0ff78bdf5f1525d176b7bdcadb6d9ab9d723a89010a20f3dd214b14e5745d72576ef9311006310fbe9f94135f5c4420b40c6425ef2482122102bac5f29266d66cc9f2c7931d4248f857d691e3066edbe6ffe5ad1781256b9c2a18012a403ef0cb3c3de3b10edd90cbe49089ad52f5f7081481dfc67eacd1c1a1234bc2fe33a2c8c285a689ee3de7ce35170e610cf13b0f1c91d2e7baf3e937e890bba9dd3a89010a2004086825a35d3ce0706b7f46a53a92dbad2811446200cd9d83d1630e812201a1122102dc69b3af8f97b47e078fc82d4835621cb0be1b6d0ea98c69b6e9a17b99e768cd18012a40ef902a2d57517f639befc6c49d42095b1dbe2dd80cb1d7857d92b7c9417073c1076f371f9843f58491738b16cf4f2c935311d6a859232671719b2ac7d17d83153a89010a20049048ca3122c248ec1d6e7f1194398103420cbd708468afa0ed3d6f74dbe2bf1221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d18012a4006b2dd4b088faede74d8fd987980ea691344df151f95e36261ca918b572450783ee8fe4451b7195681ddf104dca63d42e3407b4c078c71f479f73cba39bde63a3a450a2004ab4b2bf3fd74701847506a146847552443d781355eba9b346b17a97d7fa1201221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d",
+        "submitter": "35a84af592cf5c45099b1711931028d72d2fa54a",
+        "transaction_id": 1190084,
         "created_at": "2018-11-17 12:45:08",
         "updated_at": "2018-11-17 12:45:08",
-        "payload": {
-            "id": 949076,
-            "sigchain": "10441a2084c179dd18175e0ef6180fedb3866ed50298c24b976a8e76d71906081e440c162220f91c287958908c910c40791591da64c75296691dd0e7bd45fe113204850b65f42a21037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d3a450a2093f7f6e2b8e53af0ccd356007c2beb6d2de8e7b57ec4a2bcab2babb5984dc703122102254f8cf6fa4db6ae24cb84dddb842733f1fc94942f7c49a2a7e57bb3cf886e783a89010a2093c242a8ce92a09267d00f63a2ddbf3789c0a552dd9bb87ae9d82cf88399c6fc122103c97def470c2096e506dec005e6520ae02bc88271ef4ed0d3ef1d397b54ad5db018012a40a211b447046fe0f746e90e517afb5e24dd06c22f120a36d39b11dd266f912c91a22d7781a503594be3e6b7286718ae4a3f9ffe9f20937c455d82c7ab2bcdc0353a89010a20d3d1dac943ba8668a2477f2f228b7e32a24d29e679a52bc9426bab084a785e34122103098fb8e266c3a5cb8519624d5f3cdff3f5431279476d2ef63bbf16d80627d9d518012a4028626993630c3c3ee71467263fdfb0e63d3427e7aec35ee1f88c8a47eded73f74eb2b5c4dab9d115d4939452be95c0ff78bdf5f1525d176b7bdcadb6d9ab9d723a89010a20f3dd214b14e5745d72576ef9311006310fbe9f94135f5c4420b40c6425ef2482122102bac5f29266d66cc9f2c7931d4248f857d691e3066edbe6ffe5ad1781256b9c2a18012a403ef0cb3c3de3b10edd90cbe49089ad52f5f7081481dfc67eacd1c1a1234bc2fe33a2c8c285a689ee3de7ce35170e610cf13b0f1c91d2e7baf3e937e890bba9dd3a89010a2004086825a35d3ce0706b7f46a53a92dbad2811446200cd9d83d1630e812201a1122102dc69b3af8f97b47e078fc82d4835621cb0be1b6d0ea98c69b6e9a17b99e768cd18012a40ef902a2d57517f639befc6c49d42095b1dbe2dd80cb1d7857d92b7c9417073c1076f371f9843f58491738b16cf4f2c935311d6a859232671719b2ac7d17d83153a89010a20049048ca3122c248ec1d6e7f1194398103420cbd708468afa0ed3d6f74dbe2bf1221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d18012a4006b2dd4b088faede74d8fd987980ea691344df151f95e36261ca918b572450783ee8fe4451b7195681ddf104dca63d42e3407b4c078c71f479f73cba39bde63a3a450a2004ab4b2bf3fd74701847506a146847552443d781355eba9b346b17a97d7fa1201221037ab46c527ab056c7f62f29c62a564707f900964ae22621a7dbbfb45afcd07b1d",
-            "submitter": "35a84af592cf5c45099b1711931028d72d2fa54a",
+        "name": null,
+        "registrant": null
+    },
+    "outputs": [],
+    "inputs": [],
+    "attributes": [
+        {
+            "id": 1190084,
+            "data": "a50c6edc50f054718e59939c6a444b26f2df83f794fdbe82e55047382109388b",
+            "usage": 0,
             "transaction_id": 1190084,
             "created_at": "2018-11-17 12:45:08",
-            "updated_at": "2018-11-17 12:45:08",
-            "name": null,
-            "registrant": null
-        },
-        "outputs": [],
-        "inputs": [],
-        "attributes": [
-            {
-                "id": 1190084,
-                "data": "a50c6edc50f054718e59939c6a444b26f2df83f794fdbe82e55047382109388b",
-                "usage": 0,
-                "transaction_id": 1190084,
-                "created_at": "2018-11-17 12:45:08",
-                "updated_at": "2018-11-17 12:45:08"
-            }
-        ],
-        "block": {
+            "updated_at": "2018-11-17 12:45:08"
+        }
+    ],
+    "block": {
+        "id": 240758,
+        "hash": "0a325a5c0e94cb77529ff80045c44209714f03663f3c58d78e0a81780720a137",
+        "transaction_count": 6,
+        "created_at": "2018-11-17 12:45:07",
+        "updated_at": "2018-11-17 12:45:07",
+        "header": {
             "id": 240758,
-            "hash": "0a325a5c0e94cb77529ff80045c44209714f03663f3c58d78e0a81780720a137",
-            "transaction_count": 6,
+            "chordId": "",
+            "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+            "height": 240758,
+            "prevBlockHash": "4e523b1071b070b9f7e2d0ef0e5e681a44f6ee6d21c5cb94b6e5cb57909ebd9f",
+            "signature": "e4d17c56827ffd88095fa699dd2e2754d712b15bd3bf232b1928a487495f2dce895f917f1a0ba45c8949ea8e29d19a864d2d922a5572822eccf64cb30c656286",
+            "signer": "02dc69b3af8f97b47e078fc82d4835621cb0be1b6d0ea98c69b6e9a17b99e768cd",
+            "timestamp": "2018-11-17 12:44:44",
+            "transactionsRoot": "81c5a667d0bec0a2e36a9a7ff5a2ddf70e29ba069e3bbefcf91a67c78c1dae61",
+            "version": 1,
+            "winningHash": "b4b016a64a7c9e0b35a0eab3ed18899da62afeb10e39b8a8e8c27cd52ae6ed67",
+            "winningHashType": 1,
+            "block_id": 240758,
             "created_at": "2018-11-17 12:45:07",
-            "updated_at": "2018-11-17 12:45:07",
-            "header": {
-                "id": 240758,
-                "chordId": "",
-                "hash": "0000000000000000000000000000000000000000000000000000000000000000",
-                "height": 240758,
-                "prevBlockHash": "4e523b1071b070b9f7e2d0ef0e5e681a44f6ee6d21c5cb94b6e5cb57909ebd9f",
-                "signature": "e4d17c56827ffd88095fa699dd2e2754d712b15bd3bf232b1928a487495f2dce895f917f1a0ba45c8949ea8e29d19a864d2d922a5572822eccf64cb30c656286",
-                "signer": "02dc69b3af8f97b47e078fc82d4835621cb0be1b6d0ea98c69b6e9a17b99e768cd",
-                "timestamp": "2018-11-17 12:44:44",
-                "transactionsRoot": "81c5a667d0bec0a2e36a9a7ff5a2ddf70e29ba069e3bbefcf91a67c78c1dae61",
-                "version": 1,
-                "winningHash": "b4b016a64a7c9e0b35a0eab3ed18899da62afeb10e39b8a8e8c27cd52ae6ed67",
-                "winningHashType": 1,
-                "block_id": 240758,
-                "created_at": "2018-11-17 12:45:07",
-                "updated_at": "2018-11-17 12:45:07"
-            }
+            "updated_at": "2018-11-17 12:45:07"
         }
     }
-]
+}
 ```
 
 ### HTTP Request
@@ -2470,7 +2466,7 @@ Store a wallet in the database
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/walletAddresses"     -d "address"="pKa2b9p0MFvhodEY" \
+curl -X POST "https://nknx.org/api/walletAddresses"     -d "address"="YJfGvkSeNAczu9Xi" \
     -d "label"="nknx" 
 ```
 
@@ -2481,7 +2477,7 @@ var settings = {
     "url": "https://nknx.org/api/walletAddresses",
     "method": "POST",
     "data": {
-        "address": "pKa2b9p0MFvhodEY",
+        "address": "YJfGvkSeNAczu9Xi",
         "label": "nknx"
     },
     "headers": {
