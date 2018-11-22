@@ -24,7 +24,22 @@ class AuthController extends Controller
 	 * Register a user
 	 *
 	 * Creates an initial user entity in the database and also starts verification process
-	 *
+     * 
+     * @bodyParam  email string required User email address
+     * @bodyParam  name string required  Username
+     * @bodyParam  password string required  User password
+     * 
+     * @response {
+     *      "status": "success",
+     *      "data": {
+     *          "id" : 1,
+     *          "name": "ChrisT",
+     *          "email": "test@nknx.org",
+     *          "verified": false,
+     *          "created_at": "2018-10-15 09:50:55",
+     *          "updated_at": "2018-10-15 09:51:37"
+     *      } 
+     * }
 	 */
     public function register(RegisterFormRequest $request)
     {
@@ -49,9 +64,14 @@ class AuthController extends Controller
 
     /**
 	 * Resend verification mail
-	 *
 	 * Recreates VerifyUser entity and resends the verification mail
+     * 
+	 * @authenticated
 	 *
+     * @response {
+     *      "status": "success",
+     *      "data": "" 
+     * }
 	 */
     public function resendVerification()
     {
@@ -74,9 +94,15 @@ class AuthController extends Controller
 
     /**
 	 * Reset password
-	 *
+	 * 
 	 * Creates a password reset mail and an entry in the database
+     * 
+     * @bodyParam  email string required User email address
 	 *
+     * @response {
+     *      "status": "success",
+     *      "data": "" 
+     * }
 	 */
     public function resetPassword(Request $request){
         $user = User::where('email', $request->email)->latest()->first();
@@ -97,6 +123,13 @@ class AuthController extends Controller
 	 * Set new password
 	 *
 	 * Sets a new password for a user from a provided token
+     * 
+     * @bodyParam  password string required  User password
+     * 
+     * @response {
+     *      "status": "success",
+     *      "msg": "Password changed successfully." 
+     * }
 	 *
 	 */
     public function setNewPasswordFromToken(Request $request, $token){
@@ -108,13 +141,12 @@ class AuthController extends Controller
             PasswordReset::where('token', $token)->delete();
             return response([
                 'status' => 'success',
-                'msg' => 'Password changed Successfully.'
+                'msg' => 'Password changed successfully.'
             ], 200);
         }else{
             return response([
                 'status' => 'error',
-                'error' => 'error',
-
+                'error' => 'error'
             ], 400);
         }
     }
@@ -123,6 +155,13 @@ class AuthController extends Controller
 	 * Login
 	 *
 	 * Logs a user in
+     * 
+     * @bodyParam  email string required User email address
+     * @bodyParam  password string required  User password
+     * 
+     * @response {
+     *      "status": "success"
+     * }
 	 *
 	 */
     public function login(Request $request)
@@ -143,9 +182,10 @@ class AuthController extends Controller
     
     /**
 	 * User
-	 *
 	 * Returns the current logged in User
+     * 
      * @authenticated
+     * 
      * @response {
      *      "status": "success",
      *      "data": {
@@ -170,9 +210,13 @@ class AuthController extends Controller
 
     /**
 	 * Refresh
-	 *
 	 * Refreshes the current users session
+     * 
+	 * @authenticated
 	 *
+     * @response {
+     *      "status": "success"
+     * }
 	 */
     public function refresh()
     {
@@ -185,6 +229,12 @@ class AuthController extends Controller
 	 * Verify email
 	 *
 	 * Accepts a token provided in an eMail link and verifies the user entity
+     * 
+     * @queryParam token required The verification token Example:
+     * 
+     * @response {
+     *      "status": "Your e-mail is verified. You can now login."
+     * }
 	 *
 	 */
     public function verifyUser($token)
@@ -209,16 +259,21 @@ class AuthController extends Controller
 
     /**
 	 * Logout
-	 *
 	 * Logs a user out
+     * 
+	 * @authenticated
 	 *
+     * @response {
+     *      "status": "success",
+     *      "msg": "Logged out successfully." 
+     * }
 	 */
     public function logout()
     {
         JWTAuth::invalidate();
         return response([
                 'status' => 'success',
-                'msg' => 'Logged out Successfully.'
+                'msg' => 'Logged out successfully.'
             ], 200);
     }
 }

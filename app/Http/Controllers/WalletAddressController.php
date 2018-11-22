@@ -20,10 +20,32 @@ use DB;
 class WalletAddressController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+     * Get all wallets
+     * Returns all stored wallets of currently logged in user
+     * 
+     * @authenticated
+     * 
+     * @response [
+     *              {       
+     *                  "id": 1,
+     *                  "label": "nknx",
+     *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
+     *                  "balance": 2541,
+     *                  "user_id": 1,
+     *                  "created_at": "2018-11-17 09:42:58",
+     *                  "updated_at": "2018-11-17 09:42:58"
+     *              },
+     *              {       
+     *                  "id": 2,
+     *                  "label": "nknx",
+     *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
+     *                  "balance": 2341,
+     *                  "user_id": 1,
+     *                  "created_at": "2018-11-17 09:42:58",
+     *                  "updated_at": "2018-11-17 09:42:58"
+     *              }
+     * ]
+	 */
     public function index()
     {
         // get all the walletAddresses
@@ -33,10 +55,25 @@ class WalletAddressController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Store wallet
+     * Store a wallet in the database
+     * 
+     * @authenticated
+     * 
+     * @bodyParam  address string required NKN wallet address
+     * @bodyParam  label string An optional label of the node Example: nknx
+     * @response {
+     *      "status": "success",
+     *      "data": {       
+     *                  "id": 2,
+     *                  "label": "nknx",
+     *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
+     *                  "balance": 2341,
+     *                  "user_id": 1,
+     *                  "created_at": "2018-11-17 09:42:58",
+     *                  "updated_at": "2018-11-17 09:42:58"
+     *              }
+     * }
      */
     public function store(Request $request)
     {
@@ -114,10 +151,23 @@ class WalletAddressController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\WalletAddress  $walletAddress
-     * @return \Illuminate\Http\Response
+	 * Get single wallet by walletAddress
+	 * Returns a specific user-wallet based on the address 
+     * 
+	 * @authenticated
+	 *
+     * @queryParam walletAddress required Id of the resource
+     * 
+     * @response {       
+     *                  "id": 2,
+     *                  "label": "nknx",
+     *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
+     *                  "balance": 2341,
+     *                  "user_id": 1,
+     *                  "created_at": "2018-11-17 09:42:58",
+     *                  "updated_at": "2018-11-17 09:42:58"
+     *              }
+     * 
      */
     public function show(WalletAddress $walletAddress)
     {
@@ -126,22 +176,16 @@ class WalletAddressController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\WalletAddress  $walletAddress
-     * @return \Illuminate\Http\Response
-     */
-    /*public function update(Request $request, WalletAddress $walletAddress)
-    {
-        //
-    }*/
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\WalletAddress  $walletAddress
-     * @return \Illuminate\Http\Response
+	 * Remove single wallet by id
+	 * Remove the specified user-wallet from the database
+     * 
+	 * @authenticated
+	 *
+     * @queryParam walletAddress required Id of the resource
+     * 
+     * @response {
+     *  null
+     * }
      */
     public function destroy(WalletAddress $walletAddress)
     {
@@ -152,6 +196,49 @@ class WalletAddressController extends Controller
         return response()->json(null); 
     }
 
+    /**
+	 * Get mining output per day
+	 * Get the daily mining output based on a database-wallet id
+     * 
+	 * @authenticated
+	 *
+     * @queryParam walletAddress required Id of the resource Example:36
+     * 
+     * @response [
+     *       {
+     *           "count": 2172,
+     *           "date": "2018-11-17"
+     *       },
+     *       {
+     *           "count": 4145,
+     *           "date": "2018-11-16"
+     *       },
+     *       {
+     *           "count": 4129,
+     *           "date": "2018-11-15"
+     *       },
+     *       {
+     *           "count": 4075,
+     *           "date": "2018-11-14"
+     *       },
+     *       {
+     *           "count": 4124,
+     *           "date": "2018-11-13"
+     *       },
+     *       {
+     *           "count": 3956,
+     *           "date": "2018-11-12"
+     *       },
+     *       {
+     *           "count": 3302,
+     *           "date": "2018-11-11"
+     *       },
+     *       {
+     *           "count": 2363,
+     *           "date": "2018-11-10"
+     *       }
+     *   ]
+     */
     public function getMiningOutput(WalletAddress $walletAddress){
         $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
         ->whereHas('transaction', function($q){

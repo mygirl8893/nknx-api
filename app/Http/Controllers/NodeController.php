@@ -18,13 +18,68 @@ use Illuminate\Support\Facades\Auth;
 class NodeController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Get all nodes
+     * Returns all stored nodes of currently logged in user
+     * 
+     * @authenticated
+     * 
+     * @response [   
+     *              {       
+     *                  "id": 172,
+     *                  "label": "nknx",
+     *                  "state": 0,
+     *                  "syncState": "PersistFinished",
+     *                  "port": 0,
+     *                  "nodePort": 0,
+     *                  "chordPort": null,
+     *                  "jsonPort": 30003,
+     *                  "wsPort": 30002,
+     *                  "addr": "159.65.200.254",
+     *                  "time": 1541687107532520392,
+     *                  "version": 0,
+     *                  "services": null,
+     *                  "relay": 0,
+     *                  "height": 0,
+     *                  "txnCnt": 1,
+     *                  "rxTxnCnt": 8510,
+     *                  "chordID": "3eda464223dbae834131ac7ea964f7a273933bfaf8168786f5efead910015815",
+     *                  "softwareVersion": "0.5.0-alpha-7-g2613",
+     *                  "latestBlockHeight": 207011,
+     *                  "online": 1,
+     *                  "user_id": 2,
+     *                  "created_at": "2018-11-04 15:51:49",
+     *                  "updated_at": "2018-11-17 12:46:08"
+     *              },
+     *              {       
+     *                  "id": 173,
+     *                  "label": "nknx1",
+     *                  "state": 0,
+     *                  "syncState": "PersistFinished",
+     *                  "port": 0,
+     *                  "nodePort": 0,
+     *                  "chordPort": null,
+     *                  "jsonPort": 30003,
+     *                  "wsPort": 30002,
+     *                  "addr": "159.65.200.221",
+     *                  "time": 1541687107532520465,
+     *                  "version": 0,
+     *                  "services": null,
+     *                  "relay": 0,
+     *                  "height": 0,
+     *                  "txnCnt": 1,
+     *                  "rxTxnCnt": 8510,
+     *                  "chordID": "60665856ba544df2ceb7e8a4047f35872a82c8a1056fe3fdc00ca233b651c212",
+     *                  "softwareVersion": "0.5.2-alpha",
+     *                  "latestBlockHeight": 207012,
+     *                  "online": 1,
+     *                  "user_id": 2,
+     *                  "created_at": "2018-11-04 15:52:12",
+     *                  "updated_at": "2018-11-17 12:50:24"
+     *              }
+     *          ]
      */
     public function index()
     {
-        // get all the nodes
         $user = JWTAuth::parseToken()->authenticate();
         $nodes = Node::where('user_id',$user->id)->get();
         return response()->json($nodes);
@@ -32,10 +87,54 @@ class NodeController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Store wallet
+     * Store one or multiple nodes in the database
+     * 
+     * @authenticated
+     * 
+     * @bodyParam  ip string required One or multiple ips/domain names (comma separated) to store in the database Example: 104.248.138.60
+     * @bodyParam  label string An optional label of the node Example: nknx
+     * @response {
+     *      "status": "success",
+     *      "data": {
+     *          "saved": [   
+     *              {       
+     *                  "id": 172,
+     *                  "label": "nknx",
+     *                  "state": 0,
+     *                  "syncState": "PersistFinished",
+     *                  "port": 0,
+     *                  "nodePort": 0,
+     *                  "chordPort": null,
+     *                  "jsonPort": 30003,
+     *                  "wsPort": 30002,
+     *                  "addr": "104.248.138.60",
+     *                  "time": 1541687107532520392,
+     *                  "version": 0,
+     *                  "services": null,
+     *                  "relay": 0,
+     *                  "height": 0,
+     *                  "txnCnt": 1,
+     *                  "rxTxnCnt": 8510,
+     *                  "chordID": "3eda464223dbae834131ac7ea964f7a273933bfaf8168786f5efead910015815",
+     *                  "softwareVersion": "0.5.0-alpha-7-g2613",
+     *                  "latestBlockHeight": 207011,
+     *                  "online": 1,
+     *                  "user_id": 2,
+     *                  "created_at": "2018-11-04 15:51:49",
+     *                  "updated_at": "2018-11-17 12:46:08"
+     *              }
+     *          ],
+     *          "failed": [
+     *                  "192.168.178.44",
+     *                  "192.168.178.32"
+     *          ],
+     *          "duplicate": [
+     *                  "192.168.178.44",
+     *                  "192.168.178.32"
+     *          ]
+     *      } 
+     * }
      */
     public function store(Request $request)
     {
@@ -161,10 +260,40 @@ class NodeController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Node  $node
-     * @return \Illuminate\Http\Response
+	 * Get single node by id
+	 * Returns a specific user-node based on the id 
+     * 
+	 * @authenticated
+	 *
+     * @queryParam node required Id of the resource
+     * 
+     * @response {    
+     *                  "id": 172,
+     *                  "label": "nknx",
+     *                  "state": 0,
+     *                  "syncState": "PersistFinished",
+     *                  "port": 0,
+     *                  "nodePort": 0,
+     *                  "chordPort": null,
+     *                  "jsonPort": 30003,
+     *                  "wsPort": 30002,
+     *                  "addr": "159.65.200.254",
+     *                  "time": 1541687107532520392,
+     *                  "version": 0,
+     *                  "services": null,
+     *                  "relay": 0,
+     *                  "height": 0,
+     *                  "txnCnt": 1,
+     *                  "rxTxnCnt": 8510,
+     *                  "chordID": "3eda464223dbae834131ac7ea964f7a273933bfaf8168786f5efead910015815",
+     *                  "softwareVersion": "0.5.0-alpha-7-g2613",
+     *                  "latestBlockHeight": 207011,
+     *                  "online": 1,
+     *                  "user_id": 2,
+     *                  "created_at": "2018-11-04 15:51:49",
+     *                  "updated_at": "2018-11-17 12:46:08"
+     * }
+     * 
      */
     public function show(Node $node)
     {
@@ -172,23 +301,18 @@ class NodeController extends Controller
         return response()->json($node);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Node  $node
-     * @return \Illuminate\Http\Response
-   
-    public function update(Request $request, Node $node)
-    {
-        //
-    }  */
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Node  $node
-     * @return \Illuminate\Http\Response
+	 * Remove single node by id
+	 * Remove the specified user-node from the database
+     * 
+	 * @authenticated
+	 *
+     * @queryParam node required Id of the resource
+     * 
+     * @response {
+     *  null
+     * }
      */
     public function destroy(Node $node)
     {
@@ -200,10 +324,14 @@ class NodeController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
+	 * Remove all user-nodes 
+	 * Remove all user-nodes from the database 
      * 
-     * @return \Illuminate\Http\Response
+	 * @authenticated
+	 *
+     * @response {
+     *  null
+     * }
      */
     public function destroyAll()
     {

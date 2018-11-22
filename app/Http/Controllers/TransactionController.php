@@ -23,6 +23,21 @@ use DB;
  */
 class TransactionController extends Controller
 {
+    /**
+	 * Get all transactions
+	 *
+	 * Returns all transactions with corresponding headers, payloads, outputs, inputs and attributes in simple pagination format starting with the latest one 
+	 *
+     * @queryParam latest Limits the results returned Example:7
+     * @queryParam per_page Number of results per page Example:4
+     * @queryParam txType Filter results by txType - single or comma separated Example:
+     * @queryParam address Filter results by NKN address Example:
+     * @queryParam withoutPayload remove payload Example:true
+     * @queryParam withoutOutputs remove outputs Example:true
+     * @queryParam withoutInputs remove inputs Example:true
+     * @queryParam withoutAttributes remove attributes Example:true
+     * 
+	 */
     public function showAll(Request $request){
         $latest = $request->get('latest');
         $txType = $request->get('txType');
@@ -79,7 +94,19 @@ class TransactionController extends Controller
         return response()->json($transactions);
     }
 
-    public function show($id,Request $request)
+    /**
+	 * Get single transaction by hash
+	 *
+	 * Returns a specific block based on the height or block hash 
+	 *
+     * @queryParam block_id required Id of the resource
+     * @queryParam withoutPayload remove payload Example:false
+     * @queryParam withoutOutputs remove outputs Example:false
+     * @queryParam withoutInputs remove inputs Example:false
+     * @queryParam withoutAttributes remove attributes Example:false
+     * 
+	 */
+    public function show($tHash,Request $request)
     {
 
         $withoutPayload = $request->get('withoutpayload',false);
@@ -89,7 +116,7 @@ class TransactionController extends Controller
         
 
 
-        $transactions_query = Transaction::query()->where('hash',$id);
+        $transactions_query = Transaction::query()->where('hash',$tHash);
         
         $transactions_query->when(!$withoutPayload, function ($q) { 
             return $q->with('payload');
@@ -109,45 +136,5 @@ class TransactionController extends Controller
             ->get();
         
         return response()->json($transactions); 
-    }
-
-    public function showWalletNames(){
-
-        $response = array();
-
-        $createdWalletNames = Transaction::where('txType',80)
-            ->with('payload')
-            ->orderBy('id', 'asc')
-            ->get()
-            ->toArray();
-        $deletedWalletNames = Transaction::where('txType',82)
-            ->with('payload')
-            ->orderBy('id', 'asc')
-            ->get()
-            ->toArray();
-
-        foreach($deletedWalletNames as $deletedWalletName){
-            $i = 0;
-            while( $i<count($createdWalletNames)){
-                if($createdWalletNames[$i]["payload"]["registrant"] == $deletedWalletName["payload"]["registrant"]){
-                    array_splice($createdWalletNames,$i,1);
-                    break;
-                }
-                $i++;
-            }
-        }
-
-        foreach($createdWalletNames as $createdWalletName){
-            $responseItem = [
-                "name" => $createdWalletName["payload"]["name"],
-                "registrant" => $createdWalletName["payload"]["registrant"]
-            ];
-            array_push($response,$responseItem);
-        }
-
-
-       // return response()->json($deletedWalletNames); 
-        return response()->json($response); 
-
     }
 }

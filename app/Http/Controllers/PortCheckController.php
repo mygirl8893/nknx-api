@@ -10,9 +10,23 @@ use Illuminate\Http\Request;
  */
 class PortCheckController extends Controller
 {
+    /**
+	 * Check port
+	 *
+	 * Checks port 30001, 30002 and 30003 of a given IP or address
+     * @queryParam address required Address or hostname to check Example: https://nknx.org
+     * 
+     */ 
     public function checkPort(Request $request)
     {
         $address = $request->input('address');
+        if (!$address) {
+            return response([
+                'status' => 'error',
+                'error' => 'address.empty',
+                'msg' => 'address is not provided'
+            ], 400);
+        }
         $disallowed = array('http://', 'https://');
 
         if(!filter_var($address, FILTER_VALIDATE_IP)){
@@ -26,7 +40,6 @@ class PortCheckController extends Controller
         else{
             $host = $address;
         }
-        set_time_limit(3);
         $ports = array(30001, 30002, 30003);
         $response = [];
 

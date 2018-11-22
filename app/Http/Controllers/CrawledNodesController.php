@@ -96,7 +96,8 @@ class CrawledNodesController extends Controller
      *      "organization": "Google LLC",
      *      "geoname_id": "4744870"
      *  }
-	 *]
+     *]
+     *
 	 */
     public function showAll(Request $request){
         $withLocation = $request->get('withLocation', false);

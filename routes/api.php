@@ -16,16 +16,17 @@ use Illuminate\Http\Request;
 //get all blocks
 Route::get('blocks', 'BlockController@showAll');
 //get specific block
-Route::get('blocks/{id}', 'BlockController@show');
+Route::get('blocks/{block_id}', 'BlockController@show');
 //get transactions of specific block
-Route::get('blocks/{id}/transactions', 'BlockController@showBlockTransactions');
+Route::get('blocks/{block_id}/transactions', 'BlockController@showBlockTransactions');
 
 Route::get('checkPort','PortCheckController@checkPort');
 
 //get all transactions
 Route::get('transactions', 'TransactionController@showAll');
-Route::get('transactions/walletNames', 'TransactionController@showWalletNames');
-Route::get('transactions/{id}', 'TransactionController@show');
+Route::get('transactions/{tHash}', 'TransactionController@show');
+
+Route::get('walletNames', 'AddressBookController@showWalletNames');
 
 
 Route::get('payloads/{tId}', 'PayloadController@show');
@@ -33,6 +34,7 @@ Route::get('payloads/{tId}', 'PayloadController@show');
 Route::get('statistics/daily/blocks', 'StatisticController@blocks_daily');
 Route::get('statistics/daily/transactions', 'StatisticController@transactions_daily');
 Route::get('statistics/daily/transfers', 'StatisticController@transfers_daily');
+Route::get('statistics/miners', 'StatisticController@miners_overall');
 
 
 //get all outputs
