@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        \URL::forceRootUrl(\Config::get('app.url'));
         Schema::defaultStringLength(191);
     }
 

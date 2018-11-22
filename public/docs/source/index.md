@@ -16,7 +16,7 @@ toc_footers:
 # Info
 
 Welcome to the generated API reference.
-[Get Postman Collection](http://localhost/docs/collection.json)
+[Get Postman Collection](http://nknx.org/docs/collection.json)
 
 <!-- END_INFO -->
 
@@ -225,9 +225,9 @@ Creates an initial user entity in the database and also starts verification proc
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/register"     -d "email"="axZ0YqeldSFCwsfI" \
-    -d "name"="31Zgh1ZAWaGZkAvE" \
-    -d "password"="4KwuvXOZu6iT7HPz" 
+curl -X POST "https://nknx.org/api/auth/register"     -d "email"="M0ojts16ZX6ve5cS" \
+    -d "name"="AuiedhqxeIvZaEej" \
+    -d "password"="abvFJIkUd2oYdTTf" 
 ```
 
 ```javascript
@@ -237,9 +237,9 @@ var settings = {
     "url": "https://nknx.org/api/auth/register",
     "method": "POST",
     "data": {
-        "email": "axZ0YqeldSFCwsfI",
-        "name": "31Zgh1ZAWaGZkAvE",
-        "password": "4KwuvXOZu6iT7HPz"
+        "email": "M0ojts16ZX6ve5cS",
+        "name": "AuiedhqxeIvZaEej",
+        "password": "abvFJIkUd2oYdTTf"
     },
     "headers": {
     }
@@ -332,7 +332,7 @@ Sets a new password for a user from a provided token
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/reset/{token}"     -d "password"="p2SmYiEM73ltkj14" 
+curl -X POST "https://nknx.org/api/auth/reset/{token}"     -d "password"="KZZ3bKkGbSqU3fDi" 
 ```
 
 ```javascript
@@ -342,7 +342,7 @@ var settings = {
     "url": "https://nknx.org/api/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "p2SmYiEM73ltkj14"
+        "password": "KZZ3bKkGbSqU3fDi"
     },
     "headers": {
     }
@@ -381,7 +381,7 @@ Creates a password reset mail and an entry in the database
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/reset"     -d "email"="BnTHh3SkNsVhOmU3" 
+curl -X POST "https://nknx.org/api/auth/reset"     -d "email"="aVd3zqXH2lGWzhzs" 
 ```
 
 ```javascript
@@ -391,7 +391,7 @@ var settings = {
     "url": "https://nknx.org/api/auth/reset",
     "method": "POST",
     "data": {
-        "email": "BnTHh3SkNsVhOmU3"
+        "email": "aVd3zqXH2lGWzhzs"
     },
     "headers": {
     }
@@ -430,8 +430,8 @@ Logs a user in
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/auth/login"     -d "email"="GwhufUVPdUISRpnh" \
-    -d "password"="0fO6jem6vBi4dPQd" 
+curl -X POST "https://nknx.org/api/auth/login"     -d "email"="Sq9bsGOsvp4LAQmT" \
+    -d "password"="G06LrmZBlPTo9gC2" 
 ```
 
 ```javascript
@@ -441,8 +441,8 @@ var settings = {
     "url": "https://nknx.org/api/auth/login",
     "method": "POST",
     "data": {
-        "email": "GwhufUVPdUISRpnh",
-        "password": "0fO6jem6vBi4dPQd"
+        "email": "Sq9bsGOsvp4LAQmT",
+        "password": "G06LrmZBlPTo9gC2"
     },
     "headers": {
     }
@@ -1515,7 +1515,7 @@ $.ajax(settings).done(function (response) {
 
 ```json
 {
-    "30001": "closed",
+    "30001": "open",
     "30002": "open",
     "30003": "open"
 }
@@ -2466,7 +2466,7 @@ Store a wallet in the database
 > Example request:
 
 ```bash
-curl -X POST "https://nknx.org/api/walletAddresses"     -d "address"="YJfGvkSeNAczu9Xi" \
+curl -X POST "https://nknx.org/api/walletAddresses"     -d "address"="GoOLONrtwhxQoBk2" \
     -d "label"="nknx" 
 ```
 
@@ -2477,7 +2477,7 @@ var settings = {
     "url": "https://nknx.org/api/walletAddresses",
     "method": "POST",
     "data": {
-        "address": "YJfGvkSeNAczu9Xi",
+        "address": "GoOLONrtwhxQoBk2",
         "label": "nknx"
     },
     "headers": {
