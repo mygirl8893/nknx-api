@@ -21,7 +21,7 @@ class PayloadController extends Controller
 	 */
     public function show($tId)
     {
-        $payload = Payload::where('transaction_id',$tId)->get();
+        $payload = Payload::where('transaction_id',$tId)->first();
         return response()->json($payload); 
     }
 }

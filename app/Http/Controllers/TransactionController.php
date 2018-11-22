@@ -133,7 +133,7 @@ class TransactionController extends Controller
 
         $transactions_query->with('block.header');
         $transactions = $transactions_query
-            ->get();
+            ->first();
         
         return response()->json($transactions); 
     }
