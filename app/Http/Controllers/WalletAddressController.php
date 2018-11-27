@@ -203,6 +203,7 @@ class WalletAddressController extends Controller
 	 * @authenticated
 	 *
      * @queryParam walletAddress required Id of the resource Example:36
+     * @queryParam latest Limits the days returned Example:7
      * 
      * @response [
      *       {
@@ -240,7 +241,11 @@ class WalletAddressController extends Controller
      *   ]
      */
     public function getMiningOutput(WalletAddress $walletAddress){
+        $latest = $request->get('latest');
         $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
+        ->when($latest, function ($q, $latest) { 
+            return $q->where('created_at', '>=', Carbon::now()->subDays($latest));
+        })
         ->whereHas('transaction', function($q){
             $q->where('txType', 0);
         })
