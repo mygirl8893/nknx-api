@@ -240,7 +240,7 @@ class WalletAddressController extends Controller
      *       }
      *   ]
      */
-    public function getMiningOutput(WalletAddress $walletAddress){
+    public function getMiningOutput(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
         $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
         ->when($latest, function ($q, $latest) { 
