@@ -368,7 +368,7 @@ class Kernel extends ConsoleKernel
                             "address" => $response["result"]
                         ],[
                             "name" => $createdWalletName["payload"]["name"],
-                            "private_key" => $createdWalletName["payload"]["registrant"],
+                            "public_key" => $createdWalletName["payload"]["registrant"],
                         ]);
                         $responseItem->save();
                     }

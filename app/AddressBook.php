@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AddressBook extends Model
 {
-    protected $fillable = ['name','private_key','address'];
+    protected $fillable = ['name','public_key','address'];
     protected $table = 'address_book';
 
     /**

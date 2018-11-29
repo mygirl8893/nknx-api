@@ -75,19 +75,23 @@ $.ajax(settings).done(function (response) {
 <pre><code class="language-json">[
     {
         "name": "microsoft",
-        "registrant": "02ac9d242fad2ac6e231c4ecda82b1b108c12b1e21a685053a41d64f9886f6fdea"
+        "public_key": "02ac9d242fad2ac6e231c4ecda82b1b108c12b1e21a685053a41d64f9886f6fdea",
+        "address": "NgugCfHpsYV2zMDwHwEqm147VsW1akrSyL"
     },
     {
         "name": "elonmusk",
-        "registrant": "035e5cce1fa0049684b6e1438d3398382dcca298f4e0363109a90a3d7039009bc7"
+        "public_key": "035e5cce1fa0049684b6e1438d3398382dcca298f4e0363109a90a3d7039009bc7",
+        "address": "Nd4DfvaB95YAQzVAPtFc59Ap8YpTq9urBo"
     },
     {
         "name": "trueinsider",
-        "registrant": "039bd29d184aa8acc963a46c083129737c0a78615b86656463b3f1e5e06df9a1a3"
+        "public_key": "039bd29d184aa8acc963a46c083129737c0a78615b86656463b3f1e5e06df9a1a3",
+        "address": "NTs3B7YsM6aRDCSMzqTdgbdkW5Q6YBBUZn"
     },
     {
         "name": "bittorrent",
-        "registrant": "027865c7c961e7d5d3f96920803f4d6a0e4e48cca4f98fd23b370799c2598053b5"
+        "public_key": "027865c7c961e7d5d3f96920803f4d6a0e4e48cca4f98fd23b370799c2598053b5",
+        "address": "NQ7KwEzta2CJz2MCFzq2xf8jyH8UUE7PpU"
     }
 ]</code></pre>
 <h3>HTTP Request</h3>
@@ -240,18 +244,18 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/register"     -d "email"="A7VUMN5bIocklIEv" \
-    -d "name"="NsIcF6PjZCoRI6pi" \
-    -d "password"="v4xoHH3vIPc9QubD" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/register"     -d "email"="7CljQY3qF4g7Ov0f" \
+    -d "name"="Yu5zIU60pjG4eiUn" \
+    -d "password"="QiEHff3Nr5nGSrJu" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://nknx.org/api/auth/register",
     "method": "POST",
     "data": {
-        "email": "A7VUMN5bIocklIEv",
-        "name": "NsIcF6PjZCoRI6pi",
-        "password": "v4xoHH3vIPc9QubD"
+        "email": "7CljQY3qF4g7Ov0f",
+        "name": "Yu5zIU60pjG4eiUn",
+        "password": "QiEHff3Nr5nGSrJu"
     },
     "headers": {
     }
@@ -359,14 +363,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/reset/{token}"     -d "password"="dAQ4LzZqHnuJXvzS" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/reset/{token}"     -d "password"="mGHdLlBgTC8gSg2Q" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://nknx.org/api/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "dAQ4LzZqHnuJXvzS"
+        "password": "mGHdLlBgTC8gSg2Q"
     },
     "headers": {
     }
@@ -410,14 +414,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/reset"     -d "email"="dv6TkDnNKKPUkjvY" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/reset"     -d "email"="fD9PhnE3u3rpikpu" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://nknx.org/api/auth/reset",
     "method": "POST",
     "data": {
-        "email": "dv6TkDnNKKPUkjvY"
+        "email": "fD9PhnE3u3rpikpu"
     },
     "headers": {
     }
@@ -461,16 +465,16 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/login"     -d "email"="vKC8DoDjZWe6hAiq" \
-    -d "password"="9TQ7AW8TTZX6I5Gj" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://nknx.org/api/auth/login"     -d "email"="KGh8DT5llxiiws3g" \
+    -d "password"="WWKQyq0tHEGiwf8S" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://nknx.org/api/auth/login",
     "method": "POST",
     "data": {
-        "email": "vKC8DoDjZWe6hAiq",
-        "password": "9TQ7AW8TTZX6I5Gj"
+        "email": "KGh8DT5llxiiws3g",
+        "password": "WWKQyq0tHEGiwf8S"
     },
     "headers": {
     }
@@ -2513,7 +2517,7 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://nknx.org/api/walletAddresses"     -d "address"="d3LNuudXsjM854H0" \
+<pre><code class="language-bash">curl -X POST "https://nknx.org/api/walletAddresses"     -d "address"="C98uRMaecjeshsn7" \
     -d "label"="nknx" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
@@ -2521,7 +2525,7 @@ $.ajax(settings).done(function (response) {
     "url": "https://nknx.org/api/walletAddresses",
     "method": "POST",
     "data": {
-        "address": "d3LNuudXsjM854H0",
+        "address": "C98uRMaecjeshsn7",
         "label": "nknx"
     },
     "headers": {

@@ -16,7 +16,7 @@ class CreateAddressBookTable extends Migration
         Schema::create('address_book', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('private_key');
+            $table->string('public_key');
             $table->string('address');
             $table->timestamps();
         });
