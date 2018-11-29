@@ -13,6 +13,7 @@ use App\Program;
 use App\Attribute;
 use App\Output;
 use App\Payload;
+use App\AddressBook;
 
 use DB;
 
@@ -48,39 +49,7 @@ class AddressBookController extends Controller
      * ]
      */
     public function showWalletNames(){
-        $response = array();
-
-        $createdWalletNames = Transaction::where('txType',80)
-            ->with('payload')
-            ->orderBy('id', 'asc')
-            ->get()
-            ->toArray();
-        $deletedWalletNames = Transaction::where('txType',82)
-            ->with('payload')
-            ->orderBy('id', 'asc')
-            ->get()
-            ->toArray();
-
-        foreach($deletedWalletNames as $deletedWalletName){
-            $i = 0;
-            while( $i<count($createdWalletNames)){
-                if($createdWalletNames[$i]["payload"]["registrant"] == $deletedWalletName["payload"]["registrant"]){
-                    array_splice($createdWalletNames,$i,1);
-                    break;
-                }
-                $i++;
-            }
-        }
-
-        foreach($createdWalletNames as $createdWalletName){
-            $responseItem = [
-                "name" => $createdWalletName["payload"]["name"],
-                "registrant" => $createdWalletName["payload"]["registrant"]
-            ];
-            array_push($response,$responseItem);
-        }
-
-        return response()->json($response); 
-
+        $walletNames= AddressBook::all();
+        return response()->json($walletNames);
     }
 }

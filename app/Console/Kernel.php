@@ -10,6 +10,8 @@ use GuzzleHttp\Exception\RequestException;
 use App\Header;
 use App\Block;
 use App\Node;
+use App\Transaction;
+use App\AddressBook;
 use App\CachedNode;
 use App\WalletAddress;
 use App\CrawledNode;
@@ -38,7 +40,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        
+
         $schedule->call(function () {
             //get current blockchain height
             $currentBlockchainHeight = 0;
@@ -315,8 +317,77 @@ class Kernel extends ConsoleKernel
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
         $schedule->call(function () {
+            $addressBookItems = array();
+
+            $createdWalletNames = Transaction::where('txType',80)
+                ->with('payload')
+                ->orderBy('id', 'asc')
+                ->get()
+                ->toArray();
+            $deletedWalletNames = Transaction::where('txType',82)
+                ->with('payload')
+                ->orderBy('id', 'asc')
+                ->get()
+                ->toArray();
+    
+            foreach($deletedWalletNames as $deletedWalletName){
+                $i = 0;
+                while( $i<count($createdWalletNames)){
+                    if($createdWalletNames[$i]["payload"]["registrant"] == $deletedWalletName["payload"]["registrant"]){
+                        array_splice($createdWalletNames,$i,1);
+                        break;
+                    }
+                    $i++;
+                }
+            }
+    
+            foreach($createdWalletNames as $createdWalletName){
+                $requestContent = [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Content-Type' => 'application/json'
+                    ],
+                    'json' => [
+                        "id" => 1,
+                        "method" => "getaddressbyname",
+                        "params" => [
+                            "name" => $createdWalletName["payload"]["name"],
+                        ],
+                        "jsonrpc" => "2.0"
+                    ]
+                ];
+                
+                try {
+                    $client = new GuzzleHttpClient();
+            
+                    $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
+                    
+                    $response = json_decode($apiRequest->getBody(), true);
+                    if(array_key_exists('result', $response)){
+                        $responseItem = AddressBook::updateOrCreate([
+                            "address" => $response["result"]
+                        ],[
+                            "name" => $createdWalletName["payload"]["name"],
+                            "private_key" => $createdWalletName["payload"]["registrant"],
+                        ]);
+                        $responseItem->save();
+                    }
+                    
+                }
+                catch(RequestException $re) {
+
+                }
+            }
+
+
+
+
+        })->everyMinute()->name('CreateAddressBook')->withoutOverlapping();
+
+        $schedule->call(function () {
             CachedNode::where('updated_at', '<', Carbon::now()->subMonth())->delete();
         })->monthly()->name('CleanUpCachedNodes'); 
+
 
     }
 
