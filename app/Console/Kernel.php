@@ -21,6 +21,7 @@ use App\Jobs\CreateAddressBookItem;
 use App\Jobs\CleanUpCachedNodes;
 use App\Jobs\NodeCrawler;
 use Carbon\Carbon;
+use Queue;
 use Log;
 
 class Kernel extends ConsoleKernel
@@ -82,7 +83,7 @@ class Kernel extends ConsoleKernel
             Log::channel('syncWithBlockchain')->notice('Fetching new blocks...');
             //push only the new Blocks to the processing queue
             for ($i = $localBlockHeight; $i<=$currentBlockchainHeight;$i++){
-                ProcessRemoteBlock::dispatch($i);
+                ProcessRemoteBlock::dispatch($i)->onQueue('blockchainCrawler');
             }
 
 
