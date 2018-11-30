@@ -7,9 +7,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 
 use App\Block;
-use App\Header;
 use App\Transaction;
-use App\Program;
 use App\Attribute;
 use App\Output;
 use App\Payload;
@@ -38,61 +36,30 @@ class BlockController extends Controller
     public function showAll(Request $request){
 
         $latest = $request->get('latest');
-        if( $latest > 1000){
-            $latest = 1000;
-        }
 
         $paginate = $request->get('per_page',50);
         $from = date($request->get('from', false));
         $to = date($request->get('to', false));
         $blockproposer = $request->get('blockproposer', false);
-        if(!$latest && !$from && !$to && !$blockproposer){
-            $block = Block::orderBy('id', 'desc')
-                ->limit(1000000)
-                ->with(['header'])
-                ->simplePaginate($paginate);
-            return response()->json($block);
-        }
-        else{
-            $header_query = Header::query()->orderBy("height", "desc");
-            
-            $header_query->when($from && $to, function ($q) use ($from, $to) { 
-                return $q->whereBetween('timestamp', [$from, $to]);
-            });
-            $header_query->when($from && !$to, function ($q) use ($from) { 
-                return $q->where('timestamp', '>', $from);
-            });
-            $header_query->when(!$from && $to, function ($q) use ($to) { 
-                return $q->where('timestamp', '<', $to);
-            });
-            $header_query->when($blockproposer, function ($q) use ($blockproposer) { 
-                
-                return $q->where('signer',"=",$blockproposer);
-            });
-            $header_query->when($latest, function ($q, $latest) { 
+
+        $blocks = Block::orderBy('height', 'desc')
+            ->when($latest, function ($q, $latest) { 
                 return $q->limit($latest);
-            });
-
-            $ids = $header_query->pluck('block_id')->toArray();
-            $ids_count = count($ids);
-            $ids_ordered = implode(',', $ids);
-            if($ids_count > $paginate){
-
-                    $block = Block::whereIn('id',$ids)
-                        ->orderBy('id', 'desc')
-                        ->with(['header'])
-                        ->simplePaginate($paginate);      
-            }
-            else{
- 
-                    $block = Block::whereIn('id',$ids)
-                        ->orderBy('id', 'desc')
-                        ->with(['header'])
-                        ->get();
- 
-            }
-            return response()->json($block);
-        }
+            })
+            ->when($blockproposer, function ($q) use ($blockproposer) { 
+                return $q->where('signer',"=",$blockproposer);
+            })
+            ->when($from && $to, function ($q) use ($from, $to) { 
+                return $q->whereBetween('timestamp', [$from, $to]);
+            })
+            ->when($from && !$to, function ($q) use ($from) { 
+                return $q->where('timestamp', '>', $from);
+            })
+            ->when(!$from && $to, function ($q) use ($to) { 
+                return $q->where('timestamp', '<', $to);
+            })
+            ->simplePaginate($paginate);
+        return response()->json($blocks);
     }
 
     /**
@@ -109,12 +76,10 @@ class BlockController extends Controller
         $withoutTransactions = $request->get('withouttransactions',false);
 
         if(is_numeric($block_id)){
-            $id = Header::where('height',$block_id)->pluck('block_id')->toArray();
-            $block = Block::where('id',$id)
+            $block = Block::where('height',$block_id)
                 ->when(!$withoutTransactions, function ($q) { 
                     return $q->with('transactions');
                 })
-                ->with('header')
                 ->first();
         }
         else{
@@ -123,16 +88,9 @@ class BlockController extends Controller
                 ->when(!$withoutTransactions, function ($q) { 
                     return $q->with('transactions');
                 })
-                ->with('header')
                 ->first();
         }
-        
-        $nextBlock = Header::where('prevBlockHash',$block->hash)->with('block')->get();
-        if(count($nextBlock)){
-            $nextBlock = $nextBlock[0]->block->hash;
-            $block->header->nextBlockHash = $nextBlock;
-        }
-        
+                
         return response()->json($block); 
     }
      /**
@@ -147,8 +105,7 @@ class BlockController extends Controller
     public function showBlockTransactions($block_id,Request $request){
         $withoutPayload = $request->get('withoutpayload',false);
         if(is_numeric($block_id)){
-            $id = Header::where('height',$block_id)->pluck('block_id')->toArray();
-            $block = Block::where('id',$block_id)
+            $block = Block::where('height',$block_id)
                 ->first();
         }
         else{
@@ -158,13 +115,13 @@ class BlockController extends Controller
         if($withoutPayload){
             $transactions = $block
                 ->transactions()
-                ->with(['outputs','attributes','block.header'])
+                ->with(['outputs','attributes','block'])
                 ->get();
         }
         else {
             $transactions = $block
                 ->transactions()
-                ->with(['payload','outputs','attributes','block.header'])
+                ->with(['payload','outputs','attributes','block'])
                 ->get();
         }
         return response()->json($transactions); 

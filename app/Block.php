@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Block extends Model
 {
-    protected $fillable = ['hash'];
-    public function header()
+    protected $fillable = ['hash','height','prevBlockHash','nextBlockHash','signature','signer','timestamp','transactionsRoot','version','winningHash','winningHashType','code','parameter','transaction_count'];
+
+    public function setTimestampAttribute($value)
     {
-        return $this->hasOne('App\Header');
+        $this->attributes['timestamp'] = Carbon::createFromTimestamp($value)->toDateTimeString();
     }
     public function transactions()
     {
@@ -19,7 +20,6 @@ class Block extends Model
         parent::boot();
 
         static::deleting(function($block) { // before delete() method call this
-             $block->header()->delete();
              $block->transactions()->delete();
              // do the rest of the cleanup...
         });

@@ -7,7 +7,6 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 
-use App\Header;
 use App\Block;
 use App\Node;
 use App\Transaction;
@@ -18,6 +17,8 @@ use App\CrawledNode;
 use App\Jobs\ProcessRemoteBlock;
 use App\Jobs\UpdateNode;
 use App\Jobs\UpdateWalletAddress;
+use App\Jobs\CreateAddressBookItem;
+use App\Jobs\CleanUpCachedNodes;
 use Carbon\Carbon;
 use Log;
 
@@ -69,77 +70,20 @@ class Kernel extends ConsoleKernel
             }
 
             //get latest blockheight in the database
-            $localBlockHeight = Header::select('height')->orderBy('height', 'desc')->first();
+            $localBlockHeight = Block::select('height')->orderBy('height', 'desc')->first();
             if($localBlockHeight){
                 $localBlockHeight = $localBlockHeight->height;
             }
             else{
                 $localBlockHeight = 0;
             }
-            //count all blocks in the database
-            $sumLocalBlocks = Block::count();
-            // if the local blockchain is consistent
-            if ($localBlockHeight===$sumLocalBlocks){
-                Log::channel('syncWithBlockchain')->notice('Blockchain is consistent. Fetching new blocks...');
-                //push only the new Blocks to the processing queue
-                for ($i = $localBlockHeight+1; $i<=$currentBlockchainHeight;$i++){
-                    ProcessRemoteBlock::dispatch($i);
-                }
-            }
-            // Else blockchain is not consistent!
-            else{
-                Log::channel('syncWithBlockchain')->warning('Blockchain is not consistent! Looking for missing blocks...');
-                //Run a self-repair
-                for ($i = 1; $i<=$sumLocalBlocks;$i++){
-                    if (!Header::where('height', '=', $i)->exists()){
-                        Log::channel('syncWithBlockchain')->info('Found missing block height: '.$i);
-                        //Well... there are less headers than blocks, so get the Hash of the block...
-                        $requestContent = [
-                            'headers' => [
-                                'Accept' => 'application/json',
-                                'Content-Type' => 'application/json'
-                            ],
-                            'json' => [
-                                "id" => 1,
-                                "method" => "getblock",
-                                "params" => [
-                                    "height" => (int)$i,
-                                ],
-                                "jsonrpc" => "2.0"
-                            ]
-                        ];
-                        $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
-                        $response = json_decode($apiRequest->getBody(), true);
 
-                        //so, lets delete the block
-                        if(Block::where('hash', '=', $response["result"]["hash"])->delete()){
-                            //if it's done we can redownload the block
-                            ProcessRemoteBlock::dispatch($i);
-                        }
-                        else{
-                            //okay, now we are fucked...
-                            dd("There is something terrible wrong in restoring the blockchain");
-                        }
-                    }
-                }
-                //well, Blockchain should be fixed now... so lets test
-                $localBlockHeight = Header::select('height')->orderBy('height', 'desc')->first();
-                $localBlockHeight = $localBlockHeight->height;
-                //count all blocks in the database
-                $sumLocalBlocks = Block::count();
-                if ($localBlockHeight===$sumLocalBlocks){
-                    Log::channel('syncWithBlockchain')->notice('Blockchain is repaired. Start fetching new blocks...');
-                    //and start fetching new blocks
-                    for ($i = $localBlockHeight+1; $i<=$currentBlockchainHeight;$i++){
-                        ProcessRemoteBlock::dispatch($i);
-                    }
-                }
-                else{
-                    dd("Blockchain still not consistent!");
-                }
-
+            Log::channel('syncWithBlockchain')->notice('Fetching new blocks...');
+            //push only the new Blocks to the processing queue
+            for ($i = $localBlockHeight; $i<=$currentBlockchainHeight;$i++){
+                ProcessRemoteBlock::dispatch($i);
             }
+
 
             //push fetchBlock Job to queue
         })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
@@ -342,51 +286,14 @@ class Kernel extends ConsoleKernel
             }
     
             foreach($createdWalletNames as $createdWalletName){
-                $requestContent = [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json'
-                    ],
-                    'json' => [
-                        "id" => 1,
-                        "method" => "getaddressbyname",
-                        "params" => [
-                            "name" => $createdWalletName["payload"]["name"],
-                        ],
-                        "jsonrpc" => "2.0"
-                    ]
-                ];
-                
-                try {
-                    $client = new GuzzleHttpClient();
-            
-                    $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
-                    
-                    $response = json_decode($apiRequest->getBody(), true);
-                    if(array_key_exists('result', $response)){
-                        $responseItem = AddressBook::updateOrCreate([
-                            "address" => $response["result"]
-                        ],[
-                            "name" => $createdWalletName["payload"]["name"],
-                            "public_key" => $createdWalletName["payload"]["registrant"],
-                        ]);
-                        $responseItem->save();
-                    }
-                    
-                }
-                catch(RequestException $re) {
-
-                }
+                CreateAddressBookItem::dispatch(createdWalletName["payload"]["name"],createdWalletName["payload"]["registrant"]);
             }
 
-
-
-
-        })->everyMinute()->name('CreateAddressBook')->withoutOverlapping();
+        })->everyFiveMinutes()->name('CreateAddressBook')->withoutOverlapping();
 
         $schedule->call(function () {
-            CachedNode::where('updated_at', '<', Carbon::now()->subMonth())->delete();
-        })->monthly()->name('CleanUpCachedNodes'); 
+            CleanUpCachedNodes::dispatch();
+        })->monthly()->name('CleanUpCachedNodes')->onQueue('maintenance'); 
 
 
     }

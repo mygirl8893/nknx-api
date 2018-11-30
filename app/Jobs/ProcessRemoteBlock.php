@@ -12,9 +12,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 
 use App\Block;
-use App\Header;
 use App\Transaction;
-use App\Program;
 use App\Attribute;
 use App\Output;
 use App\Input;
@@ -44,7 +42,7 @@ class ProcessRemoteBlock implements ShouldQueue
     public function handle()
     {
         //if block isn't in the database get it and parse it (to prevent race conditions)
-        if (!Header::where('height', '=', $this->blockheight)->exists()){
+        if (!Block::where('height', '=', $this->blockheight)->exists()){
             $requestContent = [
                 'headers' => [
                     'Accept' => 'application/json',
@@ -66,11 +64,19 @@ class ProcessRemoteBlock implements ShouldQueue
                 $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
                 
                 $response = json_decode($apiRequest->getBody(), true);
-                $block = new Block($response["result"]);
+                $blockdata = array_merge($response["result"]["header"]["program"], $response["result"]["header"], $response["result"]);
+                
+                
+                $previousBlock = Block::where('hash',$blockdata['prevBlockHash'])->first();
+                if($previousBlock){
+                    $previousBlock->nextBlockHash = $blockdata['hash'];
+                    $previousBlock->save();
+                }
+
+
+                $block = new Block($blockdata);
                 $block->transaction_count = count($response["result"]["transactions"]);
                 $block->save();
-                $newHeader = $block->header()->save(new Header($response["result"]["header"]));
-                $newHeader->program()->save(new Program($response["result"]["header"]["program"]));
                 foreach($response["result"]["transactions"] as $transaction) {
                     $attributes = [];
                     $outputs = [];

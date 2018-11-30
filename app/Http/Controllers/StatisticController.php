@@ -7,9 +7,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 
 use App\Block;
-use App\Header;
 use App\Transaction;
-use App\Program;
 use App\Attribute;
 use App\Output;
 use App\Payload;
@@ -40,7 +38,7 @@ class StatisticController extends Controller
             $latest = 14;
         };
 
-        $headers_query = Header::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
+        $blocks_query = Block::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
         ->when($pubkey, function ($q, $pubkey) { 
             return $q->where('signer',$pubkey);
         })
@@ -49,9 +47,9 @@ class StatisticController extends Controller
         ->when($latest, function ($q, $latest) { 
             return $q->limit($latest);
         });
-        $headers = $headers_query
+        $blocks = $blocks_query
                 ->get();
-        return response()->json($headers);
+        return response()->json($blocks);
     }
 
     /**

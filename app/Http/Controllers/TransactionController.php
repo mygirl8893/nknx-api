@@ -7,9 +7,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 
 use App\Block;
-use App\Header;
 use App\Transaction;
-use App\Program;
 use App\Attribute;
 use App\Output;
 use App\Payload;
@@ -26,7 +24,7 @@ class TransactionController extends Controller
     /**
 	 * Get all transactions
 	 *
-	 * Returns all transactions with corresponding headers, payloads, outputs, inputs and attributes in simple pagination format starting with the latest one 
+	 * Returns all transactions with corresponding block, payloads, outputs, inputs and attributes in simple pagination format starting with the latest one 
 	 *
      * @queryParam latest Limits the results returned Example:7
      * @queryParam per_page Number of results per page Example:4
@@ -81,7 +79,7 @@ class TransactionController extends Controller
             return $q->with('attributes');
         });
 
-        $transactions_query->with('block.header');
+        $transactions_query->with('block');
 
         if($latest > $paginate){
             $transactions = $transactions_query
@@ -131,7 +129,7 @@ class TransactionController extends Controller
             return $q->with('attributes');
         });
 
-        $transactions_query->with('block.header');
+        $transactions_query->with('block');
         $transactions = $transactions_query
             ->first();
         
