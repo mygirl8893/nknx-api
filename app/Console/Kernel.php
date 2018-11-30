@@ -76,72 +76,12 @@ class Kernel extends ConsoleKernel
             else{
                 $localBlockHeight = 0;
             }
-            //count all blocks in the database
-            $sumLocalBlocks = Block::count();
-            // if the local blockchain is consistent
-            if ($localBlockHeight===$sumLocalBlocks){
-                Log::channel('syncWithBlockchain')->notice('Blockchain is consistent. Fetching new blocks...');
-                //push only the new Blocks to the processing queue
-                for ($i = $localBlockHeight+1; $i<=$currentBlockchainHeight;$i++){
-                    ProcessRemoteBlock::dispatch($i);
-                }
+
+            //push only the new Blocks to the processing queue
+            for ($i = $localBlockHeight+1; $i<=$currentBlockchainHeight;$i++){
+                ProcessRemoteBlock::dispatch($i);
             }
-            // Else blockchain is not consistent!
-            else{
-                Log::channel('syncWithBlockchain')->warning('Blockchain is not consistent! Looking for missing blocks...');
-                //Run a self-repair
-                for ($i = 1; $i<=$sumLocalBlocks;$i++){
-                    if (!Header::where('height', '=', $i)->exists()){
-                        Log::channel('syncWithBlockchain')->info('Found missing block height: '.$i);
-                        //Well... there are less headers than blocks, so get the Hash of the block...
-                        $requestContent = [
-                            'headers' => [
-                                'Accept' => 'application/json',
-                                'Content-Type' => 'application/json'
-                            ],
-                            'json' => [
-                                "id" => 1,
-                                "method" => "getblock",
-                                "params" => [
-                                    "height" => (int)$i,
-                                ],
-                                "jsonrpc" => "2.0"
-                            ]
-                        ];
-                        $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
-                        $response = json_decode($apiRequest->getBody(), true);
-
-                        //so, lets delete the block
-                        if(Block::where('hash', '=', $response["result"]["hash"])->delete()){
-                            //if it's done we can redownload the block
-                            ProcessRemoteBlock::dispatch($i);
-                        }
-                        else{
-                            //okay, now we are fucked...
-                            dd("There is something terrible wrong in restoring the blockchain");
-                        }
-                    }
-                }
-                //well, Blockchain should be fixed now... so lets test
-                $localBlockHeight = Header::select('height')->orderBy('height', 'desc')->first();
-                $localBlockHeight = $localBlockHeight->height;
-                //count all blocks in the database
-                $sumLocalBlocks = Block::count();
-                if ($localBlockHeight===$sumLocalBlocks){
-                    Log::channel('syncWithBlockchain')->notice('Blockchain is repaired. Start fetching new blocks...');
-                    //and start fetching new blocks
-                    for ($i = $localBlockHeight+1; $i<=$currentBlockchainHeight;$i++){
-                        ProcessRemoteBlock::dispatch($i);
-                    }
-                }
-                else{
-                    dd("Blockchain still not consistent!");
-                }
-
-            }
-
-            //push fetchBlock Job to queue
+           
         })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
 
         $schedule->call(function () {
