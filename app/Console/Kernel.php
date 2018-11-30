@@ -45,7 +45,7 @@ class Kernel extends ConsoleKernel
     {
 
         $schedule->call(function () {
-            if (Queue::size('blockchainCrawler') <= 1000){
+            if (Queue::size('blockchainCrawler') <= 60){
                 //get current blockchain height
                 $currentBlockchainHeight = 0;
                 $requestContent = [
