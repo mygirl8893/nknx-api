@@ -122,6 +122,9 @@ class Kernel extends ConsoleKernel
                 ->orderBy('id', 'asc')
                 ->get()
                 ->toArray();
+
+
+            
     
             foreach($deletedWalletNames as $deletedWalletName){
                 $i = 0;
@@ -133,6 +136,11 @@ class Kernel extends ConsoleKernel
                     $i++;
                 }
             }
+            $addressList=[];
+            foreach($createdWalletNames as $createdWalletName){
+                array_push($addressList,createdWalletName["payload"]["registrant"]);
+            }         
+            CrawledNode::whereNotIn('public_key', $addressList)->delete();
     
             foreach($createdWalletNames as $createdWalletName){
                 CreateAddressBookItem::dispatch(createdWalletName["payload"]["name"],createdWalletName["payload"]["registrant"]);

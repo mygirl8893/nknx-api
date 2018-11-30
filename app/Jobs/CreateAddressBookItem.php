@@ -56,10 +56,10 @@ class CreateAddressBookItem implements ShouldQueue
             $response = json_decode($apiRequest->getBody(), true);
             if(array_key_exists('result', $response)){
                 $responseItem = AddressBook::updateOrCreate([
-                    "address" => $response["result"]
+                    "public_key" => $this->registrant
                 ],[
                     "name" => $this->name,
-                    "public_key" => $this->registrant,
+                    "address" => $response["result"]
                 ]);
                 $responseItem->save();
             }
