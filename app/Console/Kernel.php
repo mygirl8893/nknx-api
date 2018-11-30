@@ -45,50 +45,49 @@ class Kernel extends ConsoleKernel
     {
 
         $schedule->call(function () {
-            //get current blockchain height
-            $currentBlockchainHeight = 0;
-            $requestContent = [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json'
-                ],
-                'json' => [
-                    "id" => 1,
-                    "method" => "getlatestblockheight",
-                    "params" => [
-                        "height" => 0,
+            if (Queue::size('blockchainCrawler') <= 1000){
+                //get current blockchain height
+                $currentBlockchainHeight = 0;
+                $requestContent = [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Content-Type' => 'application/json'
                     ],
-                    "jsonrpc" => "2.0"
-                ]
-            ];
-            try {
-                $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);        
-                $response = json_decode($apiRequest->getBody());
-                $currentBlockchainHeight = $response->result;
-            } catch (RequestException $re) {
-                Log::channel('syncWithBlockchain')->error("Can't connect to testnet-node!");
-                throw $re;
-            }
+                    'json' => [
+                        "id" => 1,
+                        "method" => "getlatestblockheight",
+                        "params" => [
+                            "height" => 0,
+                        ],
+                        "jsonrpc" => "2.0"
+                    ]
+                ];
+                try {
+                    $client = new GuzzleHttpClient();
+                    $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);        
+                    $response = json_decode($apiRequest->getBody());
+                    $currentBlockchainHeight = $response->result;
+                } catch (RequestException $re) {
+                    Log::channel('syncWithBlockchain')->error("Can't connect to testnet-node!");
+                    throw $re;
+                }
 
-            //get latest blockheight in the database
-            $localBlockHeight = Block::select('height')->orderBy('height', 'desc')->first();
-            if($localBlockHeight){
-                $localBlockHeight = $localBlockHeight->height;
-            }
-            else{
-                $localBlockHeight = 0;
-            }
+                //get latest blockheight in the database
+                $localBlockHeight = Block::select('height')->orderBy('height', 'desc')->first();
+                if($localBlockHeight){
+                    $localBlockHeight = $localBlockHeight->height;
+                }
+                else{
+                    $localBlockHeight = 0;
+                }
 
-            Log::channel('syncWithBlockchain')->notice('Fetching new blocks...');
-            //push only the new Blocks to the processing queue
-            for ($i = $localBlockHeight; $i<=$currentBlockchainHeight;$i++){
-                ProcessRemoteBlock::dispatch($i)->onQueue('blockchainCrawler');
+                Log::channel('syncWithBlockchain')->notice('Fetching new blocks...');
+                //push only the new Blocks to the processing queue
+                for ($i = $localBlockHeight; $i<=$currentBlockchainHeight;$i++){
+                    ProcessRemoteBlock::dispatch($i)->onQueue('blockchainCrawler');
+                }
             }
-
-
-            //push fetchBlock Job to queue
-        })->yearly()->name('SyncWithBlockchain')->withoutOverlapping();
+        })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
 
         $schedule->call(function () {
             $nodes= Node::all();
