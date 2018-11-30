@@ -12,6 +12,7 @@
         "graze/guzzle-jsonrpc": "^3.2",
         "guzzlehttp/guzzle": "~6.0",
         "laravel/framework": "5.7.*",
+        "laravel/horizon": "^2.0",
         "laravel/tinker": "^1.0",
         "mpociot/laravel-apidoc-generator": "^3.0",
         "nesbot/carbon": "1.26.3",
