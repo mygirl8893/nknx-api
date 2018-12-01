@@ -256,7 +256,7 @@ class Kernel extends ConsoleKernel
 
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
-        $schedule->call(function () {
+        /*$schedule->call(function () {
             $addressBookItems = array();
 
             $createdWalletNames = Transaction::where('txType',80)
@@ -322,7 +322,7 @@ class Kernel extends ConsoleKernel
 
 
 
-        })->everyMinute()->name('CreateAddressBook')->withoutOverlapping();
+        })->everyMinute()->name('CreateAddressBook')->withoutOverlapping();*/
 
         $schedule->call(function () {
             CachedNode::where('updated_at', '<', Carbon::now()->subMonth())->delete();
