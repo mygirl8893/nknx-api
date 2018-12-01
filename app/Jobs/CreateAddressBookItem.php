@@ -69,4 +69,8 @@ class CreateAddressBookItem implements ShouldQueue
 
         }
     }
+    public function tags()
+    {
+        return ['CreateAddressBookItem',$this->name];
+    }
 }

@@ -134,5 +134,9 @@ class UpdateNode implements ShouldQueue
 
         }
     }
+    public function tags()
+    {
+        return ['UpdateNode',$this->id];
+    }
     
 }

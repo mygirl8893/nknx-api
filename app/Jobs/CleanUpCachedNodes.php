@@ -33,4 +33,9 @@ class CleanUpCachedNodes implements ShouldQueue
     {
         CachedNode::where('updated_at', '<', Carbon::now()->subMonth())->delete();
     }
+
+    public function tags()
+    {
+        return ['CleanUpCachedNodes'];
+    }
 }

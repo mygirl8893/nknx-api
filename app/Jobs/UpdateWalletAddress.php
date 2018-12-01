@@ -13,7 +13,7 @@ use GuzzleHttp\Exception\RequestException;
 
 use App\WalletAddress;
 
-use Log;#
+use Log;
 
 
 class UpdateWalletAddress implements ShouldQueue
@@ -80,6 +80,11 @@ class UpdateWalletAddress implements ShouldQueue
             }
 
         }
+    }
+
+    public function tags()
+    {
+        return ['UpdateWalletAddress',$this->id];
     }
     
 }

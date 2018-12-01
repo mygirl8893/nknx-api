@@ -131,4 +131,8 @@ class ProcessRemoteBlock implements ShouldQueue
             }
         }
     }
+    public function tags()
+    {
+        return ['ProcessRemoteBlock',$this->blockheight];
+    }
 }

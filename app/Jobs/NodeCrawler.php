@@ -188,4 +188,8 @@ class NodeCrawler implements ShouldQueue
         }
         Log::channel('nodeCrawler')->notice("Node crawling successful");
     }
+    public function tags()
+    {
+        return ['NodeCrawler'];
+    }
 }
