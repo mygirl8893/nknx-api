@@ -105,7 +105,28 @@ return [
                 'connection' => 'redis',
                 'queue' => ['default'],
                 'balance' => 'simple',
-                'processes' => 10,
+                'processes' => 2,
+                'tries' => 3,
+            ],
+            'supervisor-2' => [
+                'connection' => 'redis',
+                'queue' => ['blockchainCrawler'],
+                'balance' => 'simple',
+                'processes' => 1,
+                'tries' => 3,
+            ],
+            'supervisor-3' => [
+                'connection' => 'redis',
+                'queue' => ['maintenance'],
+                'balance' => 'simple',
+                'processes' => 1,
+                'tries' => 3,
+            ],
+            'supervisor-4' => [
+                'connection' => 'redis',
+                'queue' => ['nodeCrawler'],
+                'balance' => 'simple',
+                'processes' => 1,
                 'tries' => 3,
             ],
         ],
@@ -113,7 +134,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['default'],
+                'queue' => ['default','blockchainCrawler','maintenance','nodeCrawler'],
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 3,
