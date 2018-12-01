@@ -107,6 +107,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 2,
                 'tries' => 3,
+                'timeout' => 60 // Timeout after 60 seconds
             ],
             'supervisor-2' => [
                 'connection' => 'redis',
@@ -114,6 +115,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
+                'timeout' => 10 // Timeout after 10 seconds
             ],
             'supervisor-3' => [
                 'connection' => 'redis',
@@ -121,6 +123,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
+                'timeout' => 300 // Timeout after 5 minutes
             ],
             'supervisor-4' => [
                 'connection' => 'redis',
@@ -128,6 +131,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
+                'timeout' => 1800 // Timeout after 30 minutes
             ],
         ],
 
@@ -138,6 +142,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 2,
                 'tries' => 3,
+                'timeout' => 60 // Timeout after 60 seconds
             ],
             'supervisor-2' => [
                 'connection' => 'redis',
@@ -145,6 +150,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
+                'timeout' => 10 // Timeout after 10 seconds
             ],
             'supervisor-3' => [
                 'connection' => 'redis',
@@ -152,6 +158,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
+                'timeout' => 300 // Timeout after 5 minutes
             ],
             'supervisor-4' => [
                 'connection' => 'redis',
@@ -159,6 +166,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 1,
                 'tries' => 3,
+                'timeout' => 1800 // Timeout after 30 minutes
             ],
         ],
     ],

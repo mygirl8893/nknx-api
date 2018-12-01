@@ -61,7 +61,28 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'default',
-            'retry_after' => 1800,
+            'retry_after' => 90,    // Run for max 1.5 minutes
+            'block_for' => null,
+        ],
+        'redis-blockchainCrawler' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'blockchainCrawler',
+            'retry_after' => 15, // Run for max 15 seconds
+            'block_for' => null,
+        ],
+        'redis-maintenance' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'maintenance',
+            'retry_after' => 450, // Run for max 7.5 minutes
+            'block_for' => null,
+        ],
+        'redis-nodeCrawler' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'nodeCrawler',
+            'retry_after' => 2100, // Run for max 35 minutes
             'block_for' => null,
         ],
 
