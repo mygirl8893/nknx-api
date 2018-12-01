@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => env('QUEUE_CONNECTION', 'default'),
 
     /*
     |--------------------------------------------------------------------------
@@ -30,7 +30,7 @@ return [
 
     'connections' => [
 
-        'sync' => [
+   /*     'sync' => [
             'driver' => 'sync',
         ],
 
@@ -62,6 +62,35 @@ return [
             'connection' => 'default',
             'queue' => 'default',
             'retry_after' => 90,
+            'block_for' => null,
+        ],*/
+
+        'blockchainCrawler' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'blockchainCrawler',
+            'retry_after' => 90,
+            'block_for' => null,
+        ],
+        'maintenance' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'maintenance',
+            'retry_after' => 90,
+            'block_for' => null,
+        ],
+        'default' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'default',
+            'retry_after' => 90,
+            'block_for' => null,
+        ],
+        'nodeCrawler' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'nodeCrawler',
+            'retry_after' => 1800,
             'block_for' => null,
         ],
 

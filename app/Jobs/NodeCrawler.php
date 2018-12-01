@@ -64,10 +64,10 @@ class NodeCrawler implements ShouldQueue
 
         while($index <=  (count($nodes)-1)){
             $client = new GuzzleHttpClient();
-            Log::channel('nodeCrawler')->notice($index.":".count($nodes));
+            //Log::channel('nodeCrawler')->notice($index.":".count($nodes));
             try {
                 if(!filter_var($nodes[$index], FILTER_VALIDATE_IP)){
-                    Log::channel('nodeCrawler')->warning('invalid ip!');
+                    //Log::channel('nodeCrawler')->warning('invalid ip!');
                     array_splice($nodes,$index,1);
                 }
                 else{
@@ -89,12 +89,12 @@ class NodeCrawler implements ShouldQueue
                 //okay, we tried enough - node is offline
                 switch($re->getHandlerContext()['errno']){
                     case 0: 
-                        Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
+                        //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
                         array_push($blacklist,$nodes[$index]);
                         array_splice($nodes,$index,1);
                         break;
                     case 28: 
-                        Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
+                        //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
                         array_push($blacklist,$nodes[$index]);
                         array_splice($nodes,$index,1);
                         break;
@@ -104,20 +104,21 @@ class NodeCrawler implements ShouldQueue
                             array_splice($nodes,$index,1);
                         }
                         else{
-                            Log::channel('nodeCrawler')->error('connection refused from ' . $nodes[$index] . "!");
+                            //Log::channel('nodeCrawler')->error('connection refused from ' . $nodes[$index] . "!");
                             $count = 0;
                             foreach ($retries as $item) {
                                 if ($item == $nodes[$index]) {
                                     $count++;
                                 }
                             }
-                            if($count >=5){
-                                Log::channel('nodeCrawler')->error('Too many retries for '.$nodes[$index] . " ignoring its neighbors.");
+                            if($count >=10){
+                                //Log::channel('nodeCrawler')->error('Too many retries for '.$nodes[$index] . " ignoring its neighbors.");
                                 array_push($blacklist,$nodes[$index]);
                                 $index++;
                             }
                             else{
-                                Log::channel('nodeCrawler')->error($nodes[$index] . " has to cool down - moving at the end of list");
+
+                                //Log::channel('nodeCrawler')->error($nodes[$index] . " has to cool down - moving at the end of list");
                                 //end of list
                                 $lastNode = $nodes[$index];
                                 array_push($nodes,$nodes[$index]);
@@ -128,7 +129,7 @@ class NodeCrawler implements ShouldQueue
                         }
                         break;
                     default:
-                        Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
+                        //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
                         array_push($blacklist,$nodes[$index]);
                         array_splice($nodes,$index,1);
                         break;
