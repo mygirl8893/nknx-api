@@ -30,7 +30,7 @@ return [
 
     'connections' => [
 
-   /*     'sync' => [
+        'sync' => [
             'driver' => 'sync',
         ],
 
@@ -59,11 +59,8 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'default',
-            'queue' => 'default',
-            'retry_after' => 90,
-            'block_for' => null,
-        ],*/
+            'connection' => 'default'
+        ],
 
         'blockchainCrawler' => [
             'driver' => 'redis',
