@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'redis'),
+    'default' => env('QUEUE_CONNECTION', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,34 +59,8 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'default'
-        ],
-
-        'blockchainCrawler' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-            'queue' => 'blockchainCrawler',
-            'retry_after' => 90,
-            'block_for' => null,
-        ],
-        'maintenance' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-            'queue' => 'maintenance',
-            'retry_after' => 90,
-            'block_for' => null,
-        ],
-        'default' => [
-            'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'default',
-            'retry_after' => 90,
-            'block_for' => null,
-        ],
-        'nodeCrawler' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-            'queue' => 'nodeCrawler',
             'retry_after' => 1800,
             'block_for' => null,
         ],
