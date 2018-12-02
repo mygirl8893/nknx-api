@@ -17,6 +17,8 @@ use App\Attribute;
 use App\Output;
 use App\Input;
 use App\Payload;
+use App\Jobs\CreateAddressBookItem;
+use App\Jobs\DeleteAddressBookItem;
 use Log;
 
 
@@ -120,6 +122,12 @@ class ProcessRemoteBlock implements ShouldQueue
                     $newTransaction->inputs()->saveMany($inputs);
                     if(!empty($transaction["payload"])) {
                         $newTransaction->payload()->save(new Payload($transaction["payload"]));
+                        if($transaction["txType"]==80){
+                            CreateAddressBookItem::dispatch($transaction["payload"]["name"],$transaction["payload"]["registrant"]);
+                        }
+                        else if($transaction["txType"]==82){
+                            DeleteAddressBookItem::dispatch($transaction["payload"]["registrant"]);
+                        }
                     }
                 }
 

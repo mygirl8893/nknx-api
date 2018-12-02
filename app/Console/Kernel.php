@@ -17,7 +17,6 @@ use App\CrawledNode;
 use App\Jobs\ProcessRemoteBlock;
 use App\Jobs\UpdateNode;
 use App\Jobs\UpdateWalletAddress;
-use App\Jobs\CreateAddressBookItem;
 use App\Jobs\CleanUpCachedNodes;
 use App\Jobs\NodeCrawler;
 use Carbon\Carbon;
@@ -110,49 +109,8 @@ class Kernel extends ConsoleKernel
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
         $schedule->call(function () {
-            $addressBookItems = array();
-
-            $createdWalletNames = Transaction::where('txType',80)
-                ->with('payload')
-                ->orderBy('id', 'asc')
-                ->get()
-                ->toArray();
-            $deletedWalletNames = Transaction::where('txType',82)
-                ->with('payload')
-                ->orderBy('id', 'asc')
-                ->get()
-                ->toArray();
-
-
-            
-    
-            foreach($deletedWalletNames as $deletedWalletName){
-                $i = 0;
-                while( $i<count($createdWalletNames)){
-                    if($createdWalletNames[$i]["payload"]["registrant"] == $deletedWalletName["payload"]["registrant"]){
-                        array_splice($createdWalletNames,$i,1);
-                        break;
-                    }
-                    $i++;
-                }
-            }
-            $addressList=[];
-            foreach($createdWalletNames as $createdWalletName){
-                array_push($addressList,createdWalletName["payload"]["registrant"]);
-            }         
-            CrawledNode::whereNotIn('public_key', $addressList)->delete();
-    
-            foreach($createdWalletNames as $createdWalletName){
-                CreateAddressBookItem::dispatch(createdWalletName["payload"]["name"],createdWalletName["payload"]["registrant"]);
-            }
-
-        })->everyFiveMinutes()->name('CreateAddressBook')->withoutOverlapping();
-
-        $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
         })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping(); 
-
-
     }
 
     /**

@@ -14,7 +14,8 @@ use GuzzleHttp\Exception\RequestException;
 class CreateAddressBookItem implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    protected $name;
+    protected $registrant;
     /**
      * Create a new job instance.
      *
@@ -47,7 +48,7 @@ class CreateAddressBookItem implements ShouldQueue
                 "jsonrpc" => "2.0"
             ]
         ];
-        
+
         try {
             $client = new GuzzleHttpClient();
     
@@ -71,6 +72,6 @@ class CreateAddressBookItem implements ShouldQueue
     }
     public function tags()
     {
-        return ['CreateAddressBookItem',$this->name];
+        return ['CreateAddressBookItem',$this->registrant, $this->name];
     }
 }

@@ -9,7 +9,7 @@
 <br/>
 You or someone else requested to reset your password. If you have not requested it please ignore this email. Otherwise you can reset your password here:
 <br/>
-<a href="{{url('/newpassword/'.$user->passwordReset->token)}}">reset your password</a>
+<a href="{{url('https://nknx.org/newpassword/'.$user->passwordReset->token)}}">reset your password</a>
 </body>
 
 </html>

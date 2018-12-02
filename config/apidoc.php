@@ -158,5 +158,5 @@ return [
      * If you want to use this, please be aware of the following rules:
      * - size: 230 x 52
      */
-    'logo' => resource_path('views') . '/api/logo.png',
+    'logo' => resource_path('views') . '/logo.png',
 ];
