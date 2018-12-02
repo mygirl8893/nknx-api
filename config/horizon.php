@@ -105,7 +105,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['default'],
                 'balance' => 'simple',
-                'processes' => 2,
+                'processes' => 10,
                 'tries' => 3,
                 'timeout' => 60 // Timeout after 60 seconds
             ],
