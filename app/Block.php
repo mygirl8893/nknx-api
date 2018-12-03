@@ -10,7 +10,7 @@ class Block extends Model
 
     public function getTimestampAttribute($value)
     {
-        $this->attributes['timestamp'] = Carbon::createFromTimestamp($value)->toDateTimeString();
+       return $this->attributes['timestamp'] = Carbon::createFromTimestamp($value)->toDateTimeString();
     }
     public function transactions()
     {
