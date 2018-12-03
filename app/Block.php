@@ -8,7 +8,7 @@ class Block extends Model
 {
     protected $fillable = ['hash','height','prevBlockHash','nextBlockHash','signature','signer','timestamp','transactionsRoot','version','winningHash','winningHashType','code','parameter','transaction_count'];
 
-    public function setTimestampAttribute($value)
+    public function getTimestampAttribute($value)
     {
         $this->attributes['timestamp'] = Carbon::createFromTimestamp($value)->toDateTimeString();
     }
