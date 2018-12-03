@@ -32,19 +32,24 @@ class AddressController extends Controller
 	 */
     public function showAll(Request $request){
         $latest = $request->get('latest');
-        if( !$latest || $latest > 1000){
-            $latest = 1000;
-        }
+
         $paginate = $request->get('per_page',50);
 
-        $outputs= output::query()
+        $outputsQuery= output::query()
             ->selectRaw('address, max(created_at) as last_transaction, count(address) as transactions,min(created_at) as first_transaction')
             ->orderBy('last_transaction', 'desc')
             ->groupBy('address')
-            ->when($latest, function ($q, $latest) { 
+            ->when($latest, function ($q) use ($latest) { 
                 return $q->limit($latest);
-            })
-            ->simplePaginate($paginate);
+            });
+
+        if (!$latest | $latest>$paginate){
+            $outputs = $outputsQuery->simplePaginate($paginate);
+        }
+        else{
+            $outputs = $outputsQuery->get();
+        }
+
         return response()->json($outputs);
     }
 

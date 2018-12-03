@@ -37,15 +37,13 @@ class BlockController extends Controller
 
         $latest = $request->get('latest');
 
+
         $paginate = $request->get('per_page',50);
         $from = date($request->get('from', false));
         $to = date($request->get('to', false));
         $blockproposer = $request->get('blockproposer', false);
 
-        $blocks = Block::orderBy('height', 'desc')
-            ->when($latest, function ($q, $latest) { 
-                return $q->limit($latest);
-            })
+        $blocksQuery = Block::orderBy('height', 'desc')
             ->when($blockproposer, function ($q) use ($blockproposer) { 
                 return $q->where('signer',"=",$blockproposer);
             })
@@ -58,7 +56,17 @@ class BlockController extends Controller
             ->when(!$from && $to, function ($q) use ($to) { 
                 return $q->where('timestamp', '<', $to);
             })
-            ->simplePaginate($paginate);
+            ->when($latest, function ($q) use ($latest) { 
+                return $q->limit($latest);
+            });
+
+        if (!$latest | $latest>$paginate){
+            $blocks = $blocksQuery->simplePaginate($paginate);
+        }
+        else{
+            $blocks = $blocksQuery->get();
+        }
+            
         return response()->json($blocks);
     }
 
