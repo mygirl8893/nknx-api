@@ -21,7 +21,7 @@ class CreateBlocksTable extends Migration
             $table->string('nextBlockHash')->default("");
             $table->string('signature');
             $table->string('signer')->index();
-            $table->timestamp('timestamp')->index();
+            $table->string('timestamp')->index();
             $table->string('transactionsRoot');
             $table->integer('version');
             $table->string('winningHash');
