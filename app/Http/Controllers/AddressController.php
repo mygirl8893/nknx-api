@@ -36,7 +36,7 @@ class AddressController extends Controller
         $paginate = $request->get('per_page',50);
 
         $outputsQuery= output::query()
-            ->selectRaw('address, max(created_at) as last_transaction, count(address) as transactions,min(created_at) as first_transaction')
+            ->selectRaw('address, max(timestamp) as last_transaction, count(address) as transactions,min(timestamp) as first_transaction')
             ->orderBy('last_transaction', 'desc')
             ->groupBy('address')
             ->when($latest, function ($q) use ($latest) { 

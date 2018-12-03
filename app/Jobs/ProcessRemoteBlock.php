@@ -89,7 +89,10 @@ class ProcessRemoteBlock implements ShouldQueue
                     }
                     
                     foreach((array)$transaction["outputs"] as $output){
-                        $outputs[] = new Output($output);
+                        $newOutput = new Output($output);
+                        $newOutput->timestamp = $block->timestamp;
+                        array_push($outputs,$newOutput);
+                        
                     }
 
                     foreach((array)$transaction["inputs"] as $input){

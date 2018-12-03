@@ -19,6 +19,7 @@ class CreateOutputsTable extends Migration
             $table->string('assetID');
             $table->string('value');
             $table->integer('transaction_id');
+            $table->integer('timestamp')->index();
             $table->timestamps();
         });
     }
