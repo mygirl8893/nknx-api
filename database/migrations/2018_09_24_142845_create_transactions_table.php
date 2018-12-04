@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('txType');
             $table->integer('block_id');
             $table->string('sender')->nullable();
+            $table->dateTime('timestamp')->index();
             $table->timestamps();
 
         });

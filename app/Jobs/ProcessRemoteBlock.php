@@ -117,8 +117,9 @@ class ProcessRemoteBlock implements ShouldQueue
                             $transaction["sender"] = $transactionResponse["result"]["outputs"][$input['referTxOutputIndex']]['address'];
                         }
                     }
-
-                    $newTransaction = $block->transactions()->save(new Transaction($transaction));
+                    $newTransactionInstance = new Transaction($transaction);
+                    $newTransactionInstance->timestamp = $block->timestamp;
+                    $newTransaction = $block->transactions()->save($newTransactionInstance);
 
                     $newTransaction->attributes()->saveMany($attributes);
                     $newTransaction->outputs()->saveMany($outputs);

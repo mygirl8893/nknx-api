@@ -65,9 +65,9 @@ class StatisticController extends Controller
             $latest = 14;
         };
 
-        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
-        ->orderBy(DB::raw('DATE(created_at)'), 'desc')
-        ->groupBy(DB::raw('DATE(created_at)'))
+        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
+        ->orderBy(DB::raw('DATE(timestamp)'), 'desc')
+        ->groupBy(DB::raw('DATE(timestamp)'))
         ->when($latest, function ($q, $latest) { 
             return $q->limit($latest);
         });
@@ -88,10 +88,10 @@ class StatisticController extends Controller
         if(!$latest || $latest > 14){
             $latest = 14;
         };
-        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
+        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
         ->where('txType',16)
-        ->orderBy(DB::raw('DATE(created_at)'), 'desc')
-        ->groupBy(DB::raw('DATE(created_at)'))
+        ->orderBy(DB::raw('DATE(timestamp)'), 'desc')
+        ->groupBy(DB::raw('DATE(timestamp)'))
         ->when($latest, function ($q, $latest) { 
             return $q->limit($latest);
         });
