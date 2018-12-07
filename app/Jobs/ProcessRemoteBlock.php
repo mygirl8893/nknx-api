@@ -83,6 +83,7 @@ class ProcessRemoteBlock implements ShouldQueue
                     $attributes = [];
                     $outputs = [];
                     $inputs = [];
+
                 
                     foreach((array)$transaction["attributes"] as $attribute){
                         $attributes[] = new Attribute($attribute);
@@ -97,7 +98,7 @@ class ProcessRemoteBlock implements ShouldQueue
 
                     foreach((array)$transaction["inputs"] as $input){
                         $inputs[] = new Input($input);
-                        if($transaction["txType"]==16){
+                        if($transaction["txType"]==16 && !array_key_exists("sender",$transaction)){
                             $requestContentTransaction = [
                                 'headers' => [
                                     'Accept' => 'application/json',
