@@ -3,10 +3,11 @@
  * Auto generated from message.proto at 2018-12-08 16:38:56
  */
 namespace App\Protobuf;
+use App\Protobuf\ProtobufMessage;
 /**
  * SigChainElem message
  */
-class SigChainElem extends \ProtobufMessage
+class SigChainElem extends ProtobufMessage
 {
     /* Field index constants */
     const ADDR = 1;
@@ -20,27 +21,27 @@ class SigChainElem extends \ProtobufMessage
         self::ADDR => array(
             'name' => 'Addr',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => ProtobufMessage::PB_TYPE_STRING,
         ),
         self::NEXTPUBKEY => array(
             'name' => 'NextPubkey',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => ProtobufMessage::PB_TYPE_STRING,
         ),
         self::MINING => array(
             'name' => 'Mining',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_BOOL,
+            'type' => ProtobufMessage::PB_TYPE_BOOL,
         ),
         self::SIGALGO => array(
             'name' => 'SigAlgo',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_INT,
+            'type' => ProtobufMessage::PB_TYPE_INT,
         ),
         self::SIGNATURE => array(
             'name' => 'Signature',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => ProtobufMessage::PB_TYPE_STRING,
         ),
     );
 
