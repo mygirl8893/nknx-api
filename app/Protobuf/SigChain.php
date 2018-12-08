@@ -3,9 +3,9 @@
  * Auto generated from message.proto at 2018-12-08 16:38:56
  */
 namespace App\Protobuf;
-use App\Protobuf\ProtobufMessage;
 
-class SigChain extends ProtobufMessage
+
+class SigChain extends \ProtobufMessage
 {
     /* Field index constants */
     const NONCE = 1;
@@ -21,32 +21,32 @@ class SigChain extends ProtobufMessage
         self::NONCE => array(
             'name' => 'Nonce',
             'required' => false,
-            'type' => ProtobufMessage::PB_TYPE_INT,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
         self::DATASIZE => array(
             'name' => 'DataSize',
             'required' => false,
-            'type' => ProtobufMessage::PB_TYPE_INT,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
         self::DATAHASH => array(
             'name' => 'DataHash',
             'required' => false,
-            'type' => ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
         self::BLOCKHASH => array(
             'name' => 'BlockHash',
             'required' => false,
-            'type' => ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
         self::SRCPUBKEY => array(
             'name' => 'SrcPubkey',
             'required' => false,
-            'type' => ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
         self::DESTPUBKEY => array(
             'name' => 'DestPubkey',
             'required' => false,
-            'type' => ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
         self::ELEMS => array(
             'name' => 'Elems',
