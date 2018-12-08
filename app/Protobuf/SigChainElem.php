@@ -6,7 +6,7 @@ namespace App\Protobuf;
 /**
  * SigChainElem message
  */
-class SigChainElem extends App\Protobuf\ProtobufMessage
+class SigChainElem extends \ProtobufMessage
 {
     /* Field index constants */
     const ADDR = 1;
@@ -20,27 +20,27 @@ class SigChainElem extends App\Protobuf\ProtobufMessage
         self::ADDR => array(
             'name' => 'Addr',
             'required' => false,
-            'type' => App\Protobuf\ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
         self::NEXTPUBKEY => array(
             'name' => 'NextPubkey',
             'required' => false,
-            'type' => App\Protobuf\ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
         self::MINING => array(
             'name' => 'Mining',
             'required' => false,
-            'type' => App\Protobuf\ProtobufMessage::PB_TYPE_BOOL,
+            'type' => \ProtobufMessage::PB_TYPE_BOOL,
         ),
         self::SIGALGO => array(
             'name' => 'SigAlgo',
             'required' => false,
-            'type' => App\Protobuf\ProtobufMessage::PB_TYPE_INT,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
         self::SIGNATURE => array(
             'name' => 'Signature',
             'required' => false,
-            'type' => App\Protobuf\ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
     );
 
