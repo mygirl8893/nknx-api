@@ -28,6 +28,10 @@ class Transaction extends Model
     {
         return $this->hasOne('App\Payload');
     }
+    public function nodeTracing()
+    {
+        return $this->hasMany('App\NodeTracing');
+    }
     public static function boot() {
         parent::boot();
 

@@ -109,6 +109,7 @@ class TransactionController extends Controller
 
         $withoutPayload = $request->get('withoutpayload',false);
         $withoutOutputs = $request->get('withoutoutputs',false);
+        $withoutNodeTrace = $request->get('withoutnodetrace',false);
         $withoutInputs = $request->get('withoutinputs',false);
         $withoutAttributes = $request->get('withoutattributes',false);
         
@@ -121,6 +122,11 @@ class TransactionController extends Controller
         });
         $transactions_query->when(!$withoutOutputs, function ($q) { 
             return $q->with('outputs');
+        });
+        $transactions_query->when(!$withoutNodeTrace, function ($q) { 
+            return $q->with(array('nodeTracing' => function($query){
+                $query->orderBy('priority', 'asc');
+            }));
         });
         $transactions_query->when(!$withoutInputs, function ($q) { 
             return $q->with('inputs');
