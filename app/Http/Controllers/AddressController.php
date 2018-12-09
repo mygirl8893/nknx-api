@@ -65,7 +65,7 @@ class AddressController extends Controller
 
         $outputs= output::query()
             ->where('address',$address)
-            ->selectRaw('address, max(created_at) as last_transaction, count(address) as transactions,min(created_at) as first_transaction')
+            ->selectRaw('address, max(timestamp) as last_transaction, count(address) as transactions,min(timestamp) as first_transaction')
             ->orderBy('last_transaction', 'desc')
             ->groupBy('address')
             ->first();
