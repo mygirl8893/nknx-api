@@ -202,6 +202,8 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
+        $user->walletcount = $user->walletAddresses()->count();
+        $user->nodecount = $user->nodes()->count();
         return response([
                 'status' => 'success',
                 'data' => $user
