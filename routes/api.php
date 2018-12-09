@@ -57,6 +57,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('auth/user', 'AuthController@user');
   Route::post('auth/logout', 'AuthController@logout');
   Route::get('auth/resendVerification', 'AuthController@resendVerification');
+  Route::post('auth/changeUser', 'AuthController@changeUser');
   Route::resource('nodes', 'NodeController')->except([
     'create', 'edit', 'update'
   ]);

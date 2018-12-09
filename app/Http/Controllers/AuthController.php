@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterFormRequest;
+use App\Http\Requests\ChangeUserFormRequest;
 use App\User;
 use App\VerifyUser;
 use App\PasswordReset;
@@ -277,5 +278,34 @@ class AuthController extends Controller
                 'status' => 'success',
                 'msg' => 'Logged out successfully.'
             ], 200);
+    }
+
+    /**
+	 * Change a user
+	 *
+	 * Changes the userdata based on the given values
+     * 
+     * @bodyParam  email string required User email address
+     * @bodyParam  name string required  Username
+     * @bodyParam  password string required  User password
+     * 
+	 */
+    public function changeUser(ChangeUserFormRequest $request)
+    {
+        $user = User::find(Auth::user()->id);
+        if($request->email){
+            $user->email = $request->email;
+        }
+        if($request->name){
+            $user->name = $request->name;
+        }
+        if($request->password){
+            $user->password = bcrypt($request->password);
+        }
+        $user->save();
+        return response([
+            'status' => 'success',
+            'data' => $user
+        ], 200);
     }
 }
