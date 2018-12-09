@@ -21,10 +21,6 @@ use App\NodeTracing;
 use App\Jobs\CreateAddressBookItem;
 use App\Jobs\DeleteAddressBookItem;
 
-use App\Protobuf\SigChain;
-use App\Protobuf\SigAlgo;
-use App\Protobuf\SigChainElem;
-
 use Log;
 
 
@@ -140,9 +136,9 @@ class ProcessRemoteBlock implements ShouldQueue
                             DeleteAddressBookItem::dispatch($transaction["payload"]["registrant"]);
                         }
                         if(array_key_exists("sigChain",$transaction["payload"])){
-                            $protoSigChain = new SigChain();
+                            $protoSigChain = new \Protos\SigChain;
                             try {
-                                $protoSigChain->parseFromString(hex2bin($transaction["payload"]["sigChain"]));
+                                $protoSigChain->mergeFromString(hex2bin($transaction["payload"]["sigChain"]));
                             } catch (Exception $ex) {
                                 Log::channel('syncWithBlockchain')->error("Error processing SigChain: " . $transaction["payload"]["sigChain"]);
                             }
