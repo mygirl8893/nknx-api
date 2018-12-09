@@ -242,16 +242,16 @@ class WalletAddressController extends Controller
      */
     public function getMiningOutputDaily(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
-        $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
+        $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
         ->when($latest, function ($q, $latest) { 
-            return $q->where('created_at', '>=', Carbon::now()->subDays($latest));
+            return $q->where('timestamp', '>=', Carbon::now()->subDays($latest));
         })
         ->whereHas('transaction', function($q){
             $q->where('txType', 0);
         })
         ->where("address",$walletAddress->address)
-        ->orderBy(DB::raw('DATE(created_at)'), 'desc')
-        ->groupBy(DB::raw('DATE(created_at)'));
+        ->orderBy(DB::raw('DATE(timestamp)'), 'desc')
+        ->groupBy(DB::raw('DATE(timestamp)'));
         $outputs = $outputs_query
                 ->get();
         return response()->json($outputs);
@@ -303,16 +303,16 @@ class WalletAddressController extends Controller
      */
     public function getMiningOutputMonthly(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
-        $outputs_query = Output::select(DB::raw("COUNT(*) as count, MONTH(created_at) AS month"))
+        $outputs_query = Output::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
         ->when($latest, function ($q, $latest) { 
-            return $q->where('created_at', '>=', Carbon::now()->subDays($latest));
+            return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         })
         ->whereHas('transaction', function($q){
             $q->where('txType', 0);
         })
         ->where("address",$walletAddress->address)
-        ->orderBy(DB::raw('MONTH(created_at)'), 'desc')
-        ->groupBy(DB::raw('MONTH(created_at)'));
+        ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
+        ->groupBy(DB::raw('MONTH(timestamp)'));
         $outputs = $outputs_query
                 ->get();
         return response()->json($outputs);

@@ -123,7 +123,7 @@ class StatisticController extends Controller
         ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
         ->groupBy(DB::raw('MONTH(timestamp)'))
         ->when($latest, function ($q, $latest) { 
-            return $q->limit($latest);
+            return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         });
         $blocks = $blocks_query
                 ->get();
@@ -147,7 +147,7 @@ class StatisticController extends Controller
         ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
         ->groupBy(DB::raw('MONTH(timestamp)'))
         ->when($latest, function ($q, $latest) { 
-            return $q->limit($latest);
+            return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         });
         $transactions = $transactions_query
                 ->get();
@@ -171,7 +171,7 @@ class StatisticController extends Controller
         ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
         ->groupBy(DB::raw('MONTH(timestamp)'))
         ->when($latest, function ($q, $latest) { 
-            return $q->limit($latest);
+            return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         });
         $transfers = $transfers_query
                 ->get();
