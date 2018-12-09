@@ -240,7 +240,7 @@ class WalletAddressController extends Controller
      *       }
      *   ]
      */
-    public function getMiningOutput(WalletAddress $walletAddress,Request $request){
+    public function getMiningOutputDaily(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
         $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(created_at) AS date"))
         ->when($latest, function ($q, $latest) { 
@@ -252,6 +252,67 @@ class WalletAddressController extends Controller
         ->where("address",$walletAddress->address)
         ->orderBy(DB::raw('DATE(created_at)'), 'desc')
         ->groupBy(DB::raw('DATE(created_at)'));
+        $outputs = $outputs_query
+                ->get();
+        return response()->json($outputs);
+    }
+
+    /**
+	 * Get mining output per month
+	 * Get the monthly mining output based on a database-wallet id
+     * 
+	 * @authenticated
+	 *
+     * @queryParam walletAddress required Id of the resource Example:36
+     * @queryParam latest Limits the months returned Example:7
+     * 
+     * @response [
+     *       {
+     *           "count": 2172,
+     *           "month": "8"
+     *       },
+     *       {
+     *           "count": 4145,
+     *           "month": "7"
+     *       },
+     *       {
+     *           "count": 4129,
+     *           "month": "6"
+     *       },
+     *       {
+     *           "count": 4075,
+     *           "month": "5"
+     *       },
+     *       {
+     *           "count": 4124,
+     *           "month": "4"
+     *       },
+     *       {
+     *           "count": 3956,
+     *           "month": "3"
+     *       },
+     *       {
+     *           "count": 3302,
+     *           "month": "2"
+     *       },
+     *       {
+     *           "count": 2363,
+     *           "month": "1"
+     *       }
+     *   ]
+     */
+    public function getMiningOutputMonthly(WalletAddress $walletAddress,Request $request){
+        $latest = $request->get('latest');
+        $outputs_query = Output::select(DB::raw("COUNT(*) as count, MONTH(created_at) AS month"))
+        ->when($latest, function ($q, $latest) { 
+            return $q->where('created_at', '>=', Carbon::now()->subDays($latest));
+        })
+        ->whereHas('transaction', function($q){
+            $q->where('txType', 0);
+        })
+        ->where("address",$walletAddress->address)
+        ->orderBy(DB::raw('MONTH(created_at)'), 'desc')
+        ->groupBy(DB::raw('MONTH(created_at)'));
         $outputs = $outputs_query
                 ->get();
         return response()->json($outputs);

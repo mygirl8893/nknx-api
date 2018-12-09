@@ -34,6 +34,9 @@ Route::get('payloads/{tId}', 'PayloadController@show');
 Route::get('statistics/daily/blocks', 'StatisticController@blocks_daily');
 Route::get('statistics/daily/transactions', 'StatisticController@transactions_daily');
 Route::get('statistics/daily/transfers', 'StatisticController@transfers_daily');
+Route::get('statistics/monthly/blocks', 'StatisticController@blocks_monthly');
+Route::get('statistics/monthly/transactions', 'StatisticController@transactions_monthly');
+Route::get('statistics/monthly/transfers', 'StatisticController@transfers_monthly');
 Route::get('statistics/miners', 'StatisticController@miners_overall');
 
 
@@ -65,7 +68,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::resource('walletAddresses', 'WalletAddressController')->except([
     'create', 'edit', 'update'
   ]);
-  Route::get('walletAddresses/{walletAddress}/miningOutput', 'WalletAddressController@getMiningOutput');
+  Route::get('walletAddresses/{walletAddress}/miningOutputDaily', 'WalletAddressController@getMiningOutputDaily');
+  Route::get('walletAddresses/{walletAddress}/miningOutputMonthly', 'WalletAddressController@getMiningOutputMonthly');
   
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){
