@@ -56,4 +56,19 @@ class AddressBookController extends Controller
         $walletNames= AddressBook::all();
         return response()->json($walletNames);
     }
+
+    /**
+     * Get name by address
+     *
+     * Returns the name of a specific address
+     * 
+     * @response 
+     *  "christnknx"
+     * 
+     * 
+     * 
+     */
+    public function getNameByAddress($address){
+        return response()->json(AddressBook::where('address',$address)->first());
+    }
 }

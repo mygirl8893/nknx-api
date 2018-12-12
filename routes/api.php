@@ -27,6 +27,7 @@ Route::get('transactions', 'TransactionController@showAll');
 Route::get('transactions/{tHash}', 'TransactionController@show');
 
 Route::get('walletNames', 'AddressBookController@showWalletNames');
+Route::get('walletNames/{walletAddress}', 'AddressBookController@getNameByAddress');
 
 
 Route::get('payloads/{tId}', 'PayloadController@show');

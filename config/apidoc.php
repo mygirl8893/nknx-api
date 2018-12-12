@@ -108,7 +108,8 @@ return [
                         '{walletAddress}' => "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6sGBQW",
                         '{address}' => "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6sGBQW",
                         '{tId}' => 1190084,
-                        '{tHash}' => "9946d19e6a2fa035e3456de5836207569b11204593783f62f7838ea99d41fcf2"
+                        '{tHash}' => "9946d19e6a2fa035e3456de5836207569b11204593783f62f7838ea99d41fcf2",
+                        '{walletAddress}' => "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6sGBQW"
                     ],
 
                     /*
