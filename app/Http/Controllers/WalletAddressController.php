@@ -88,7 +88,7 @@ class WalletAddressController extends Controller
                 'msg' => 'address is not provided'
             ], 400);
         }
-        else if (WalletAddress::where('address', $address)->first()){
+        else if (WalletAddress::where([['address','=',$address],['user_id','=', $user->id]])->first()){
             return response([
                 'status' => 'error',
                 'error' => 'duplicate.address',
