@@ -156,7 +156,7 @@ class WalletAddressController extends Controller
      * 
 	 * @authenticated
 	 *
-     * @queryParam walletAddress required Id of the resource
+     * @queryParam walletAddress a stored nkn wallet address
      * 
      * @response {       
      *                  "id": 2,
@@ -169,9 +169,10 @@ class WalletAddressController extends Controller
      *              }
      * 
      */
-    public function show(WalletAddress $walletAddress)
+    public function show($walletAddress)
     {
-        $walletAddress = WalletAddress::find($walletAddress);
+        $user = JWTAuth::parseToken()->authenticate();
+        $walletAddress = WalletAddress::where([['address','=', $walletAddress],['user_id','=', $user->id]])->first();
         return response()->json($walletAddress);
     }
 
