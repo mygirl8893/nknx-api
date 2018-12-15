@@ -186,14 +186,16 @@ class StatisticController extends Controller
      * 
      */ 
     public function miners_overall(Request $request){
-        $latest = $request->get('latest',50);
+        $latest = $request->get('latest');
         $outputs = Output::select("address",DB::raw('count(*) as total'))
         ->whereHas('transaction', function($q){
             $q->where('txType', 0);
         })
         ->groupBy('address')
         ->orderBy('total','desc')
-        ->limit($latest)
+        ->when($latest, function ($q, $latest) { 
+            return $q->limit($latest);
+        })
         ->get();
         return response()->json($outputs);
     }
