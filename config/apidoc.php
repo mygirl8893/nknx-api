@@ -42,7 +42,19 @@ return [
                  * Match only routes whose paths match this pattern (use * as a wildcard to match any characters).
                  */
                 'prefixes' => [
-                    'api/*',
+                    'walletNames/*',
+                    'addresses/*',
+                    'auth/*',
+                    'blocks/*',
+                    'crawledNodes/*',
+                    'outputs/*',
+                    'payloads/*',
+                    'checkPort/*',
+                    'statistics/*',
+                    'transactions/*',
+                    'nodes/*',
+                    'walletAddresses/*',
+
                     // 'users/*',
                 ],
 
@@ -104,7 +116,7 @@ return [
                      */
                     'bindings' => [
                         '{node}' => 172,
-                        '{block_id}' => 212345,
+                        '{block_id}' => 2546,
                         '{walletAddress}' => "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6sGBQW",
                         '{address}' => "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6sGBQW",
                         '{tId}' => 1190084,
