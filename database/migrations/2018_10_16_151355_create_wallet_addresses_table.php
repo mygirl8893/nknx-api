@@ -15,7 +15,7 @@ class CreateWalletAddressesTable extends Migration
     {
         Schema::create('wallet_addresses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('label');
+            $table->string('label')->nullable()->default("");
             $table->string('address');
             $table->integer('balance');
             $table->integer('user_id');
