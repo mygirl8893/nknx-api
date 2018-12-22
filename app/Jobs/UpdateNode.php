@@ -47,7 +47,7 @@ class UpdateNode implements ShouldQueue
             }
             //get main node data
             $requestContent = [
-                'timeout' => 0.5,
+                'timeout' => 1,
                 'headers' => [
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json'

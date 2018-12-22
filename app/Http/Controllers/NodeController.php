@@ -162,7 +162,7 @@ class NodeController extends Controller
             } else {
                 //get main node data
                 $requestContent = [
-                    'timeout' => 0.5,
+                    'timeout' => 1,
                     'headers' => [
                         'Accept' => 'application/json',
                         'Content-Type' => 'application/json'
@@ -244,6 +244,9 @@ class NodeController extends Controller
                     }
 
                 } catch (RequestException $re) {
+                    return response([
+                        'status' => 'failure 1',
+                    ],400);
                     array_push($failedAliases,$alias);
                 }  
             }
