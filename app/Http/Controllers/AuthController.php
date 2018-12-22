@@ -254,10 +254,10 @@ class AuthController extends Controller
                 $status = "Your e-mail is already verified. You can now login.";
             }
         }else{
-            return redirect('/login')->with('warning', "Sorry your email cannot be identified.");
+            return redirect('https://nknx.org/login')->with('warning', "Sorry your email cannot be identified.");
         }
 
-        return redirect('/login')->with('status', $status);
+        return redirect('https://nknx.org/login')->with('status', $status);
     }
 
     /**
