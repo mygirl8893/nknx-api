@@ -18,7 +18,7 @@
         <div style="color: #636363; font-size: 14px;">
           You recently requested to reset your password for your nknX account. Click the button below to reset it.
         </div>
-        <a href="{{url('https://api.nknx.org/newpassword/'.$user->passwordReset->token)}}" style="padding: 8px 20px; background-color: #0073e7; color: #fff; font-weight: bolder; font-size: 16px; display: inline-block; margin: 20px 0px; margin-right: 20px; border-radius:50px; text-decoration: none;">Reset your password</a>
+        <a href="{{url('https://nknx.org/newpassword/'.$user->passwordReset->token)}}" style="padding: 8px 20px; background-color: #0073e7; color: #fff; font-weight: bolder; font-size: 16px; display: inline-block; margin: 20px 0px; margin-right: 20px; border-radius:50px; text-decoration: none;">Reset your password</a>
         <div style="color: #636363; font-size: 14px; margin-top: 30px;">
           If you did not request a password reset, pelase ignore this email or reply to let us know. This password reset is only valid for the next 30 minutes.<br><br>Thanks,<br>Your nknX team
         </div>
