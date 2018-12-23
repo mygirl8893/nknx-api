@@ -157,32 +157,32 @@ class NodeController extends Controller
                 $alias = substr($alias, 0, -1);
             }
 
-            if (Node::where('alias','LIKE', '%'.$alias.'%')->first()){
-                array_push($multiAliases,$alias);
-            } else {
-                //get main node data
-                $requestContent = [
-                    'timeout' => 1,
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json'
+            //get main node data
+            $requestContent = [
+                'timeout' => 1,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => [
+                    "id" => 1,
+                    "method" => "getnodestate",
+                    "params" => [
+                        "provider" => "nknx",
                     ],
-                    'json' => [
-                        "id" => 1,
-                        "method" => "getnodestate",
-                        "params" => [
-                            "provider" => "nknx",
-                        ],
-                        "jsonrpc" => "2.0"
-                    ]
-                ];
-                try {
-                    $client = new GuzzleHttpClient();
-                    $apiRequest = $client->Post($alias . ':30003', $requestContent);        
-                    $response = json_decode($apiRequest->getBody(), true);
+                    "jsonrpc" => "2.0"
+                ]
+            ];
+            try {
+                $client = new GuzzleHttpClient();
+                $apiRequest = $client->Post($alias . ':30003', $requestContent);        
+                $response = json_decode($apiRequest->getBody(), true);
 
+                if (Node::where('addr', $response["result"]["Addr"])->first()){
+                    array_push($multiAliases,$alias);
+                } 
+                else{
                     unset($response["result"]["ID"]);
-
                     $node = new Node($response["result"]);
                     $node->online = true;
                     $node->label = $label;
@@ -238,20 +238,15 @@ class NodeController extends Controller
                         } catch (RequestException $re) {
                             array_push($failedAliases,$alias);
                         }
-        
+    
                     } catch (RequestException $re) {
                         array_push($failedAliases,$alias);
                     }
-
-                } catch (RequestException $re) {
-                    return response([
-                        'status' => 'failure 1',
-                    ],400);
-                    array_push($failedAliases,$alias);
-                }  
-            }
+                }
+            } catch (RequestException $re) {
+                array_push($failedAliases,$alias);
+            }  
         }
-
         return response([
             'status' => 'success',
             'data' => [
