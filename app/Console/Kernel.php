@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        /*
+
         $schedule->call(function () {
             if (Queue::size('blockchainCrawler') <= 60){
                 //get current blockchain height
@@ -88,23 +88,21 @@ class Kernel extends ConsoleKernel
                     ProcessRemoteBlock::dispatch($i)->onQueue('blockchainCrawler');
                 }
             }
-        })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();   */
+        })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
 
-        /*
         $schedule->call(function () {
             $nodes= Node::all();
             foreach ($nodes as $node) {
                 UpdateNode::dispatch($node->id);
             }
-        })->everyMinute()->name('UpdateAllNodes')->withoutOverlapping();   */
+        })->everyMinute()->name('UpdateAllNodes')->withoutOverlapping();
 
-        /*
         $schedule->call(function () {
             $walletAddresses= WalletAddress::all();
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
-        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();  */
+        })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
 
         $schedule->call(function () {
             if (Queue::size('nodeCrawler') == 0){
@@ -147,17 +145,12 @@ class Kernel extends ConsoleKernel
 
                     }
                 }
-
-
-
-                //NodeCrawler::dispatch()->onQueue('nodeCrawler');
             }
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
-        /*
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
-        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();   */
+        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();
     }
 
     /**
