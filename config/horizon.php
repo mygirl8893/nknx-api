@@ -129,7 +129,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['nodeCrawler'],
                 'balance' => 'simple',
-                'processes' => 10,
+                'processes' => 5,
                 'tries' => 3,
                 'timeout' => 300 // Timeout after 5 minutes
             ],
@@ -164,7 +164,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['nodeCrawler'],
                 'balance' => 'simple',
-                'processes' => 10,
+                'processes' => 5,
                 'tries' => 3,
                 'timeout' => 300 // Timeout after 5 minutes
             ],
