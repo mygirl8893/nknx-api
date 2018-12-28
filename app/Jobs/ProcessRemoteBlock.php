@@ -18,6 +18,7 @@ use App\Output;
 use App\Input;
 use App\Payload;
 use App\NodeTracing;
+use App\CrawledNode;
 use App\Jobs\CreateAddressBookItem;
 use App\Jobs\DeleteAddressBookItem;
 
@@ -61,16 +62,16 @@ class ProcessRemoteBlock implements ShouldQueue
                     "jsonrpc" => "2.0"
                 ]
             ];
-            
+
             try {
                 $client = new GuzzleHttpClient();
-        
+
                 $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
-                
+
                 $response = json_decode($apiRequest->getBody(), true);
                 $blockdata = array_merge($response["result"]["header"]["program"], $response["result"]["header"], $response["result"]);
-                
-                
+
+
                 $previousBlock = Block::where('hash',$blockdata['prevBlockHash'])->first();
                 if($previousBlock){
                     $previousBlock->nextBlockHash = $blockdata['hash'];
@@ -86,16 +87,16 @@ class ProcessRemoteBlock implements ShouldQueue
                     $outputs = [];
                     $inputs = [];
 
-                
+
                     foreach((array)$transaction["attributes"] as $attribute){
                         $attributes[] = new Attribute($attribute);
                     }
-                    
+
                     foreach((array)$transaction["outputs"] as $output){
                         $newOutput = new Output($output);
                         $newOutput->timestamp = $block->timestamp;
                         array_push($outputs,$newOutput);
-                        
+
                     }
 
                     foreach((array)$transaction["inputs"] as $input){
@@ -143,10 +144,24 @@ class ProcessRemoteBlock implements ShouldQueue
                                 Log::channel('syncWithBlockchain')->error("Error processing SigChain: " . $transaction["payload"]["sigChain"]);
                             }
                             foreach ($protoSigChain->getElems() as $key=>$value){
-                                $newTransaction->nodeTracing()->save(new NodeTracing([
-                                    "priority" => $key,
-                                    "node_pk" => bin2hex($value->getAddr())
-                                    ])
+                                //get location data
+                                $crawledNode = CrawledNode::where('pk', bin2hex($value->getAddr()))->first();
+                                $nodeTracing_data = [];
+                                if($crawledNode){
+                                    $nodeTracing_data = array_merge([
+                                        "priority" => $key,
+                                        "node_pk" => bin2hex($value->getAddr())
+                                        ],$crawledNode->toArray());
+                                }
+                                else{
+                                    $nodeTracing_data = [
+                                        "priority" => $key,
+                                        "node_pk" => bin2hex($value->getAddr())
+                                        ];
+                                }
+
+
+                                $newTransaction->nodeTracing()->save(new NodeTracing($nodeTracing_data)
                                 );
                             }
                         }
@@ -154,10 +169,10 @@ class ProcessRemoteBlock implements ShouldQueue
                 }
 
 
-        
+
             } catch (RequestException $re) {
                 Log::channel('syncWithBlockchain')->error("ProcessRemoteBlock: Can't connect to testnet-node!");
-                throw $re; 
+                throw $re;
             }
         }
     }

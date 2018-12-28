@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddLocationToCrawledNodes extends Migration
+class AddLocationToNodeTracingTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddLocationToCrawledNodes extends Migration
      */
     public function up()
     {
-        Schema::table('crawled_nodes', function($table) {
+        Schema::table('node_tracing', function (Blueprint $table) {
             $table->string('continent_code')->nullable();
             $table->string('continent_name')->nullable();
             $table->string('country_code2')->nullable();
@@ -43,7 +43,7 @@ class AddLocationToCrawledNodes extends Migration
      */
     public function down()
     {
-        Schema::table('crawled_nodes', function($table) {
+        Schema::table('node_tracing', function (Blueprint $table) {
             $table->dropColumn('continent_code');
             $table->dropColumn('continent_name');
             $table->dropColumn('country_code2');
