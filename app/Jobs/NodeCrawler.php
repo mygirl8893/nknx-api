@@ -12,20 +12,27 @@ use GuzzleHttp\Exception\RequestException;
 use Log;
 use App\CrawledNode;
 use App\CachedNode;
-
+use App\CrawlerTempNode;
+use App\Jobs\NodeCrawler;
+use Queue;
 
 class NodeCrawler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    protected $pk;
+    protected $ip;
+    protected $port;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($pk,$ip,$port)
     {
-        //
+        $this->pk = $pk;
+        $this->ip = $ip;
+        $this->port = $port;
     }
 
     /**
@@ -35,109 +42,167 @@ class NodeCrawler implements ShouldQueue
      */
     public function handle()
     {
-        Log::channel('nodeCrawler')->notice("Node crawling started");
-        $nodes = CrawledNode::all()->pluck('ip')->toArray();
-        if(count($nodes)==0){
-            $nodes = array("35.197.90.102","35.187.152.66","35.187.201.101","35.198.198.253","146.148.24.130","35.242.233.86","35.204.197.53","35.192.235.226");
-        }
-        
-        $lastNode = "";
-        $blacklist = array();
-        $retries = array();
-        $index = 0;
-
-        $requestContent = [
-            'timeout' => 1,
-            'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json'
-            ],
-            'json' => [
-                "id" => 1,
-                "method" => "getneighbor",
-                "params" => [
-                    "provider" => "nknx",
-                ],
-                "jsonrpc" => "2.0"
-            ]
-        ];
-
-        while($index <=  (count($nodes)-1)){
-            $client = new GuzzleHttpClient();
-            //Log::channel('nodeCrawler')->notice($index.":".count($nodes));
-            try {
-                if(!filter_var($nodes[$index], FILTER_VALIDATE_IP)){
-                    //Log::channel('nodeCrawler')->warning('invalid ip!');
-                    array_splice($nodes,$index,1);
-                }
-                else{
-                    $apiRequest = $client->Post('http://'.$nodes[$index].':30003', $requestContent); 
+        //check if IP is correct
+        if(filter_var($this->ip, FILTER_VALIDATE_IP)){
+            //only process it if it hasn't been checked by another process
+            $crawlerTempNode = CrawlerTempNode::where([['pk', '=',$this->pk],['state', '=',0]])->first();
+            if ($crawlerTempNode) {
+                $crawlerTempNode->state = 1;
+                //if not try to reach it
+                $requestContent = [
+                    'timeout' => 1,
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Content-Type' => 'application/json'
+                    ],
+                    'json' => [
+                        "id" => 1,
+                        "method" => "getneighbor",
+                        "params" => [
+                            "provider" => "nknx",
+                        ],
+                        "jsonrpc" => "2.0"
+                    ]
+                ];
+                try{
+                    $client = new GuzzleHttpClient();
+                    $apiRequest = $client->Post($this->ip.':'.$this->port, $requestContent);
                     $response = json_decode($apiRequest->getBody(), true);
-                    $neighbors = $response["result"];
-                    if(is_array($neighbors)){
-                        foreach ($neighbors as $neighbor){
-                            $count= count($neighbor["IpAddr"])-1;
-                            $host = $neighbor["IpAddr"][$count-3].".".$neighbor["IpAddr"][$count-2].".".$neighbor["IpAddr"][$count-1].".".$neighbor["IpAddr"][$count];
-                            if(!in_array($host, $nodes)&&!in_array($host, $blacklist)){
-                                array_push($nodes,$host);
+
+                    //try to save it
+                    if($crawlerTempNode->save()){
+                        $neighbors = $response["result"];
+                        //if it is saved we can get the geolocation
+                        //look up the cache
+                        $cachedNode = CachedNode::where('ip', $this->ip)->first();
+
+                        //if node is cached get it
+                        if($cachedNode){
+                            $cachedNode = $cachedNode->toArray();
+                            $response = $cachedNode;
+                        }
+                        //if not ask the api
+                        else{
+                            $client = new GuzzleHttpClient();
+                            $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.config('geolocation.ipgeolocation_key').'&ip='.$this->ip);
+                            $response = json_decode($apiRequest->getBody(), true);
+                            unset($response["ip"]);
+                        }
+
+                        //update the values
+
+                        $crawlerTempNode->fill($response);
+                        $crawlerTempNode->save();
+                        //update or create cache entry
+
+
+                        $dbCachedNode = CachedNode::firstOrCreate(array('ip' => $this->ip));
+                        $dbCachedNode->fill($response);
+                        $dbCachedNode->save();
+
+
+                        if(is_array($neighbors)){
+                            $i = 0;
+                            foreach ($neighbors as $neighbor){
+                                $pubkey = $neighbor["NKNaddr"];
+                                $host = $neighbor["IpStr"];
+                                $port = 30003;
+                                if (!CrawlerTempNode::where('pk', '=',$pubkey)->exists()) {
+                                    $tempNode = new CrawlerTempNode([
+                                        "pk"    =>  $pubkey,
+                                        "ip"    =>  $host,
+                                        "port"  =>  $port,
+                                        "state" =>  0
+                                    ]);
+                                    $tempNode->save();
+                                    NodeCrawler::dispatch($pubkey,$host,$port)->onQueue('nodeCrawler');
+                                   $i++;
+                                }
+
+                            }
+                            if($i==0){
+                                //check if queue is empty
+                                if (Queue::size('nodeCrawler') == 1){
+                                    //wait for random seconds
+                                    usleep(rand(500000,3000000));
+                                    //if queue is still empty
+                                    if (Queue::size('nodeCrawler') == 1){
+                                        CrawledNode::truncate();
+                                        $finalNodes = CrawlerTempNode::where('state', 1)->get();
+                                        foreach ($finalNodes as $finalNode){
+                                            $finalCrawledNode = new CrawledNode($finalNode->toArray());
+                                            $finalCrawledNode->save();
+                                        }
+                                        Log::channel('nodeCrawler')->notice("Node crawling finished");
+                                        CrawlerTempNode::truncate();
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            //check if queue is empty
+                            if (Queue::size('nodeCrawler') == 1){
+                                //wait for random seconds
+                                usleep(rand(500000,3000000));
+                                //if queue is still empty
+                                if (Queue::size('nodeCrawler') == 1){
+                                    CrawledNode::truncate();
+                                    $finalNodes = CrawlerTempNode::where('state', 1)->get();
+                                    foreach ($finalNodes as $finalNode){
+                                        $finalCrawledNode = new CrawledNode($finalNode->toArray());
+                                        $finalCrawledNode->save();
+                                    }
+                                    Log::channel('nodeCrawler')->notice("Node crawling finished");
+                                    CrawlerTempNode::truncate();
+                                }
                             }
                         }
                     }
-                    $index++;
-                }
-            } catch (RequestException $re){
-                //okay, we tried enough - node is offline
-                switch($re->getHandlerContext()['errno']){
-                    case 0: 
-                        //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
-                        array_push($blacklist,$nodes[$index]);
-                        array_splice($nodes,$index,1);
-                        break;
-                    case 28: 
-                        //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
-                        array_push($blacklist,$nodes[$index]);
-                        array_splice($nodes,$index,1);
-                        break;
-                    case 7:
-                        if($lastNode == $nodes[$index]){
-                            array_push($blacklist,$nodes[$index]);
-                            array_splice($nodes,$index,1);
-                        }
-                        else{
-                            //Log::channel('nodeCrawler')->error('connection refused from ' . $nodes[$index] . "!");
-                            $count = 0;
-                            foreach ($retries as $item) {
-                                if ($item == $nodes[$index]) {
-                                    $count++;
+                    else{
+                        //check if queue is empty
+                        if (Queue::size('nodeCrawler') == 1){
+                            //wait for random seconds
+                            usleep(rand(500000,3000000));
+                            //if queue is still empty
+                            if (Queue::size('nodeCrawler') == 1){
+                                CrawledNode::truncate();
+                                $finalNodes = CrawlerTempNode::where('state', 1)->get();
+                                foreach ($finalNodes as $finalNode){
+                                    $finalCrawledNode = new CrawledNode($finalNode->toArray());
+                                    $finalCrawledNode->save();
                                 }
+                                Log::channel('nodeCrawler')->notice("Node crawling finished");
+                                CrawlerTempNode::truncate();
                             }
-                            if($count >=10){
-                                //Log::channel('nodeCrawler')->error('Too many retries for '.$nodes[$index] . " ignoring its neighbors.");
-                                array_push($blacklist,$nodes[$index]);
-                                $index++;
-                            }
-                            else{
-
-                                //Log::channel('nodeCrawler')->error($nodes[$index] . " has to cool down - moving at the end of list");
-                                //end of list
-                                $lastNode = $nodes[$index];
-                                array_push($nodes,$nodes[$index]);
-                                array_push($retries,$nodes[$index]);
-                                array_splice($nodes,$index,1);
-                            }
-
                         }
-                        break;
-                    default:
-                        //Log::channel('nodeCrawler')->error('error from ' . $nodes[$index] . ":" . $re->getMessage());
-                        array_push($blacklist,$nodes[$index]);
-                        array_splice($nodes,$index,1);
-                        break;
-                }
+                    }
 
+                }
+                catch(RequestException $re){
+                    $crawlerTempNode->state = 2;
+                    $crawlerTempNode->save();
+                    //check if queue is empty
+                    if (Queue::size('nodeCrawler') == 1){
+                        //wait for random seconds
+                        usleep(rand(500000,3000000));
+                        //if queue is still empty
+                        if (Queue::size('nodeCrawler') == 1){
+                            CrawledNode::truncate();
+                            $finalNodes = CrawlerTempNode::where('state', 1)->get();
+                            foreach ($finalNodes as $finalNode){
+                                $finalCrawledNode = new CrawledNode($finalNode->toArray());
+                                $finalCrawledNode->save();
+                            }
+                            Log::channel('nodeCrawler')->notice("Node crawling finished");
+                            CrawlerTempNode::truncate();
+                        }
+                    }
+                }
             }
-            
         }
+
+
+       /*
 
         //delete all old nodes
         CrawledNode::whereNotIn('ip', $nodes)->delete();
@@ -172,7 +237,7 @@ class NodeCrawler implements ShouldQueue
                 $response = json_decode($apiRequest->getBody(), true);
                 unset($response["ip"]);
             }
-            
+
             //update the values
             $updatedDbNode = CrawledNode::where('ip', $newDbNode)->first();
             $updatedDbNode->fill($response);
@@ -186,10 +251,10 @@ class NodeCrawler implements ShouldQueue
 
 
         }
-        Log::channel('nodeCrawler')->notice("Node crawling successful");
+        Log::channel('nodeCrawler')->notice("Node crawling successful");*/
     }
-    public function tags()
-    {
-        return ['NodeCrawler'];
-    }
+   // public function tags()
+   // {
+   //     return ['NodeCrawler'];
+   // }
 }

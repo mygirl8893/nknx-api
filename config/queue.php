@@ -82,7 +82,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'nodeCrawler',
-            'retry_after' => 2100, // Run for max 35 minutes
+            'retry_after' => 450, // Run for max 35 minutes
             'block_for' => null,
         ],
 
