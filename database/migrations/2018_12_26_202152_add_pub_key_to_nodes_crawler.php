@@ -14,7 +14,7 @@ class AddPubKeyToNodesCrawler extends Migration
     public function up()
     {
         Schema::table('crawled_nodes', function (Blueprint $table) {
-            $table->string('pubKey')->nullable();
+            $table->string('pk')->nullable();
             $table->integer('port')->nullable();
         });
     }
@@ -27,7 +27,8 @@ class AddPubKeyToNodesCrawler extends Migration
     public function down()
     {
         Schema::table('crawled_nodes', function (Blueprint $table) {
-            $table->dropColumn('pubKey');
+            $table->dropColumn('pk');
+            $table->dropColumn('port');
         });
     }
 }
