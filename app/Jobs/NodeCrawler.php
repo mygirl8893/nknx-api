@@ -78,8 +78,8 @@ class NodeCrawler implements ShouldQueue
 
                         //if node is cached get it
                         if($cachedNode){
-                            $cachedNode = $cachedNode->toArray();
-                            $response = $cachedNode;
+                            $response = $cachedNode->toArray();
+                            $cachedNode->touch();
                         }
                         //if not ask the api
                         else{
@@ -87,18 +87,15 @@ class NodeCrawler implements ShouldQueue
                             $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.config('geolocation.ipgeolocation_key').'&ip='.$this->ip);
                             $response = json_decode($apiRequest->getBody(), true);
                             unset($response["ip"]);
+                            //update or create cache entry
+                            $dbCachedNode = CachedNode::firstOrCreate(array('ip' => $this->ip));
+                            $dbCachedNode->fill($response);
+                            $dbCachedNode->save();
                         }
 
                         //update the values
-
                         $crawlerTempNode->fill($response);
                         $crawlerTempNode->save();
-                        //update or create cache entry
-
-
-                        $dbCachedNode = CachedNode::firstOrCreate(array('ip' => $this->ip));
-                        $dbCachedNode->fill($response);
-                        $dbCachedNode->save();
 
 
                         if(is_array($neighbors)){
