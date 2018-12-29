@@ -99,7 +99,7 @@ class NodeCrawler implements ShouldQueue
 
 
                         if(is_array($neighbors)){
-                            $i = 0;
+
                             foreach ($neighbors as $neighbor){
                                 $pubkey = $neighbor["NKNaddr"];
                                 $host = $neighbor["IpStr"];
@@ -113,142 +113,25 @@ class NodeCrawler implements ShouldQueue
                                     ]);
                                     $tempNode->save();
                                     NodeCrawler::dispatch($pubkey,$host,$port)->onQueue('nodeCrawler');
-                                   $i++;
-                                }
-
-                            }
-                            if($i==0){
-                                //check if queue is empty
-                                if (Queue::size('nodeCrawler') == 1){
-                                    //wait for random seconds
-                                    usleep(rand(500000,3000000));
-                                    //if queue is still empty
-                                    if (Queue::size('nodeCrawler') == 1){
-                                        CrawledNode::truncate();
-                                        $finalNodes = CrawlerTempNode::where('state', 1)->get();
-                                        foreach ($finalNodes as $finalNode){
-                                            $finalCrawledNode = new CrawledNode($finalNode->toArray());
-                                            $finalCrawledNode->save();
-                                        }
-                                        Log::channel('nodeCrawler')->notice("Node crawling finished");
-                                        CrawlerTempNode::truncate();
-                                    }
                                 }
                             }
                         }
                         else{
-                            //check if queue is empty
-                            if (Queue::size('nodeCrawler') == 1){
-                                //wait for random seconds
-                                usleep(rand(500000,3000000));
-                                //if queue is still empty
-                                if (Queue::size('nodeCrawler') == 1){
-                                    CrawledNode::truncate();
-                                    $finalNodes = CrawlerTempNode::where('state', 1)->get();
-                                    foreach ($finalNodes as $finalNode){
-                                        $finalCrawledNode = new CrawledNode($finalNode->toArray());
-                                        $finalCrawledNode->save();
-                                    }
-                                    Log::channel('nodeCrawler')->notice("Node crawling finished");
-                                    CrawlerTempNode::truncate();
-                                }
-                            }
+                            //
                         }
                     }
                     else{
-                        //check if queue is empty
-                        if (Queue::size('nodeCrawler') == 1){
-                            //wait for random seconds
-                            usleep(rand(500000,3000000));
-                            //if queue is still empty
-                            if (Queue::size('nodeCrawler') == 1){
-                                CrawledNode::truncate();
-                                $finalNodes = CrawlerTempNode::where('state', 1)->get();
-                                foreach ($finalNodes as $finalNode){
-                                    $finalCrawledNode = new CrawledNode($finalNode->toArray());
-                                    $finalCrawledNode->save();
-                                }
-                                Log::channel('nodeCrawler')->notice("Node crawling finished");
-                                CrawlerTempNode::truncate();
-                            }
-                        }
+                       //
                     }
 
                 }
                 catch(RequestException $re){
                     $crawlerTempNode->state = 2;
                     $crawlerTempNode->save();
-                    //check if queue is empty
-                    if (Queue::size('nodeCrawler') == 1){
-                        //wait for random seconds
-                        usleep(rand(500000,3000000));
-                        //if queue is still empty
-                        if (Queue::size('nodeCrawler') == 1){
-                            CrawledNode::truncate();
-                            $finalNodes = CrawlerTempNode::where('state', 1)->get();
-                            foreach ($finalNodes as $finalNode){
-                                $finalCrawledNode = new CrawledNode($finalNode->toArray());
-                                $finalCrawledNode->save();
-                            }
-                            Log::channel('nodeCrawler')->notice("Node crawling finished");
-                            CrawlerTempNode::truncate();
-                        }
-                    }
+                    //
                 }
             }
         }
-
-
-       /*
-
-        //delete all old nodes
-        CrawledNode::whereNotIn('ip', $nodes)->delete();
-
-        //update or create new one
-        foreach ($nodes as $node){
-            CrawledNode::updateOrCreate(array('ip' => $node));
-            //if the ip is in the cache refresh it
-            $tempDbCachedNode = CachedNode::where('ip', $node)->first();
-            if($tempDbCachedNode){
-                $tempDbCachedNode->touch();
-            }
-        }
-
-        //get new Nodes without geolocation
-        $newDbNodes = CrawledNode::whereNull('latitude')->pluck('ip')->toArray();
-
-        //for each of them
-        foreach ($newDbNodes as $newDbNode){
-            //look up the cache
-            $cachedNode = CachedNode::where('ip', $newDbNode)->first();
-
-            //if node is cached get it
-            if($cachedNode){
-                $cachedNode = $cachedNode->toArray();
-                $response = $cachedNode;
-            }
-            //if not ask the api
-            else{
-                $client = new GuzzleHttpClient();
-                $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.config('geolocation.ipgeolocation_key').'&ip='.$newDbNode);
-                $response = json_decode($apiRequest->getBody(), true);
-                unset($response["ip"]);
-            }
-
-            //update the values
-            $updatedDbNode = CrawledNode::where('ip', $newDbNode)->first();
-            $updatedDbNode->fill($response);
-            $updatedDbNode->save();
-            //update or create cache entry
-            $response["ip"] = $newDbNode;
-
-            $dbCachedNode = CachedNode::firstOrCreate(array('ip' => $newDbNode));
-            $dbCachedNode->fill($response);
-            $dbCachedNode->save();
-
-
-        }
-        Log::channel('nodeCrawler')->notice("Node crawling successful");*/
     }
    // public function tags()
    // {

@@ -106,6 +106,17 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             if (Queue::size('nodeCrawler') == 0){
+                //cleanup
+                $finalNodes = CrawlerTempNode::where('state', 1)->get();
+                if ($finalNodes){
+                    CrawledNode::truncate();
+                    foreach ($finalNodes as $finalNode){
+                        $finalCrawledNode = new CrawledNode($finalNode->toArray());
+                        $finalCrawledNode->save();
+                    }
+                    Log::channel('nodeCrawler')->notice("Node crawling finished");
+                    CrawlerTempNode::truncate();
+                }
                 Log::channel('nodeCrawler')->notice("Node crawling started");
                 $seedNodes = array("35.187.201.101","35.198.198.253","146.148.24.130","35.242.233.86");
                 $requestContent = [
