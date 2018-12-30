@@ -118,12 +118,21 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X PUT "https://api.nknx.org/auth/user/notifications" </code></pre>
+<pre><code class="language-bash">curl -X PUT "https://api.nknx.org/auth/user/notifications"     -d "nodeOffline"="1" \
+    -d "nodeOutdated"="false" \
+    -d "nodeStucked"="1" \
+    -d "weeklyMiningOutput"="false" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/user/notifications",
     "method": "PUT",
+    "data": {
+        "nodeOffline": true,
+        "nodeOutdated": false,
+        "nodeStucked": true,
+        "weeklyMiningOutput": false
+    },
     "headers": {
     }
 }
@@ -146,6 +155,43 @@ $.ajax(settings).done(function (response) {
 }</code></pre>
 <h3>HTTP Request</h3>
 <p><code>PUT auth/user/notifications</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodeOffline</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive an eMail if one of his nodes go offline</td>
+</tr>
+<tr>
+<td>nodeOutdated</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive an eMail if one of his nodes is outdated</td>
+</tr>
+<tr>
+<td>nodeStucked</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive an eMail if one of his nodes is stucked</td>
+</tr>
+<tr>
+<td>weeklyMiningOutput</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive a weekly eMail with his mining stats</td>
+</tr>
+</tbody>
+</table>
 <!-- END_aa34b2132ff352aaec450f63f6239eaf -->
 <h1>Addresses</h1>
 <p>Endpoints for address-based queries</p>
@@ -200,18 +246,18 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/register"     -d "email"="JudQpv8UpkMaowWL" \
-    -d "name"="kJMnhZJy9OpeByX6" \
-    -d "password"="ZQl2lvEMF81AXcFJ" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/register"     -d "email"="VsjGL3mO5ttQ2BEX" \
+    -d "name"="C7ll3C2MEN13lxGJ" \
+    -d "password"="G9TNNM0uIRMDlvqM" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/register",
     "method": "POST",
     "data": {
-        "email": "JudQpv8UpkMaowWL",
-        "name": "kJMnhZJy9OpeByX6",
-        "password": "ZQl2lvEMF81AXcFJ"
+        "email": "VsjGL3mO5ttQ2BEX",
+        "name": "C7ll3C2MEN13lxGJ",
+        "password": "G9TNNM0uIRMDlvqM"
     },
     "headers": {
     }
@@ -319,14 +365,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="L4IUR1HkhPcZbt0h" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="MCQGERPNhXasIzJ9" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "L4IUR1HkhPcZbt0h"
+        "password": "MCQGERPNhXasIzJ9"
     },
     "headers": {
     }
@@ -370,14 +416,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="OIugriie2TEZdRjR" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="iWVxJelclj9rROqt" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/reset",
     "method": "POST",
     "data": {
-        "email": "OIugriie2TEZdRjR"
+        "email": "iWVxJelclj9rROqt"
     },
     "headers": {
     }
@@ -421,16 +467,16 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/login"     -d "email"="nHdrihYJglv3TnpL" \
-    -d "password"="lmq44JCWWtTHF0fo" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/login"     -d "email"="BQlEX9oQJFoGEVXQ" \
+    -d "password"="N7q83E7oCPxRvEli" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/login",
     "method": "POST",
     "data": {
-        "email": "nHdrihYJglv3TnpL",
-        "password": "lmq44JCWWtTHF0fo"
+        "email": "BQlEX9oQJFoGEVXQ",
+        "password": "N7q83E7oCPxRvEli"
     },
     "headers": {
     }
@@ -576,18 +622,18 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="gwREeciBCdceFxHg" \
-    -d "name"="4orYjVRIme92Rtk1" \
-    -d "password"="e1UuPu8R4SCSyNAk" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="MKjtPgmEqrIipeQz" \
+    -d "name"="x3JY8oztT28ncGdZ" \
+    -d "password"="5jsxc2NEN1bjWJIk" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/changeUser",
     "method": "POST",
     "data": {
-        "email": "gwREeciBCdceFxHg",
-        "name": "4orYjVRIme92Rtk1",
-        "password": "e1UuPu8R4SCSyNAk"
+        "email": "MKjtPgmEqrIipeQz",
+        "name": "x3JY8oztT28ncGdZ",
+        "password": "5jsxc2NEN1bjWJIk"
     },
     "headers": {
     }

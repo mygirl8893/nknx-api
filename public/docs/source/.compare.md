@@ -117,7 +117,10 @@ Updates all notification settings of the current logged in User
 > Example request:
 
 ```bash
-curl -X PUT "https://api.nknx.org/auth/user/notifications" 
+curl -X PUT "https://api.nknx.org/auth/user/notifications"     -d "nodeOffline"="1" \
+    -d "nodeOutdated"="false" \
+    -d "nodeStucked"="1" \
+    -d "weeklyMiningOutput"="false" 
 ```
 
 ```javascript
@@ -126,6 +129,12 @@ var settings = {
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/user/notifications",
     "method": "PUT",
+    "data": {
+        "nodeOffline": true,
+        "nodeOutdated": false,
+        "nodeStucked": true,
+        "weeklyMiningOutput": false
+    },
     "headers": {
     }
 }
@@ -153,6 +162,14 @@ $.ajax(settings).done(function (response) {
 ### HTTP Request
 `PUT auth/user/notifications`
 
+#### Body Parameters
+
+Parameter | Type | Status | Description
+--------- | ------- | ------- | ------- | -----------
+    nodeOffline | boolean |  required  | User will receive an eMail if one of his nodes go offline
+    nodeOutdated | boolean |  required  | User will receive an eMail if one of his nodes is outdated
+    nodeStucked | boolean |  required  | User will receive an eMail if one of his nodes is stucked
+    weeklyMiningOutput | boolean |  required  | User will receive a weekly eMail with his mining stats
 
 <!-- END_aa34b2132ff352aaec450f63f6239eaf -->
 
@@ -213,9 +230,9 @@ Creates an initial user entity in the database and also starts verification proc
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/register"     -d "email"="JudQpv8UpkMaowWL" \
-    -d "name"="kJMnhZJy9OpeByX6" \
-    -d "password"="ZQl2lvEMF81AXcFJ" 
+curl -X POST "https://api.nknx.org/auth/register"     -d "email"="VsjGL3mO5ttQ2BEX" \
+    -d "name"="C7ll3C2MEN13lxGJ" \
+    -d "password"="G9TNNM0uIRMDlvqM" 
 ```
 
 ```javascript
@@ -225,9 +242,9 @@ var settings = {
     "url": "https://api.nknx.org/auth/register",
     "method": "POST",
     "data": {
-        "email": "JudQpv8UpkMaowWL",
-        "name": "kJMnhZJy9OpeByX6",
-        "password": "ZQl2lvEMF81AXcFJ"
+        "email": "VsjGL3mO5ttQ2BEX",
+        "name": "C7ll3C2MEN13lxGJ",
+        "password": "G9TNNM0uIRMDlvqM"
     },
     "headers": {
     }
@@ -320,7 +337,7 @@ Sets a new password for a user from a provided token
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="L4IUR1HkhPcZbt0h" 
+curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="MCQGERPNhXasIzJ9" 
 ```
 
 ```javascript
@@ -330,7 +347,7 @@ var settings = {
     "url": "https://api.nknx.org/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "L4IUR1HkhPcZbt0h"
+        "password": "MCQGERPNhXasIzJ9"
     },
     "headers": {
     }
@@ -369,7 +386,7 @@ Creates a password reset mail and an entry in the database
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="OIugriie2TEZdRjR" 
+curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="iWVxJelclj9rROqt" 
 ```
 
 ```javascript
@@ -379,7 +396,7 @@ var settings = {
     "url": "https://api.nknx.org/auth/reset",
     "method": "POST",
     "data": {
-        "email": "OIugriie2TEZdRjR"
+        "email": "iWVxJelclj9rROqt"
     },
     "headers": {
     }
@@ -418,8 +435,8 @@ Logs a user in
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/login"     -d "email"="nHdrihYJglv3TnpL" \
-    -d "password"="lmq44JCWWtTHF0fo" 
+curl -X POST "https://api.nknx.org/auth/login"     -d "email"="BQlEX9oQJFoGEVXQ" \
+    -d "password"="N7q83E7oCPxRvEli" 
 ```
 
 ```javascript
@@ -429,8 +446,8 @@ var settings = {
     "url": "https://api.nknx.org/auth/login",
     "method": "POST",
     "data": {
-        "email": "nHdrihYJglv3TnpL",
-        "password": "lmq44JCWWtTHF0fo"
+        "email": "BQlEX9oQJFoGEVXQ",
+        "password": "N7q83E7oCPxRvEli"
     },
     "headers": {
     }
@@ -599,9 +616,9 @@ Changes the userdata based on the given values
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="gwREeciBCdceFxHg" \
-    -d "name"="4orYjVRIme92Rtk1" \
-    -d "password"="e1UuPu8R4SCSyNAk" 
+curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="MKjtPgmEqrIipeQz" \
+    -d "name"="x3JY8oztT28ncGdZ" \
+    -d "password"="5jsxc2NEN1bjWJIk" 
 ```
 
 ```javascript
@@ -611,9 +628,9 @@ var settings = {
     "url": "https://api.nknx.org/auth/changeUser",
     "method": "POST",
     "data": {
-        "email": "gwREeciBCdceFxHg",
-        "name": "4orYjVRIme92Rtk1",
-        "password": "e1UuPu8R4SCSyNAk"
+        "email": "MKjtPgmEqrIipeQz",
+        "name": "x3JY8oztT28ncGdZ",
+        "password": "5jsxc2NEN1bjWJIk"
     },
     "headers": {
     }

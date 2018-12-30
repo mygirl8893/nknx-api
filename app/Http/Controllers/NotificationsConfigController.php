@@ -57,6 +57,11 @@ class NotificationsConfigController extends Controller
      *
      * Updates all notification settings of the current logged in User
      *
+     * @bodyParam  nodeOffline boolean required User will receive an eMail if one of his nodes go offline Example: 1
+     * @bodyParam  nodeOutdated boolean required User will receive an eMail if one of his nodes is outdated Example: 0
+     * @bodyParam  nodeStucked boolean required User will receive an eMail if one of his nodes is stucked Example: 1
+     * @bodyParam  weeklyMiningOutput boolean required User will receive a weekly eMail with his mining stats Example: 0
+     *
      * @response {
      *    "user_id": 1,
      *    "nodeOffline": 0,
