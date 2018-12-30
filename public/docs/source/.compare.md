@@ -109,7 +109,7 @@ Parameter | Status | Description
 
 #Auth and User management
 
-APIs for managing users
+APIs for managing users and their configuration
 <!-- START_06cb1b0688f24d603f49db812175a611 -->
 ## Register a user
 
@@ -118,9 +118,9 @@ Creates an initial user entity in the database and also starts verification proc
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/register"     -d "email"="1onAyHDGzEn77uoM" \
-    -d "name"="wwW5k8CRLJcn96oU" \
-    -d "password"="WqOY6TVbbJuf95U4" 
+curl -X POST "https://api.nknx.org/auth/register"     -d "email"="FZFoX3LDTjKO0EWj" \
+    -d "name"="XXYgpd0SVX4gNSUF" \
+    -d "password"="B6OBjQdoKdE2OWUU" 
 ```
 
 ```javascript
@@ -130,9 +130,9 @@ var settings = {
     "url": "https://api.nknx.org/auth/register",
     "method": "POST",
     "data": {
-        "email": "1onAyHDGzEn77uoM",
-        "name": "wwW5k8CRLJcn96oU",
-        "password": "WqOY6TVbbJuf95U4"
+        "email": "FZFoX3LDTjKO0EWj",
+        "name": "XXYgpd0SVX4gNSUF",
+        "password": "B6OBjQdoKdE2OWUU"
     },
     "headers": {
     }
@@ -225,7 +225,7 @@ Sets a new password for a user from a provided token
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="WmhTD7awSyB29GIt" 
+curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="4LpEjm7f4s6NlNxU" 
 ```
 
 ```javascript
@@ -235,7 +235,7 @@ var settings = {
     "url": "https://api.nknx.org/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "WmhTD7awSyB29GIt"
+        "password": "4LpEjm7f4s6NlNxU"
     },
     "headers": {
     }
@@ -274,7 +274,7 @@ Creates a password reset mail and an entry in the database
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="yhyQkzmC4QeDdUlY" 
+curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="IkHfYN1Om80WbtwK" 
 ```
 
 ```javascript
@@ -284,7 +284,7 @@ var settings = {
     "url": "https://api.nknx.org/auth/reset",
     "method": "POST",
     "data": {
-        "email": "yhyQkzmC4QeDdUlY"
+        "email": "IkHfYN1Om80WbtwK"
     },
     "headers": {
     }
@@ -323,8 +323,8 @@ Logs a user in
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/login"     -d "email"="u7uBraYc1r7y9SIY" \
-    -d "password"="HGJTUPd4BbfAdqUu" 
+curl -X POST "https://api.nknx.org/auth/login"     -d "email"="s8Y5Kced9AcjgRdw" \
+    -d "password"="yip1IieNyyx46Ghr" 
 ```
 
 ```javascript
@@ -334,8 +334,8 @@ var settings = {
     "url": "https://api.nknx.org/auth/login",
     "method": "POST",
     "data": {
-        "email": "u7uBraYc1r7y9SIY",
-        "password": "HGJTUPd4BbfAdqUu"
+        "email": "s8Y5Kced9AcjgRdw",
+        "password": "yip1IieNyyx46Ghr"
     },
     "headers": {
     }
@@ -365,6 +365,118 @@ Parameter | Type | Status | Description
     password | string |  required  | User password
 
 <!-- END_44652685eefa8022f19b92a3ce78d990 -->
+
+<!-- START_d852ce3db5ae10199d25471b49fca7ff -->
+## Get the notification settings for current user
+
+<br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small>
+Returns all notification settings of the current logged in User
+
+> Example request:
+
+```bash
+curl -X GET -G "https://api.nknx.org/auth/user/notifications" 
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/user/notifications",
+    "method": "GET",
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "user_id": 1,
+    "nodeOffline": 0,
+    "nodeOutdated": 0,
+    "nodeStucked": 0,
+    "weeklyMiningOutput": 0,
+    "updated_at": "2018-12-30 17:12:22",
+    "created_at": "2018-12-30 17:12:22",
+    "id": 1
+}
+```
+
+### HTTP Request
+`GET auth/user/notifications`
+
+
+<!-- END_d852ce3db5ae10199d25471b49fca7ff -->
+
+<!-- START_aa34b2132ff352aaec450f63f6239eaf -->
+## Update notification settings
+
+Updates all notification settings of the current logged in User
+
+> Example request:
+
+```bash
+curl -X PUT "https://api.nknx.org/auth/user/notifications"     -d "nodeOffline"="1" \
+    -d "nodeOutdated"="1" \
+    -d "nodeStucked"="1" \
+    -d "weeklyMiningOutput"="1" 
+```
+
+```javascript
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/user/notifications",
+    "method": "PUT",
+    "data": {
+        "nodeOffline": true,
+        "nodeOutdated": true,
+        "nodeStucked": true,
+        "weeklyMiningOutput": true
+    },
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});
+```
+
+> Example response:
+
+```json
+{
+    "user_id": 1,
+    "nodeOffline": 0,
+    "nodeOutdated": 0,
+    "nodeStucked": 0,
+    "weeklyMiningOutput": 0,
+    "updated_at": "2018-12-30 17:12:22",
+    "created_at": "2018-12-30 17:12:22",
+    "id": 1
+}
+```
+
+### HTTP Request
+`PUT auth/user/notifications`
+
+#### Body Parameters
+
+Parameter | Type | Status | Description
+--------- | ------- | ------- | ------- | -----------
+    nodeOffline | boolean |  required  | User will receive an eMail if one of his nodes go offline
+    nodeOutdated | boolean |  required  | User will receive an eMail if one of his nodes is outdated
+    nodeStucked | boolean |  required  | User will receive an eMail if one of his nodes is stucked
+    weeklyMiningOutput | boolean |  required  | User will receive a weekly eMail with his mining stats
+
+<!-- END_aa34b2132ff352aaec450f63f6239eaf -->
 
 <!-- START_b25bea9b921111447db41e83ca0f4564 -->
 ## User
@@ -504,9 +616,9 @@ Changes the userdata based on the given values
 > Example request:
 
 ```bash
-curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="00i2E6B9cLZQ0F6o" \
-    -d "name"="MbAY4XgSknidl70v" \
-    -d "password"="wHcL1bGmTAkbFsJ2" 
+curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="CnOi67hJvihPckG2" \
+    -d "name"="euarbOh7J1fumSuf" \
+    -d "password"="UhlRnuJ1BXUHXYmK" 
 ```
 
 ```javascript
@@ -516,9 +628,9 @@ var settings = {
     "url": "https://api.nknx.org/auth/changeUser",
     "method": "POST",
     "data": {
-        "email": "00i2E6B9cLZQ0F6o",
-        "name": "MbAY4XgSknidl70v",
-        "password": "wHcL1bGmTAkbFsJ2"
+        "email": "CnOi67hJvihPckG2",
+        "name": "euarbOh7J1fumSuf",
+        "password": "UhlRnuJ1BXUHXYmK"
     },
     "headers": {
     }
@@ -582,121 +694,6 @@ $.ajax(settings).done(function (response) {
 
 
 <!-- END_e77c3e002818fc05b52243f5d31d9cc8 -->
-
-#Auth and User management
-
-APIs for managing users and their configuration
-<!-- START_d852ce3db5ae10199d25471b49fca7ff -->
-## Get the notification settings for current user
-
-<br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small>
-Returns all notification settings of the current logged in User
-
-> Example request:
-
-```bash
-curl -X GET -G "https://api.nknx.org/auth/user/notifications" 
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/user/notifications",
-    "method": "GET",
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "user_id": 1,
-    "nodeOffline": 0,
-    "nodeOutdated": 0,
-    "nodeStucked": 0,
-    "weeklyMiningOutput": 0,
-    "updated_at": "2018-12-30 17:12:22",
-    "created_at": "2018-12-30 17:12:22",
-    "id": 1
-}
-```
-
-### HTTP Request
-`GET auth/user/notifications`
-
-
-<!-- END_d852ce3db5ae10199d25471b49fca7ff -->
-
-<!-- START_aa34b2132ff352aaec450f63f6239eaf -->
-## Update notification settings
-
-Updates all notification settings of the current logged in User
-
-> Example request:
-
-```bash
-curl -X PUT "https://api.nknx.org/auth/user/notifications"     -d "nodeOffline"="1" \
-    -d "nodeOutdated"="1" \
-    -d "nodeStucked"="1" \
-    -d "weeklyMiningOutput"="1" 
-```
-
-```javascript
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/user/notifications",
-    "method": "PUT",
-    "data": {
-        "nodeOffline": true,
-        "nodeOutdated": true,
-        "nodeStucked": true,
-        "weeklyMiningOutput": true
-    },
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});
-```
-
-> Example response:
-
-```json
-{
-    "user_id": 1,
-    "nodeOffline": 0,
-    "nodeOutdated": 0,
-    "nodeStucked": 0,
-    "weeklyMiningOutput": 0,
-    "updated_at": "2018-12-30 17:12:22",
-    "created_at": "2018-12-30 17:12:22",
-    "id": 1
-}
-```
-
-### HTTP Request
-`PUT auth/user/notifications`
-
-#### Body Parameters
-
-Parameter | Type | Status | Description
---------- | ------- | ------- | ------- | -----------
-    nodeOffline | boolean |  required  | User will receive an eMail if one of his nodes go offline
-    nodeOutdated | boolean |  required  | User will receive an eMail if one of his nodes is outdated
-    nodeStucked | boolean |  required  | User will receive an eMail if one of his nodes is stucked
-    weeklyMiningOutput | boolean |  required  | User will receive a weekly eMail with his mining stats
-
-<!-- END_aa34b2132ff352aaec450f63f6239eaf -->
 
 #Blocks
 

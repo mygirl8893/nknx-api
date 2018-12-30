@@ -122,25 +122,25 @@ $.ajax(settings).done(function (response) {
 </table>
 <!-- END_a89f0be59ea88f06284dbeae93e6a314 -->
 <h1>Auth and User management</h1>
-<p>APIs for managing users</p>
+<p>APIs for managing users and their configuration</p>
 <!-- START_06cb1b0688f24d603f49db812175a611 -->
 <h2>Register a user</h2>
 <p>Creates an initial user entity in the database and also starts verification process</p>
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/register"     -d "email"="1onAyHDGzEn77uoM" \
-    -d "name"="wwW5k8CRLJcn96oU" \
-    -d "password"="WqOY6TVbbJuf95U4" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/register"     -d "email"="FZFoX3LDTjKO0EWj" \
+    -d "name"="XXYgpd0SVX4gNSUF" \
+    -d "password"="B6OBjQdoKdE2OWUU" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/register",
     "method": "POST",
     "data": {
-        "email": "1onAyHDGzEn77uoM",
-        "name": "wwW5k8CRLJcn96oU",
-        "password": "WqOY6TVbbJuf95U4"
+        "email": "FZFoX3LDTjKO0EWj",
+        "name": "XXYgpd0SVX4gNSUF",
+        "password": "B6OBjQdoKdE2OWUU"
     },
     "headers": {
     }
@@ -248,14 +248,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="WmhTD7awSyB29GIt" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="4LpEjm7f4s6NlNxU" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "WmhTD7awSyB29GIt"
+        "password": "4LpEjm7f4s6NlNxU"
     },
     "headers": {
     }
@@ -299,14 +299,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="yhyQkzmC4QeDdUlY" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="IkHfYN1Om80WbtwK" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/reset",
     "method": "POST",
     "data": {
-        "email": "yhyQkzmC4QeDdUlY"
+        "email": "IkHfYN1Om80WbtwK"
     },
     "headers": {
     }
@@ -350,16 +350,16 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/login"     -d "email"="u7uBraYc1r7y9SIY" \
-    -d "password"="HGJTUPd4BbfAdqUu" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/login"     -d "email"="s8Y5Kced9AcjgRdw" \
+    -d "password"="yip1IieNyyx46Ghr" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/login",
     "method": "POST",
     "data": {
-        "email": "u7uBraYc1r7y9SIY",
-        "password": "HGJTUPd4BbfAdqUu"
+        "email": "s8Y5Kced9AcjgRdw",
+        "password": "yip1IieNyyx46Ghr"
     },
     "headers": {
     }
@@ -402,194 +402,6 @@ $.ajax(settings).done(function (response) {
 </tbody>
 </table>
 <!-- END_44652685eefa8022f19b92a3ce78d990 -->
-<!-- START_b25bea9b921111447db41e83ca0f4564 -->
-<h2>User</h2>
-<p>Returns the current logged in User</p>
-<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/user" </code></pre>
-<pre><code class="language-javascript">var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/user",
-    "method": "GET",
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});</code></pre>
-<blockquote>
-<p>Example response:</p>
-</blockquote>
-<pre><code class="language-json">{
-    "status": "success",
-    "data": {
-        "id": 1,
-        "name": "ChrisT",
-        "email": "test@nknx.org",
-        "verified": true,
-        "created_at": "2018-10-15 09:50:55",
-        "updated_at": "2018-10-15 09:51:37"
-    }
-}</code></pre>
-<h3>HTTP Request</h3>
-<p><code>GET auth/user</code></p>
-<!-- END_b25bea9b921111447db41e83ca0f4564 -->
-<!-- START_98ba2cace067628a23af37136b61013b -->
-<h2>Logout</h2>
-<p>Logs a user out</p>
-<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/logout" </code></pre>
-<pre><code class="language-javascript">var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/logout",
-    "method": "POST",
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});</code></pre>
-<blockquote>
-<p>Example response:</p>
-</blockquote>
-<pre><code class="language-json">{
-    "status": "success",
-    "msg": "Logged out successfully."
-}</code></pre>
-<h3>HTTP Request</h3>
-<p><code>POST auth/logout</code></p>
-<!-- END_98ba2cace067628a23af37136b61013b -->
-<!-- START_94ea921eeadd64682f0624c185109b70 -->
-<h2>Resend verification mail</h2>
-<p>Recreates VerifyUser entity and resends the verification mail</p>
-<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/resendVerification" </code></pre>
-<pre><code class="language-javascript">var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/resendVerification",
-    "method": "GET",
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});</code></pre>
-<blockquote>
-<p>Example response:</p>
-</blockquote>
-<pre><code class="language-json">{
-    "status": "success",
-    "data": ""
-}</code></pre>
-<h3>HTTP Request</h3>
-<p><code>GET auth/resendVerification</code></p>
-<!-- END_94ea921eeadd64682f0624c185109b70 -->
-<!-- START_dbefbaa243dab4807513d72c5d194cef -->
-<h2>Change a user</h2>
-<p>Changes the userdata based on the given values</p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="00i2E6B9cLZQ0F6o" \
-    -d "name"="MbAY4XgSknidl70v" \
-    -d "password"="wHcL1bGmTAkbFsJ2" </code></pre>
-<pre><code class="language-javascript">var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/changeUser",
-    "method": "POST",
-    "data": {
-        "email": "00i2E6B9cLZQ0F6o",
-        "name": "MbAY4XgSknidl70v",
-        "password": "wHcL1bGmTAkbFsJ2"
-    },
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});</code></pre>
-<h3>HTTP Request</h3>
-<p><code>POST auth/changeUser</code></p>
-<h4>Body Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Status</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>email</td>
-<td>string</td>
-<td>required</td>
-<td>User email address</td>
-</tr>
-<tr>
-<td>name</td>
-<td>string</td>
-<td>required</td>
-<td>Username</td>
-</tr>
-<tr>
-<td>password</td>
-<td>string</td>
-<td>required</td>
-<td>User password</td>
-</tr>
-</tbody>
-</table>
-<!-- END_dbefbaa243dab4807513d72c5d194cef -->
-<!-- START_e77c3e002818fc05b52243f5d31d9cc8 -->
-<h2>Refresh</h2>
-<p>Refreshes the current users session</p>
-<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/refresh" </code></pre>
-<pre><code class="language-javascript">var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/refresh",
-    "method": "GET",
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});</code></pre>
-<blockquote>
-<p>Example response:</p>
-</blockquote>
-<pre><code class="language-json">{
-    "status": "success"
-}</code></pre>
-<h3>HTTP Request</h3>
-<p><code>GET auth/refresh</code></p>
-<!-- END_e77c3e002818fc05b52243f5d31d9cc8 -->
-<h1>Auth and User management</h1>
-<p>APIs for managing users and their configuration</p>
 <!-- START_d852ce3db5ae10199d25471b49fca7ff -->
 <h2>Get the notification settings for current user</h2>
 <p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small>
@@ -707,6 +519,192 @@ $.ajax(settings).done(function (response) {
 </tbody>
 </table>
 <!-- END_aa34b2132ff352aaec450f63f6239eaf -->
+<!-- START_b25bea9b921111447db41e83ca0f4564 -->
+<h2>User</h2>
+<p>Returns the current logged in User</p>
+<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/user" </code></pre>
+<pre><code class="language-javascript">var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/user",
+    "method": "GET",
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "success",
+    "data": {
+        "id": 1,
+        "name": "ChrisT",
+        "email": "test@nknx.org",
+        "verified": true,
+        "created_at": "2018-10-15 09:50:55",
+        "updated_at": "2018-10-15 09:51:37"
+    }
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET auth/user</code></p>
+<!-- END_b25bea9b921111447db41e83ca0f4564 -->
+<!-- START_98ba2cace067628a23af37136b61013b -->
+<h2>Logout</h2>
+<p>Logs a user out</p>
+<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/logout" </code></pre>
+<pre><code class="language-javascript">var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/logout",
+    "method": "POST",
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "success",
+    "msg": "Logged out successfully."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST auth/logout</code></p>
+<!-- END_98ba2cace067628a23af37136b61013b -->
+<!-- START_94ea921eeadd64682f0624c185109b70 -->
+<h2>Resend verification mail</h2>
+<p>Recreates VerifyUser entity and resends the verification mail</p>
+<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/resendVerification" </code></pre>
+<pre><code class="language-javascript">var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/resendVerification",
+    "method": "GET",
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "success",
+    "data": ""
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET auth/resendVerification</code></p>
+<!-- END_94ea921eeadd64682f0624c185109b70 -->
+<!-- START_dbefbaa243dab4807513d72c5d194cef -->
+<h2>Change a user</h2>
+<p>Changes the userdata based on the given values</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="CnOi67hJvihPckG2" \
+    -d "name"="euarbOh7J1fumSuf" \
+    -d "password"="UhlRnuJ1BXUHXYmK" </code></pre>
+<pre><code class="language-javascript">var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/changeUser",
+    "method": "POST",
+    "data": {
+        "email": "CnOi67hJvihPckG2",
+        "name": "euarbOh7J1fumSuf",
+        "password": "UhlRnuJ1BXUHXYmK"
+    },
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST auth/changeUser</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>required</td>
+<td>User email address</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>required</td>
+<td>Username</td>
+</tr>
+<tr>
+<td>password</td>
+<td>string</td>
+<td>required</td>
+<td>User password</td>
+</tr>
+</tbody>
+</table>
+<!-- END_dbefbaa243dab4807513d72c5d194cef -->
+<!-- START_e77c3e002818fc05b52243f5d31d9cc8 -->
+<h2>Refresh</h2>
+<p>Refreshes the current users session</p>
+<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small></p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/refresh" </code></pre>
+<pre><code class="language-javascript">var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/refresh",
+    "method": "GET",
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "success"
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET auth/refresh</code></p>
+<!-- END_e77c3e002818fc05b52243f5d31d9cc8 -->
 <h1>Blocks</h1>
 <p>Endpoints for block-based queries</p>
 <!-- START_d7aa65f027eef1b76bf3c9cc7b116681 -->
