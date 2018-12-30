@@ -76,123 +76,6 @@ $.ajax(settings).done(function (response) {
 <h3>HTTP Request</h3>
 <p><code>GET walletNames/{walletAddress}</code></p>
 <!-- END_a69a5997417a0be7eead750d29021835 -->
-<!-- START_d852ce3db5ae10199d25471b49fca7ff -->
-<h2>Get the notification settings for current user</h2>
-<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small>
-Returns all notification settings of the current logged in User</p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/user/notifications" </code></pre>
-<pre><code class="language-javascript">var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/user/notifications",
-    "method": "GET",
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});</code></pre>
-<blockquote>
-<p>Example response:</p>
-</blockquote>
-<pre><code class="language-json">{
-    "user_id": 1,
-    "nodeOffline": 0,
-    "nodeOutdated": 0,
-    "nodeStucked": 0,
-    "weeklyMiningOutput": 0,
-    "updated_at": "2018-12-30 17:12:22",
-    "created_at": "2018-12-30 17:12:22",
-    "id": 1
-}</code></pre>
-<h3>HTTP Request</h3>
-<p><code>GET auth/user/notifications</code></p>
-<!-- END_d852ce3db5ae10199d25471b49fca7ff -->
-<!-- START_aa34b2132ff352aaec450f63f6239eaf -->
-<h2>Update notification settings</h2>
-<p>Updates all notification settings of the current logged in User</p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X PUT "https://api.nknx.org/auth/user/notifications"     -d "nodeOffline"="1" \
-    -d "nodeOutdated"="false" \
-    -d "nodeStucked"="1" \
-    -d "weeklyMiningOutput"="false" </code></pre>
-<pre><code class="language-javascript">var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.nknx.org/auth/user/notifications",
-    "method": "PUT",
-    "data": {
-        "nodeOffline": true,
-        "nodeOutdated": false,
-        "nodeStucked": true,
-        "weeklyMiningOutput": false
-    },
-    "headers": {
-    }
-}
-
-$.ajax(settings).done(function (response) {
-    console.log(response);
-});</code></pre>
-<blockquote>
-<p>Example response:</p>
-</blockquote>
-<pre><code class="language-json">{
-    "user_id": 1,
-    "nodeOffline": 0,
-    "nodeOutdated": 0,
-    "nodeStucked": 0,
-    "weeklyMiningOutput": 0,
-    "updated_at": "2018-12-30 17:12:22",
-    "created_at": "2018-12-30 17:12:22",
-    "id": 1
-}</code></pre>
-<h3>HTTP Request</h3>
-<p><code>PUT auth/user/notifications</code></p>
-<h4>Body Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Status</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>nodeOffline</td>
-<td>boolean</td>
-<td>required</td>
-<td>User will receive an eMail if one of his nodes go offline</td>
-</tr>
-<tr>
-<td>nodeOutdated</td>
-<td>boolean</td>
-<td>required</td>
-<td>User will receive an eMail if one of his nodes is outdated</td>
-</tr>
-<tr>
-<td>nodeStucked</td>
-<td>boolean</td>
-<td>required</td>
-<td>User will receive an eMail if one of his nodes is stucked</td>
-</tr>
-<tr>
-<td>weeklyMiningOutput</td>
-<td>boolean</td>
-<td>required</td>
-<td>User will receive a weekly eMail with his mining stats</td>
-</tr>
-</tbody>
-</table>
-<!-- END_aa34b2132ff352aaec450f63f6239eaf -->
 <h1>Addresses</h1>
 <p>Endpoints for address-based queries</p>
 <!-- START_a89f0be59ea88f06284dbeae93e6a314 -->
@@ -246,18 +129,18 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/register"     -d "email"="VsjGL3mO5ttQ2BEX" \
-    -d "name"="C7ll3C2MEN13lxGJ" \
-    -d "password"="G9TNNM0uIRMDlvqM" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/register"     -d "email"="1onAyHDGzEn77uoM" \
+    -d "name"="wwW5k8CRLJcn96oU" \
+    -d "password"="WqOY6TVbbJuf95U4" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/register",
     "method": "POST",
     "data": {
-        "email": "VsjGL3mO5ttQ2BEX",
-        "name": "C7ll3C2MEN13lxGJ",
-        "password": "G9TNNM0uIRMDlvqM"
+        "email": "1onAyHDGzEn77uoM",
+        "name": "wwW5k8CRLJcn96oU",
+        "password": "WqOY6TVbbJuf95U4"
     },
     "headers": {
     }
@@ -365,14 +248,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="MCQGERPNhXasIzJ9" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset/{token}"     -d "password"="WmhTD7awSyB29GIt" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/reset/{token}",
     "method": "POST",
     "data": {
-        "password": "MCQGERPNhXasIzJ9"
+        "password": "WmhTD7awSyB29GIt"
     },
     "headers": {
     }
@@ -416,14 +299,14 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="iWVxJelclj9rROqt" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/reset"     -d "email"="yhyQkzmC4QeDdUlY" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/reset",
     "method": "POST",
     "data": {
-        "email": "iWVxJelclj9rROqt"
+        "email": "yhyQkzmC4QeDdUlY"
     },
     "headers": {
     }
@@ -467,16 +350,16 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/login"     -d "email"="BQlEX9oQJFoGEVXQ" \
-    -d "password"="N7q83E7oCPxRvEli" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/login"     -d "email"="u7uBraYc1r7y9SIY" \
+    -d "password"="HGJTUPd4BbfAdqUu" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/login",
     "method": "POST",
     "data": {
-        "email": "BQlEX9oQJFoGEVXQ",
-        "password": "N7q83E7oCPxRvEli"
+        "email": "u7uBraYc1r7y9SIY",
+        "password": "HGJTUPd4BbfAdqUu"
     },
     "headers": {
     }
@@ -622,18 +505,18 @@ $.ajax(settings).done(function (response) {
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="MKjtPgmEqrIipeQz" \
-    -d "name"="x3JY8oztT28ncGdZ" \
-    -d "password"="5jsxc2NEN1bjWJIk" </code></pre>
+<pre><code class="language-bash">curl -X POST "https://api.nknx.org/auth/changeUser"     -d "email"="00i2E6B9cLZQ0F6o" \
+    -d "name"="MbAY4XgSknidl70v" \
+    -d "password"="wHcL1bGmTAkbFsJ2" </code></pre>
 <pre><code class="language-javascript">var settings = {
     "async": true,
     "crossDomain": true,
     "url": "https://api.nknx.org/auth/changeUser",
     "method": "POST",
     "data": {
-        "email": "MKjtPgmEqrIipeQz",
-        "name": "x3JY8oztT28ncGdZ",
-        "password": "5jsxc2NEN1bjWJIk"
+        "email": "00i2E6B9cLZQ0F6o",
+        "name": "MbAY4XgSknidl70v",
+        "password": "wHcL1bGmTAkbFsJ2"
     },
     "headers": {
     }
@@ -705,6 +588,125 @@ $.ajax(settings).done(function (response) {
 <h3>HTTP Request</h3>
 <p><code>GET auth/refresh</code></p>
 <!-- END_e77c3e002818fc05b52243f5d31d9cc8 -->
+<h1>Auth and User management</h1>
+<p>APIs for managing users and their configuration</p>
+<!-- START_d852ce3db5ae10199d25471b49fca7ff -->
+<h2>Get the notification settings for current user</h2>
+<p><br><small style="padding: 1px 9px 2px;font-weight: bold;white-space: nowrap;color: #ffffff;-webkit-border-radius: 9px;-moz-border-radius: 9px;border-radius: 9px;background-color: #3a87ad;">Requires authentication</small>
+Returns all notification settings of the current logged in User</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET -G "https://api.nknx.org/auth/user/notifications" </code></pre>
+<pre><code class="language-javascript">var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/user/notifications",
+    "method": "GET",
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre><code class="language-json">{
+    "user_id": 1,
+    "nodeOffline": 0,
+    "nodeOutdated": 0,
+    "nodeStucked": 0,
+    "weeklyMiningOutput": 0,
+    "updated_at": "2018-12-30 17:12:22",
+    "created_at": "2018-12-30 17:12:22",
+    "id": 1
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET auth/user/notifications</code></p>
+<!-- END_d852ce3db5ae10199d25471b49fca7ff -->
+<!-- START_aa34b2132ff352aaec450f63f6239eaf -->
+<h2>Update notification settings</h2>
+<p>Updates all notification settings of the current logged in User</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X PUT "https://api.nknx.org/auth/user/notifications"     -d "nodeOffline"="1" \
+    -d "nodeOutdated"="1" \
+    -d "nodeStucked"="1" \
+    -d "weeklyMiningOutput"="1" </code></pre>
+<pre><code class="language-javascript">var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.nknx.org/auth/user/notifications",
+    "method": "PUT",
+    "data": {
+        "nodeOffline": true,
+        "nodeOutdated": true,
+        "nodeStucked": true,
+        "weeklyMiningOutput": true
+    },
+    "headers": {
+    }
+}
+
+$.ajax(settings).done(function (response) {
+    console.log(response);
+});</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre><code class="language-json">{
+    "user_id": 1,
+    "nodeOffline": 0,
+    "nodeOutdated": 0,
+    "nodeStucked": 0,
+    "weeklyMiningOutput": 0,
+    "updated_at": "2018-12-30 17:12:22",
+    "created_at": "2018-12-30 17:12:22",
+    "id": 1
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>PUT auth/user/notifications</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodeOffline</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive an eMail if one of his nodes go offline</td>
+</tr>
+<tr>
+<td>nodeOutdated</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive an eMail if one of his nodes is outdated</td>
+</tr>
+<tr>
+<td>nodeStucked</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive an eMail if one of his nodes is stucked</td>
+</tr>
+<tr>
+<td>weeklyMiningOutput</td>
+<td>boolean</td>
+<td>required</td>
+<td>User will receive a weekly eMail with his mining stats</td>
+</tr>
+</tbody>
+</table>
+<!-- END_aa34b2132ff352aaec450f63f6239eaf -->
 <h1>Blocks</h1>
 <p>Endpoints for block-based queries</p>
 <!-- START_d7aa65f027eef1b76bf3c9cc7b116681 -->

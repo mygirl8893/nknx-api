@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * @group Auth and User management
  *
- * APIs for managing users
+ * APIs for managing users and their configuration
  */
 class AuthController extends Controller
 {
