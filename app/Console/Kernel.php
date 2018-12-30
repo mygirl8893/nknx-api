@@ -7,6 +7,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 
+use App\User;
 use App\Block;
 use App\Node;
 use App\Transaction;
@@ -15,11 +16,14 @@ use App\CachedNode;
 use App\WalletAddress;
 use App\CrawledNode;
 use App\CrawlerTempNode;
+use App\NotificationsConfig;
 use App\Jobs\ProcessRemoteBlock;
 use App\Jobs\UpdateNode;
 use App\Jobs\UpdateWalletAddress;
 use App\Jobs\CleanUpCachedNodes;
 use App\Jobs\NodeCrawler;
+use Mail;
+use App\Mail\NodeOfflineMail;
 use Carbon\Carbon;
 use Queue;
 use Log;
@@ -43,7 +47,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
 
         $schedule->call(function () {
             if (Queue::size('blockchainCrawler') <= 60){
@@ -158,6 +161,34 @@ class Kernel extends ConsoleKernel
                 }
             }
         })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
+
+        $schedule->call(function () {
+            //get all Users where nodeOffline notifications are turned online
+            $users = User::whereHas('notifications_config', function($q){
+                $q->where('nodeOffline', 1);
+            })
+            ->whereHas('nodes', function($q){
+                $q->where('online', 0);
+            })
+            ->with('nodes')
+            ->get();
+
+            foreach ($users as $user) {
+                $offlineNodes = [];
+                foreach ($user->nodes as $node) {
+                    if($node->online == 0 && !$node->notified){
+                        array_push($offlineNodes,$node);
+                        $node->notified = Carbon::now();
+                        $node->save();
+                    }
+                }
+                if (count($offlineNodes)){
+                    Mail::to($user->email)->send(new NodeOfflineMail($user,$offlineNodes));
+                }
+            }
+
+
+        })->everyFiveMinutes()->name('SendNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');

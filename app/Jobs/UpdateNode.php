@@ -38,9 +38,9 @@ class UpdateNode implements ShouldQueue
     public function handle()
     {
         $node = Node::find($this->id);
-       
+
         if (!$node) {
-            
+
         } else {
             if(!$node->alias){
                 $node->alias = $node->addr;
@@ -63,7 +63,7 @@ class UpdateNode implements ShouldQueue
             ];
             try {
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post($node->alias . ':30003', $requestContent);        
+                $apiRequest = $client->Post($node->alias . ':30003', $requestContent);
                 $response = json_decode($apiRequest->getBody(), true);
                 unset($response["result"]["ID"]);
                 $node->fill($response["result"]);
@@ -88,7 +88,7 @@ class UpdateNode implements ShouldQueue
 
                 try {
                     $client = new GuzzleHttpClient();
-                    $apiRequest = $client->Post($node->alias.':30003', $requestContent);        
+                    $apiRequest = $client->Post($node->alias.':30003', $requestContent);
                     $response = json_decode($apiRequest->getBody(), true);
                     $node->softwareVersion = $response["result"];
 
@@ -109,28 +109,44 @@ class UpdateNode implements ShouldQueue
                     ];
                     try {
                         $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post($node->alias.':30003', $requestContent);        
+                        $apiRequest = $client->Post($node->alias.':30003', $requestContent);
                         $response = json_decode($apiRequest->getBody(), true);
                         $node->latestBlockHeight = $response["result"];
 
                         $node->save();
+                        if($node->wasChanged()){
+                            $node->notified = null;
+                            $node->save();
+                        }
 
-                        
-        
+
+
                     } catch (RequestException $re) {
                         $node->online = false;
                         $node->save();
+                        if($node->wasChanged()){
+                            $node->notified = null;
+                            $node->save();
+                        }
                     }
-    
+
                 } catch (RequestException $re) {
                     $node->online = false;
                     $node->save();
+                    if($node->wasChanged()){
+                        $node->notified = null;
+                        $node->save();
+                    }
                 }
 
             } catch (RequestException $re) {
                 $node->online = false;
                 $node->save();
-            }  
+                if($node->wasChanged()){
+                    $node->notified = null;
+                    $node->save();
+                }
+            }
 
         }
     }
@@ -138,5 +154,5 @@ class UpdateNode implements ShouldQueue
     {
         return ['UpdateNode',$this->id];
     }
-    
+
 }
