@@ -58,6 +58,10 @@ Route::post('auth/reset', 'AuthController@resetPassword');
 
 Route::post('auth/login', 'AuthController@login');
 Route::group(['middleware' => 'jwt.auth'], function(){
+
+  Route::get('auth/user/notifications', 'NotificationsConfigController@showNotificationsConfig');
+  Route::put('auth/user/notifications', 'NotificationsConfigController@updateNotificationsConfig');
+
   Route::get('auth/user', 'AuthController@user');
   Route::post('auth/logout', 'AuthController@logout');
   Route::get('auth/resendVerification', 'AuthController@resendVerification');
@@ -71,7 +75,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   ]);
   Route::get('walletAddresses/{walletAddress}/miningOutputDaily', 'WalletAddressController@getMiningOutputDaily');
   Route::get('walletAddresses/{walletAddress}/miningOutputMonthly', 'WalletAddressController@getMiningOutputMonthly');
-  
+
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){
   Route::get('auth/refresh', 'AuthController@refresh');

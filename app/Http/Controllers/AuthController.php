@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\RegisterFormRequest;
 use App\Http\Requests\ChangeUserFormRequest;
 use App\User;
+use App\NotificationsConfig;
 use App\VerifyUser;
 use App\PasswordReset;
 use App\Mail\VerifyMail;
@@ -25,11 +26,11 @@ class AuthController extends Controller
 	 * Register a user
 	 *
 	 * Creates an initial user entity in the database and also starts verification process
-     * 
+     *
      * @bodyParam  email string required User email address
      * @bodyParam  name string required  Username
      * @bodyParam  password string required  User password
-     * 
+     *
      * @response {
      *      "status": "success",
      *      "data": {
@@ -39,7 +40,7 @@ class AuthController extends Controller
      *          "verified": false,
      *          "created_at": "2018-10-15 09:50:55",
      *          "updated_at": "2018-10-15 09:51:37"
-     *      } 
+     *      }
      * }
 	 */
     public function register(RegisterFormRequest $request)
@@ -49,6 +50,14 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->password = bcrypt($request->password);
         $user->save();
+
+        $notificationsConfig = NotificationsConfig::create([
+            'user_id' => $user->id,
+            'nodeOffline' => false,
+            'nodeOutdated' => false,
+            'nodeStucked'  => false,
+            'weeklyMiningOutput'  => false
+        ]);
 
         $verifyUser = VerifyUser::create([
             'user_id' => $user->id,
@@ -66,12 +75,12 @@ class AuthController extends Controller
     /**
 	 * Resend verification mail
 	 * Recreates VerifyUser entity and resends the verification mail
-     * 
+     *
 	 * @authenticated
 	 *
      * @response {
      *      "status": "success",
-     *      "data": "" 
+     *      "data": ""
      * }
 	 */
     public function resendVerification()
@@ -79,7 +88,7 @@ class AuthController extends Controller
         $user = User::find(Auth::user()->id);
 
         VerifyUser::where('user_id', $user->id)->delete();
-        
+
         $verifyUser = VerifyUser::create([
             'user_id' => $user->id,
             'token' => str_random(40)
@@ -95,14 +104,14 @@ class AuthController extends Controller
 
     /**
 	 * Reset password
-	 * 
+	 *
 	 * Creates a password reset mail and an entry in the database
-     * 
+     *
      * @bodyParam  email string required User email address
 	 *
      * @response {
      *      "status": "success",
-     *      "data": "" 
+     *      "data": ""
      * }
 	 */
     public function resetPassword(Request $request){
@@ -124,12 +133,12 @@ class AuthController extends Controller
 	 * Set new password
 	 *
 	 * Sets a new password for a user from a provided token
-     * 
+     *
      * @bodyParam  password string required  User password
-     * 
+     *
      * @response {
      *      "status": "success",
-     *      "msg": "Password changed successfully." 
+     *      "msg": "Password changed successfully."
      * }
 	 *
 	 */
@@ -156,10 +165,10 @@ class AuthController extends Controller
 	 * Login
 	 *
 	 * Logs a user in
-     * 
+     *
      * @bodyParam  email string required User email address
      * @bodyParam  password string required  User password
-     * 
+     *
      * @response {
      *      "status": "success"
      * }
@@ -180,13 +189,13 @@ class AuthController extends Controller
             ])
             ->header('Authorization', $token);
     }
-    
+
     /**
 	 * User
 	 * Returns the current logged in User
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @response {
      *      "status": "success",
      *      "data": {
@@ -196,7 +205,7 @@ class AuthController extends Controller
      *          "verified": true,
      *          "created_at": "2018-10-15 09:50:55",
      *          "updated_at": "2018-10-15 09:51:37"
-     *      } 
+     *      }
      * }
 	 *
 	 */
@@ -214,7 +223,7 @@ class AuthController extends Controller
     /**
 	 * Refresh
 	 * Refreshes the current users session
-     * 
+     *
 	 * @authenticated
 	 *
      * @response {
@@ -232,9 +241,9 @@ class AuthController extends Controller
 	 * Verify email
 	 *
 	 * Accepts a token provided in an eMail link and verifies the user entity
-     * 
+     *
      * @queryParam token required The verification token Example:
-     * 
+     *
      * @response {
      *      "status": "Your e-mail is verified. You can now login."
      * }
@@ -263,12 +272,12 @@ class AuthController extends Controller
     /**
 	 * Logout
 	 * Logs a user out
-     * 
+     *
 	 * @authenticated
 	 *
      * @response {
      *      "status": "success",
-     *      "msg": "Logged out successfully." 
+     *      "msg": "Logged out successfully."
      * }
 	 */
     public function logout()
@@ -284,11 +293,11 @@ class AuthController extends Controller
 	 * Change a user
 	 *
 	 * Changes the userdata based on the given values
-     * 
+     *
      * @bodyParam  email string required User email address
      * @bodyParam  name string required  Username
      * @bodyParam  password string required  User password
-     * 
+     *
 	 */
     public function changeUser(ChangeUserFormRequest $request)
     {

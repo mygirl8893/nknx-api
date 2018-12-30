@@ -43,4 +43,8 @@ class User extends Authenticatable
     {
     	return $this->hasMany('App\WalletAddress');
     }
+    public function notification_config()
+    {
+        return $this->hasOne('App\NotificationConfig');
+    }
 }
