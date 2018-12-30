@@ -24,14 +24,10 @@ class NotificationsConfigController extends Controller
      * @authenticated
      *
      * @response {
-     *    "user_id": 1,
      *    "nodeOffline": 0,
      *    "nodeOutdated": 0,
      *    "nodeStucked": 0,
-     *    "weeklyMiningOutput": 0,
-     *    "updated_at": "2018-12-30 17:12:22",
-     *    "created_at": "2018-12-30 17:12:22",
-     *    "id": 1
+     *    "weeklyMiningOutput": 0
      * }
      *
      *
@@ -57,20 +53,18 @@ class NotificationsConfigController extends Controller
      *
      * Updates all notification settings of the current logged in User
      *
+     * @authenticated
+     *
      * @bodyParam  nodeOffline boolean required User will receive an eMail if one of his nodes go offline Example: 1
      * @bodyParam  nodeOutdated boolean required User will receive an eMail if one of his nodes is outdated Example: 1
      * @bodyParam  nodeStucked boolean required User will receive an eMail if one of his nodes is stucked Example: 1
      * @bodyParam  weeklyMiningOutput boolean required User will receive a weekly eMail with his mining stats Example: 1
      *
      * @response {
-     *    "user_id": 1,
      *    "nodeOffline": 0,
      *    "nodeOutdated": 0,
      *    "nodeStucked": 0,
-     *    "weeklyMiningOutput": 0,
-     *    "updated_at": "2018-12-30 17:12:22",
-     *    "created_at": "2018-12-30 17:12:22",
-     *    "id": 1
+     *    "weeklyMiningOutput": 0
      * }
      *
      *

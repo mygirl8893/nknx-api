@@ -13,4 +13,12 @@ class NotificationsConfig extends Model
     {
     	return $this->belongsTo('App\User');
     }
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'id','user_id', 'created_at', 'updated_at'
+    ];
 }
