@@ -67,7 +67,7 @@ class UpdateNode implements ShouldQueue
                 $response = json_decode($apiRequest->getBody(), true);
                 unset($response["result"]["ID"]);
                 $node->fill($response["result"]);
-                $node->online = true;
+                $node->online = 1;
 
                 //get version
                 $requestContent = [
@@ -112,37 +112,29 @@ class UpdateNode implements ShouldQueue
                         $apiRequest = $client->Post($node->alias.':30003', $requestContent);
                         $response = json_decode($apiRequest->getBody(), true);
                         $node->latestBlockHeight = $response["result"];
-
-                        $node->save();
-                        if($node->wasChanged()){
+                        if($node->isDirty()){
                             $node->notified = null;
                             $node->save();
                         }
-
-
-
                     } catch (RequestException $re) {
-                        $node->online = false;
-                        $node->save();
-                        if($node->wasChanged()){
+                        $node->online = 0;
+                        if($node->isDirty()){
                             $node->notified = null;
                             $node->save();
                         }
                     }
 
                 } catch (RequestException $re) {
-                    $node->online = false;
-                    $node->save();
-                    if($node->wasChanged()){
+                    $node->online = 0;
+                    if($node->isDirty()){
                         $node->notified = null;
                         $node->save();
                     }
                 }
 
             } catch (RequestException $re) {
-                $node->online = false;
-                $node->save();
-                if($node->wasChanged()){
+                $node->online = 0;
+                if($node->isDirty()){
                     $node->notified = null;
                     $node->save();
                 }
