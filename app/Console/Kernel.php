@@ -113,10 +113,16 @@ class Kernel extends ConsoleKernel
                 $finalNodes = CrawlerTempNode::where('state', 1)->get();
                 if ($finalNodes){
                     CrawledNode::truncate();
+                    $newCrawledNodes = [];
                     foreach ($finalNodes as $finalNode){
-                        $finalCrawledNode = new CrawledNode($finalNode->toArray());
-                        $finalCrawledNode->save();
+                        $finalCrawledNode = $finalNode->toArray();
+                        unset($finalCrawledNode["state"]);
+                        array_push($newCrawledNodes,$finalCrawledNode);
                     }
+                    foreach (array_chunk($newCrawledNodes,1000) as $t) {
+                        CrawledNode::insert($t);
+                    }
+
                     Log::channel('nodeCrawler')->notice("Node crawling finished");
                     CrawlerTempNode::truncate();
                 }
