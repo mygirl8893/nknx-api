@@ -68,7 +68,7 @@ class Kernel extends ConsoleKernel
                 ];
                 try {
                     $client = new GuzzleHttpClient();
-                    $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
+                    $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
                     $response = json_decode($apiRequest->getBody());
                     $currentBlockchainHeight = $response->result;
                 } catch (RequestException $re) {

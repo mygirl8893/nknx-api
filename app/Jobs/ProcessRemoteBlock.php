@@ -66,7 +66,7 @@ class ProcessRemoteBlock implements ShouldQueue
             try {
                 $client = new GuzzleHttpClient();
 
-                $apiRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContent);
+                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
 
                 $response = json_decode($apiRequest->getBody(), true);
                 $blockdata = array_merge($response["result"]["header"]["program"], $response["result"]["header"], $response["result"]);
@@ -116,7 +116,7 @@ class ProcessRemoteBlock implements ShouldQueue
                                     "jsonrpc" => "2.0"
                                 ]
                             ];
-                            $senderRequest = $client->Post('http://testnet-seed-0002.nkn.org:30003', $requestContentTransaction);
+                            $senderRequest = $client->Post('https://nknx.org:30003', $requestContentTransaction);
                             $transactionResponse = json_decode($senderRequest->getBody(), true);
                             $transaction["sender"] = $transactionResponse["result"]["outputs"][$input['referTxOutputIndex']]['address'];
                         }
