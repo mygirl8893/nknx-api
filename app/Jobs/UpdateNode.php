@@ -91,6 +91,8 @@ class UpdateNode implements ShouldQueue
                     $apiRequest = $client->Post($node->alias.':30003', $requestContent);
                     $response = json_decode($apiRequest->getBody(), true);
                     $node->softwareVersion = $response["result"];
+                    $sversion = substr($response["result"] ,(strpos($response["result"],'v')+1),strpos($response["result"],'-')-(strpos($response["result"],'v')+1));
+                    $node->sversion= (int)str_replace('.', '', $sversion);
 
                     //get latestblockheight
                     $requestContent = [

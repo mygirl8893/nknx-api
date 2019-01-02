@@ -194,7 +194,7 @@ class Kernel extends ConsoleKernel
             }
 
 
-        })->everyFiveMinutes()->name('SendNotifications')->withoutOverlapping();
+        })->everyFiveMinutes()->name('SendOfflineNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
