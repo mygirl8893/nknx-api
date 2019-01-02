@@ -42,6 +42,8 @@ class UpdateNode implements ShouldQueue
         if (!$node) {
 
         } else {
+            $oldOnline = $node->online;
+            $oldSversion = $node->sversion;
             if(!$node->alias){
                 $node->alias = $node->addr;
             }
@@ -114,7 +116,8 @@ class UpdateNode implements ShouldQueue
                         $apiRequest = $client->Post($node->alias.':30003', $requestContent);
                         $response = json_decode($apiRequest->getBody(), true);
                         $node->latestBlockHeight = $response["result"];
-                        if($node->isDirty()){
+
+                        if($oldOnline != $node->online || $oldSversion != $node->sversion){
                             $node->notified = null;
                             $node->save();
                         }

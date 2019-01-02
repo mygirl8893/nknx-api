@@ -24,6 +24,7 @@ use App\Jobs\CleanUpCachedNodes;
 use App\Jobs\NodeCrawler;
 use Mail;
 use App\Mail\NodeOfflineMail;
+use App\Mail\NodeOutdatedMail;
 use Carbon\Carbon;
 use Queue;
 use Log;
@@ -195,6 +196,62 @@ class Kernel extends ConsoleKernel
 
 
         })->everyFiveMinutes()->name('SendOfflineNotifications')->withoutOverlapping();
+
+        $schedule->call(function () {
+
+            $requestContent = [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => [
+                    "id" => 1,
+                    "method" => "getversion",
+                    "params" => [
+                        "provider" => "nknx",
+                    ],
+                    "jsonrpc" => "2.0"
+                ]
+            ];
+
+
+            try {
+                $client = new GuzzleHttpClient();
+                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
+                $response = json_decode($apiRequest->getBody(), true);
+                $networkSversion = substr($response["result"] ,(strpos($response["result"],'v')+1),strpos($response["result"],'-')-(strpos($response["result"],'v')+1));
+                $networkSversion= (int)str_replace('.', '', $networkSversion);
+
+                //get all Users where nodeOffline notifications are turned online
+                $users = User::whereHas('notifications_config', function($q){
+                    $q->where('nodeOutdated', 1);
+                })
+                ->whereHas('nodes', function($q) use($networkSversion){
+                    $q->where('sversion','<',$networkSversion);
+                })
+                ->with('nodes')
+                ->get();
+
+                foreach ($users as $user) {
+                    $outdatedNodes = [];
+                    foreach ($user->nodes as $node) {
+                        if($node->online == 1 && !$node->notified && $node->sversion < $networkSversion){
+                            array_push($outdatedNodes,$node);
+                            $node->notified = Carbon::now();
+                            $node->save();
+                        }
+                    }
+                    if (count($outdatedNodes)){
+                        Mail::to($user->email)->send(new NodeOutdatedMail($user,$outdatedNodes));
+                    }
+                }
+            }
+            catch(RequestException $re){
+
+            }
+
+
+        })->everyFiveMinutes()->name('SendOutdatedNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
