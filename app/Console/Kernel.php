@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        $schedule->call(function () {
+       /* $schedule->call(function () {
             if (Queue::size('blockchainCrawler') <= 60){
                 //get current blockchain height
                 $currentBlockchainHeight = 0;
@@ -252,7 +252,7 @@ class Kernel extends ConsoleKernel
             }
 
 
-        })->everyFiveMinutes()->name('SendOutdatedNotifications')->withoutOverlapping();
+        })->everyFiveMinutes()->name('SendOutdatedNotifications')->withoutOverlapping(); */
 
         $schedule->call(function () {
             //A node is considered stucked if it is more than 40 Blocks behind of current known blockheight and hasn't been updated for at least 10 minutes
@@ -282,7 +282,7 @@ class Kernel extends ConsoleKernel
                 $users = User::whereHas('notifications_config', function($q){
                     $q->where('nodeOutdated', 1);
                 })
-                ->whereHas('nodes', function($q) use($networkSversion){
+                ->whereHas('nodes', function($q){
                     $q->where('updated_at', '<', Carbon::now()->subMinutes(10));
                 })
                 ->with('nodes')
@@ -307,7 +307,7 @@ class Kernel extends ConsoleKernel
             }
 
 
-        })->everyFiveMinutes()->name('SendStuckedNotifications')->withoutOverlapping();
+        })->everyMinute()->name('SendStuckedNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
