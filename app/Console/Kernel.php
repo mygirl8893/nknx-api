@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-       /* $schedule->call(function () {
+        $schedule->call(function () {
             if (Queue::size('blockchainCrawler') <= 60){
                 //get current blockchain height
                 $currentBlockchainHeight = 0;
@@ -252,7 +252,7 @@ class Kernel extends ConsoleKernel
             }
 
 
-        })->everyFiveMinutes()->name('SendOutdatedNotifications')->withoutOverlapping(); */
+        })->everyFiveMinutes()->name('SendOutdatedNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             //A node is considered stucked if it is more than 40 Blocks behind of current known blockheight and hasn't been updated for at least 10 minutes
