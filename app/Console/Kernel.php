@@ -25,6 +25,7 @@ use App\Jobs\NodeCrawler;
 use Mail;
 use App\Mail\NodeOfflineMail;
 use App\Mail\NodeOutdatedMail;
+use App\Mail\NodeStuckedMail;
 use Carbon\Carbon;
 use Queue;
 use Log;
@@ -252,6 +253,61 @@ class Kernel extends ConsoleKernel
 
 
         })->everyFiveMinutes()->name('SendOutdatedNotifications')->withoutOverlapping();
+
+        $schedule->call(function () {
+            //A node is considered stucked if it is more than 40 Blocks behind of current known blockheight and hasn't been updated for at least 10 minutes
+            $requestContent = [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => [
+                    "id" => 1,
+                    "method" => "getlatestblockheight",
+                    "params" => [
+                        "provider" => "nknx",
+                    ],
+                    "jsonrpc" => "2.0"
+                ]
+            ];
+
+
+            try {
+                $client = new GuzzleHttpClient();
+                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
+                $response = json_decode($apiRequest->getBody(), true);
+                $networkBlockHeight = $response["result"];
+
+                //get all Users where nodeOffline notifications are turned online
+                $users = User::whereHas('notifications_config', function($q){
+                    $q->where('nodeOutdated', 1);
+                })
+                ->whereHas('nodes', function($q) use($networkSversion){
+                    $q->where('updated_at', '<', Carbon::now()->subMinutes(10));
+                })
+                ->with('nodes')
+                ->get();
+
+                foreach ($users as $user) {
+                    $stuckedNodes = [];
+                    foreach ($user->nodes as $node) {
+                        if($node->online && $node->updated_at <= Carbon::now()->subMinutes(10) && !$node->notified && $node->height <= $networkBlockHeight-40){
+                            array_push($stuckedNodes,$node);
+                            $node->notified = Carbon::now();
+                            $node->save();
+                        }
+                    }
+                    if (count($stuckedNodes)){
+                        Mail::to($user->email)->send(new NodeStuckedMail($user,$stuckedNodes));
+                    }
+                }
+            }
+            catch(RequestException $re){
+
+            }
+
+
+        })->everyFiveMinutes()->name('SendStuckedNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
