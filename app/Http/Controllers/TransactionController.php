@@ -24,7 +24,7 @@ class TransactionController extends Controller
     /**
 	 * Get all transactions
 	 *
-	 * Returns all transactions with corresponding block, payloads, outputs, inputs and attributes in simple pagination format starting with the latest one 
+	 * Returns all transactions with corresponding block, payloads, outputs, inputs and attributes in simple pagination format starting with the latest one
 	 *
      * @queryParam latest Limits the results returned Example:7
      * @queryParam per_page Number of results per page Example:4
@@ -34,48 +34,54 @@ class TransactionController extends Controller
      * @queryParam withoutOutputs remove outputs Example:true
      * @queryParam withoutInputs remove inputs Example:true
      * @queryParam withoutAttributes remove attributes Example:true
-     * 
+     *
 	 */
     public function showAll(Request $request){
         $latest = $request->get('latest');
         $txType = $request->get('txType');
         $txType = explode(',', $txType);
         $address = $request->get('address');
- 
+
 
         //hardcap
         if(!$latest || $latest > 1000000){
             $latest = 1000000;
         };
-       
+
         $paginate = $request->get('per_page',50);
         $withoutPayload = $request->get('withoutpayload',false);
         $withoutOutputs = $request->get('withoutoutputs',false);
         $withoutInputs = $request->get('withoutinputs',false);
+        $withoutNodeTrace = $request->get('withoutnodetrace',false);
         $withoutAttributes = $request->get('withoutattributes',false);
- 
+
         $transactions_query = Transaction::query()->orderBy('id', 'desc');
-        $transactions_query->when($latest, function ($q, $latest) { 
+        $transactions_query->when($latest, function ($q, $latest) {
             return $q->limit($latest);
         });
-        $transactions_query->when($txType, function ($q, $txType) { 
+        $transactions_query->when($txType, function ($q, $txType) {
             return $q->whereIn("txType",$txType);
         });
-        $transactions_query->when($address, function ($q, $address) { 
+        $transactions_query->when($address, function ($q, $address) {
             return $q->whereHas('outputs', function($q) use ($address){
                 $q->where('address', $address);
             })->orWhere('sender', $address);
         });
-        $transactions_query->when(!$withoutPayload, function ($q) { 
+        $transactions_query->when(!$withoutNodeTrace, function ($q) {
+            return $q->with(array('nodeTracing' => function($query){
+                $query->orderBy('priority', 'asc');
+            }));
+        });
+        $transactions_query->when(!$withoutPayload, function ($q) {
             return $q->with('payload');
         });
-        $transactions_query->when(!$withoutOutputs, function ($q) { 
+        $transactions_query->when(!$withoutOutputs, function ($q) {
             return $q->with('outputs');
         });
-        $transactions_query->when(!$withoutInputs, function ($q) { 
+        $transactions_query->when(!$withoutInputs, function ($q) {
             return $q->with('inputs');
         });
-        $transactions_query->when(!$withoutAttributes, function ($q) { 
+        $transactions_query->when(!$withoutAttributes, function ($q) {
             return $q->with('attributes');
         });
 
@@ -95,14 +101,14 @@ class TransactionController extends Controller
     /**
 	 * Get single transaction by hash
 	 *
-	 * Returns a specific block based on the height or block hash 
+	 * Returns a specific block based on the height or block hash
 	 *
      * @queryParam block_id required Id of the resource
      * @queryParam withoutPayload remove payload Example:false
      * @queryParam withoutOutputs remove outputs Example:false
      * @queryParam withoutInputs remove inputs Example:false
      * @queryParam withoutAttributes remove attributes Example:false
-     * 
+     *
 	 */
     public function show($tHash,Request $request)
     {
@@ -112,33 +118,33 @@ class TransactionController extends Controller
         $withoutNodeTrace = $request->get('withoutnodetrace',false);
         $withoutInputs = $request->get('withoutinputs',false);
         $withoutAttributes = $request->get('withoutattributes',false);
-        
+
 
 
         $transactions_query = Transaction::query()->where('hash',$tHash);
-        
-        $transactions_query->when(!$withoutPayload, function ($q) { 
+
+        $transactions_query->when(!$withoutPayload, function ($q) {
             return $q->with('payload');
         });
-        $transactions_query->when(!$withoutOutputs, function ($q) { 
+        $transactions_query->when(!$withoutOutputs, function ($q) {
             return $q->with('outputs');
         });
-        $transactions_query->when(!$withoutNodeTrace, function ($q) { 
+        $transactions_query->when(!$withoutNodeTrace, function ($q) {
             return $q->with(array('nodeTracing' => function($query){
                 $query->orderBy('priority', 'asc');
             }));
         });
-        $transactions_query->when(!$withoutInputs, function ($q) { 
+        $transactions_query->when(!$withoutInputs, function ($q) {
             return $q->with('inputs');
         });
-        $transactions_query->when(!$withoutAttributes, function ($q) { 
+        $transactions_query->when(!$withoutAttributes, function ($q) {
             return $q->with('attributes');
         });
 
         $transactions_query->with('block');
         $transactions = $transactions_query
             ->first();
-        
-        return response()->json($transactions); 
+
+        return response()->json($transactions);
     }
 }
