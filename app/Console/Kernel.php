@@ -184,7 +184,7 @@ class Kernel extends ConsoleKernel
             foreach ($users as $user) {
                 $offlineNodes = [];
                 foreach ($user->nodes as $node) {
-                    if($node->online == 0 && !$node->notified){
+                    if($node->online == 0 && !$node->notified && $node->updated_at <= Carbon::now()->subMinutes(5)){
                         array_push($offlineNodes,$node);
                         $node->notified = Carbon::now();
                         $node->save();
