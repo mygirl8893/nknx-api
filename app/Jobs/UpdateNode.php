@@ -150,15 +150,11 @@ class UpdateNode implements ShouldQueue
                             if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $networkBlockHeight-40){
                                 $node->notified_stucked = null;
                             }
-                        }
-                        catch(){
-
-                        }
-                        finally {
                             $node->save();
                         }
-
-
+                        catch(){
+                            $node->save();
+                        }
                     } catch (RequestException $re) {
                         $node->online = 0;
                         if($node->isDirty()){
