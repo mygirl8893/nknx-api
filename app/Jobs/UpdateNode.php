@@ -12,6 +12,8 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\RequestException;
 
 use App\Node;
+use App\Block;
+use Carbon\Carbon;
 
 use Log;
 
@@ -117,15 +119,49 @@ class UpdateNode implements ShouldQueue
                         $response = json_decode($apiRequest->getBody(), true);
                         $node->latestBlockHeight = $response["result"];
 
-                        if($oldOnline != $node->online || $oldSversion != $node->sversion){
-                            $node->notified = null;
+                        //if node switches version reset notification
+                        if($oldSversion != $node->sversion){
+                            $node->notified_outdated = null;
                         }
-                        $node->save();
+                        //if node switches from offline to online reset notification
+                        if($oldOnline != $node->online ){
+                            $node->notified_offline = null;
+                        }
+
+                        $requestContent = [
+                            'headers' => [
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json'
+                            ],
+                            'json' => [
+                                "id" => 1,
+                                "method" => "getlatestblockheight",
+                                "params" => [
+                                    "provider" => "nknx",
+                                ],
+                                "jsonrpc" => "2.0"
+                            ]
+                        ];
+                        try {
+                            $client = new GuzzleHttpClient();
+                            $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
+                            $response = json_decode($apiRequest->getBody(), true);
+                            $networkBlockHeight = $response["result"];
+                            if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $networkBlockHeight-40){
+                                $node->notified_stucked = null;
+                            }
+                        }
+                        catch(){
+
+                        }
+                        finally {
+                            $node->save();
+                        }
+
 
                     } catch (RequestException $re) {
                         $node->online = 0;
                         if($node->isDirty()){
-                            $node->notified = null;
                             $node->save();
                         }
                     }
@@ -133,7 +169,6 @@ class UpdateNode implements ShouldQueue
                 } catch (RequestException $re) {
                     $node->online = 0;
                     if($node->isDirty()){
-                        $node->notified = null;
                         $node->save();
                     }
                 }
@@ -141,7 +176,6 @@ class UpdateNode implements ShouldQueue
             } catch (RequestException $re) {
                 $node->online = 0;
                 if($node->isDirty()){
-                    $node->notified = null;
                     $node->save();
                 }
             }

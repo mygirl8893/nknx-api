@@ -184,9 +184,9 @@ class Kernel extends ConsoleKernel
             foreach ($users as $user) {
                 $offlineNodes = [];
                 foreach ($user->nodes as $node) {
-                    if($node->online == 0 && !$node->notified && $node->updated_at <= Carbon::now()->subMinutes(5)){
+                    if($node->online == 0 && !$node->notified_offline && $node->updated_at <= Carbon::now()->subMinutes(5)){
                         array_push($offlineNodes,$node);
-                        $node->notified = Carbon::now();
+                        $node->notified_offline = Carbon::now();
                         $node->save();
                     }
                 }
@@ -236,9 +236,9 @@ class Kernel extends ConsoleKernel
                 foreach ($users as $user) {
                     $outdatedNodes = [];
                     foreach ($user->nodes as $node) {
-                        if($node->online == 1 && !$node->notified && $node->sversion < $networkSversion){
+                        if($node->online == 1 && !$node->notified_outdated && $node->sversion < $networkSversion){
                             array_push($outdatedNodes,$node);
-                            $node->notified = Carbon::now();
+                            $node->notified_outdated = Carbon::now();
                             $node->save();
                         }
                     }
@@ -291,9 +291,9 @@ class Kernel extends ConsoleKernel
                 foreach ($users as $user) {
                     $stuckedNodes = [];
                     foreach ($user->nodes as $node) {
-                        if($node->online && $node->updated_at <= Carbon::now()->subMinutes(10) && !$node->notified && $node->height <= $networkBlockHeight-40){
+                        if($node->online && $node->updated_at <= Carbon::now()->subMinutes(10) && !$node->notified_stucked && $node->height <= $networkBlockHeight-40){
                             array_push($stuckedNodes,$node);
-                            $node->notified = Carbon::now();
+                            $node->notified_stucked = Carbon::now();
                             $node->save();
                         }
                     }
