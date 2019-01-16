@@ -40,6 +40,21 @@ class UpdateNodesTable extends Migration
      */
     public function down()
     {
-        //
+        $table->dropColumn('httpProxyPort');
+        $table->dropColumn('websocketPort');
+        $table->renameColumn('jsonRpcPort', 'jsonPort');
+        $table->renameColumn('version', 'softwareVersion');
+        $table->integer('state')->nullable();
+        $table->integer('port')->nullable();
+        $table->integer('nodePort')->nullable();
+        $table->integer('chordPort')->nullable();
+        $table->integer('wsPort')->nullable();
+        $table->BigInteger('time')->nullable();
+        $table->integer('version')->nullable();
+        $table->integer('services')->nullable();
+        $table->boolean('relay')->nullable();
+        $table->BigInteger('txnCnt')->nullable();
+        $table->BigInteger('rxTxnCnt')->nullable();
+        $table->string('chordID')->nullable();
     }
 }
