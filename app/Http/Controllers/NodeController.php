@@ -20,11 +20,11 @@ class NodeController extends Controller
     /**
      * Get all nodes
      * Returns all stored nodes of currently logged in user
-     * 
+     *
      * @authenticated
-     * 
-     * @response [   
-     *              {       
+     *
+     * @response [
+     *              {
      *                  "id": 172,
      *                  "label": "nknx",
      *                  "state": 0,
@@ -50,7 +50,7 @@ class NodeController extends Controller
      *                  "created_at": "2018-11-04 15:51:49",
      *                  "updated_at": "2018-11-17 12:46:08"
      *              },
-     *              {       
+     *              {
      *                  "id": 173,
      *                  "label": "nknx1",
      *                  "state": 0,
@@ -89,16 +89,16 @@ class NodeController extends Controller
     /**
      * Store wallet
      * Store one or multiple nodes in the database
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @bodyParam  ip string required One or multiple ips/domain names (comma separated) to store in the database Example: 104.248.138.60
      * @bodyParam  label string An optional label of the node Example: nknx
      * @response {
      *      "status": "success",
      *      "data": {
-     *          "saved": [   
-     *              {       
+     *          "saved": [
+     *              {
      *                  "id": 172,
      *                  "label": "nknx",
      *                  "state": 0,
@@ -133,7 +133,7 @@ class NodeController extends Controller
      *                  "192.168.178.44",
      *                  "192.168.178.32"
      *          ]
-     *      } 
+     *      }
      * }
      */
     public function store(Request $request)
@@ -152,7 +152,7 @@ class NodeController extends Controller
             ], 400);
         }
         foreach ($aliases as $alias) {
-        
+
             if(substr($alias, -1) == '/') {
                 $alias = substr($alias, 0, -1);
             }
@@ -175,20 +175,23 @@ class NodeController extends Controller
             ];
             try {
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post($alias . ':30003', $requestContent);        
+                $apiRequest = $client->Post($alias . ':30003', $requestContent);
                 $response = json_decode($apiRequest->getBody(), true);
 
-                if (Node::where('addr', $response["result"]["Addr"])->first()){
+                if (Node::where('addr', $response["result"]["addr"])->first()){
                     array_push($multiAliases,$alias);
-                } 
+                }
                 else{
-                    unset($response["result"]["ID"]);
+                    unset($response["result"]["id"]);
                     $node = new Node($response["result"]);
                     $node->online = true;
                     $node->label = $label;
                     $node->alias = $alias;
                     $node->user_id =  $user->id;
                     //get version
+                    $sversion = substr($response["result"]["version"] ,(strpos($response["result"]["version"],'v')+1),strpos($response["result"]["version"],'-')-(strpos($response["result"]["version"],'v')+1));
+                    $node->sversion= (int)str_replace('.', '', $sversion);
+                    //get latestblockheight
                     $requestContent = [
                         'headers' => [
                             'Accept' => 'application/json',
@@ -196,56 +199,30 @@ class NodeController extends Controller
                         ],
                         'json' => [
                             "id" => 1,
-                            "method" => "getversion",
+                            "method" => "getlatestblockheight",
                             "params" => [
                                 "provider" => "nknx",
                             ],
                             "jsonrpc" => "2.0"
                         ]
                     ];
-
-
                     try {
                         $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post($alias.':30003', $requestContent);        
+                        $apiRequest = $client->Post($alias.':30003', $requestContent);
                         $response = json_decode($apiRequest->getBody(), true);
-                        $node->softwareVersion = $response["result"];
+                        $node->latestBlockHeight = $response["result"];
 
-                        //get latestblockheight
-                        $requestContent = [
-                            'headers' => [
-                                'Accept' => 'application/json',
-                                'Content-Type' => 'application/json'
-                            ],
-                            'json' => [
-                                "id" => 1,
-                                "method" => "getlatestblockheight",
-                                "params" => [
-                                    "provider" => "nknx",
-                                ],
-                                "jsonrpc" => "2.0"
-                            ]
-                        ];
-                        try {
-                            $client = new GuzzleHttpClient();
-                            $apiRequest = $client->Post($alias.':30003', $requestContent);        
-                            $response = json_decode($apiRequest->getBody(), true);
-                            $node->latestBlockHeight = $response["result"];
 
-                            $node->save();
-                            array_push($savedAliases,$node);
+                        $node->save();
+                        array_push($savedAliases,$node);
 
-                        } catch (RequestException $re) {
-                            array_push($failedAliases,$alias);
-                        }
-    
                     } catch (RequestException $re) {
                         array_push($failedAliases,$alias);
                     }
                 }
             } catch (RequestException $re) {
                 array_push($failedAliases,$alias);
-            }  
+            }
         }
         return response([
             'status' => 'success',
@@ -259,13 +236,13 @@ class NodeController extends Controller
 
     /**
 	 * Get single node by id
-	 * Returns a specific user-node based on the id 
-     * 
+	 * Returns a specific user-node based on the id
+     *
 	 * @authenticated
 	 *
      * @queryParam node required Id of the resource
-     * 
-     * @response {    
+     *
+     * @response {
      *                  "id": 172,
      *                  "label": "nknx",
      *                  "state": 0,
@@ -291,7 +268,7 @@ class NodeController extends Controller
      *                  "created_at": "2018-11-04 15:51:49",
      *                  "updated_at": "2018-11-17 12:46:08"
      * }
-     * 
+     *
      */
     public function show(Node $node)
     {
@@ -303,11 +280,11 @@ class NodeController extends Controller
     /**
 	 * Remove single node by id
 	 * Remove the specified user-node from the database
-     * 
+     *
 	 * @authenticated
 	 *
      * @queryParam node required Id of the resource
-     * 
+     *
      * @response {
      *  null
      * }
@@ -315,16 +292,16 @@ class NodeController extends Controller
     public function destroy(Node $node)
     {
         if($node)
-            $node->delete(); 
+            $node->delete();
         else
             return response()->json(error);
-        return response()->json(null); 
+        return response()->json(null);
     }
 
     /**
-	 * Remove all user-nodes 
-	 * Remove all user-nodes from the database 
-     * 
+	 * Remove all user-nodes
+	 * Remove all user-nodes from the database
+     *
 	 * @authenticated
 	 *
      * @response {
@@ -335,6 +312,6 @@ class NodeController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         Node::where('user_id',$user->id)->delete();
-        return response()->json(null); 
+        return response()->json(null);
     }
 }

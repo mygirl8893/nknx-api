@@ -101,10 +101,12 @@ class NodeCrawler implements ShouldQueue
                         if(is_array($neighbors)){
 
                             foreach ($neighbors as $neighbor){
-                                $pubkey = $neighbor["NKNaddr"];
-                                $host = $neighbor["IpStr"];
+                                $pubkey = $neighbor["publicKey"];
+                                preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $neighbor["addr"], $matches);
+                                $host = $matches[0];
                                 $port = 30003;
                                 if (!CrawlerTempNode::where('pk', '=',$pubkey)->exists()) {
+
                                     $tempNode = new CrawlerTempNode([
                                         "pk"    =>  $pubkey,
                                         "ip"    =>  $host,

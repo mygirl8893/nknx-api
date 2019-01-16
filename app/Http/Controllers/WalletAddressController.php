@@ -22,11 +22,11 @@ class WalletAddressController extends Controller
     /**
      * Get all wallets
      * Returns all stored wallets of currently logged in user
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @response [
-     *              {       
+     *              {
      *                  "id": 1,
      *                  "label": "nknx",
      *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
@@ -35,7 +35,7 @@ class WalletAddressController extends Controller
      *                  "created_at": "2018-11-17 09:42:58",
      *                  "updated_at": "2018-11-17 09:42:58"
      *              },
-     *              {       
+     *              {
      *                  "id": 2,
      *                  "label": "nknx",
      *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
@@ -57,14 +57,14 @@ class WalletAddressController extends Controller
     /**
      * Store wallet
      * Store a wallet in the database
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @bodyParam  address string required NKN wallet address
      * @bodyParam  label string An optional label of the node Example: nknx
      * @response {
      *      "status": "success",
-     *      "data": {       
+     *      "data": {
      *                  "id": 2,
      *                  "label": "nknx",
      *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
@@ -104,7 +104,7 @@ class WalletAddressController extends Controller
                     "id" => 1,
                     "method" => "getunspendoutput",
                     "params" => [
-                        "address" => $address, 
+                        "address" => $address,
                         "assetid" => "4945ca009174097e6614d306b66e1f9cb1fce586cb857729be9e1c5cc04c9c02"
                     ],
                     "jsonrpc" => "2.0"
@@ -113,10 +113,10 @@ class WalletAddressController extends Controller
             try {
                 $walletAddress = new WalletAddress();
                 $walletAddress->label = $label;
-                $walletAddress->address = $address; 
-                $walletAddress->user_id = $user->id; 
+                $walletAddress->address = $address;
+                $walletAddress->user_id = $user->id;
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);        
+                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
                 $response = json_decode($apiRequest->getBody(), true);
                 if($response["result"]){
                     foreach($response["result"] AS $unspendoutput) {
@@ -124,10 +124,10 @@ class WalletAddressController extends Controller
                     }
                 }
                 else{
-                    $balance = 0; 
+                    $balance = 0;
                 }
 
-                $walletAddress->balance = $balance; 
+                $walletAddress->balance = $balance;
 
                 $walletAddress->save();
 
@@ -135,7 +135,7 @@ class WalletAddressController extends Controller
                     'status' => 'success',
                     'data' => $walletAddress
                 ]);
-                
+
 
             } catch (RequestException $re) {
                 return response([
@@ -152,13 +152,13 @@ class WalletAddressController extends Controller
 
     /**
 	 * Get single wallet by walletAddress
-	 * Returns a specific user-wallet based on the address 
-     * 
+	 * Returns a specific user-wallet based on the address
+     *
 	 * @authenticated
 	 *
      * @queryParam walletAddress a stored nkn wallet address
-     * 
-     * @response {       
+     *
+     * @response {
      *                  "id": 2,
      *                  "label": "nknx",
      *                  "address": "NNP6M8EGZcWSZNgA2ebQfMVyNkwX6XXXXX",
@@ -167,7 +167,7 @@ class WalletAddressController extends Controller
      *                  "created_at": "2018-11-17 09:42:58",
      *                  "updated_at": "2018-11-17 09:42:58"
      *              }
-     * 
+     *
      */
     public function show($walletAddress)
     {
@@ -179,11 +179,11 @@ class WalletAddressController extends Controller
     /**
 	 * Remove single wallet by id
 	 * Remove the specified user-wallet from the database
-     * 
+     *
 	 * @authenticated
 	 *
      * @queryParam walletAddress required Id of the resource
-     * 
+     *
      * @response {
      *  null
      * }
@@ -191,21 +191,21 @@ class WalletAddressController extends Controller
     public function destroy(WalletAddress $walletAddress)
     {
         if($walletAddress)
-            $walletAddress->delete(); 
+            $walletAddress->delete();
         else
             return response()->json(error);
-        return response()->json(null); 
+        return response()->json(null);
     }
 
     /**
 	 * Get mining output per day
 	 * Get the daily mining output based on a database-wallet id
-     * 
+     *
 	 * @authenticated
 	 *
      * @queryParam walletAddress required Id of the resource Example:36
      * @queryParam latest Limits the days returned Example:7
-     * 
+     *
      * @response [
      *       {
      *           "count": 2172,
@@ -244,7 +244,7 @@ class WalletAddressController extends Controller
     public function getMiningOutputDaily(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
         $outputs_query = Output::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
-        ->when($latest, function ($q, $latest) { 
+        ->when($latest, function ($q, $latest) {
             return $q->where('timestamp', '>=', Carbon::now()->subDays($latest));
         })
         ->whereHas('transaction', function($q){
@@ -261,12 +261,12 @@ class WalletAddressController extends Controller
     /**
 	 * Get mining output per month
 	 * Get the monthly mining output based on a database-wallet id
-     * 
+     *
 	 * @authenticated
 	 *
      * @queryParam walletAddress required Id of the resource Example:36
      * @queryParam latest Limits the months returned Example:7
-     * 
+     *
      * @response [
      *       {
      *           "count": 2172,
@@ -305,7 +305,7 @@ class WalletAddressController extends Controller
     public function getMiningOutputMonthly(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
         $outputs_query = Output::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
-        ->when($latest, function ($q, $latest) { 
+        ->when($latest, function ($q, $latest) {
             return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         })
         ->whereHas('transaction', function($q){

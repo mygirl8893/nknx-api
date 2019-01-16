@@ -26,7 +26,7 @@ class AddSversionToNodesTable extends Migration
     public function down()
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->integer('sversion')->nullable();
+            $table->dropColumn('sversion');
         });
     }
 }

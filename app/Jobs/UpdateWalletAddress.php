@@ -38,9 +38,9 @@ class UpdateWalletAddress implements ShouldQueue
     public function handle()
     {
         $walletAddress = WalletAddress::find($this->id);
-       
+
         if (!$walletAddress) {
-            
+
         } else {
             $balance = 0;
             $requestContent = [
@@ -52,7 +52,7 @@ class UpdateWalletAddress implements ShouldQueue
                     "id" => 1,
                     "method" => "getunspendoutput",
                     "params" => [
-                        "address" => $walletAddress->address, 
+                        "address" => $walletAddress->address,
                         "assetid" => "4945ca009174097e6614d306b66e1f9cb1fce586cb857729be9e1c5cc04c9c02"
                     ],
                     "jsonrpc" => "2.0"
@@ -61,7 +61,7 @@ class UpdateWalletAddress implements ShouldQueue
 
             try {
                 $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);        
+                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
                 $response = json_decode($apiRequest->getBody(), true);
                 if($response["result"]){
                     foreach($response["result"] AS $unspendoutput) {
@@ -72,7 +72,7 @@ class UpdateWalletAddress implements ShouldQueue
                     $balance = 0;
                 }
 
-                $walletAddress->balance = $balance; 
+                $walletAddress->balance = $balance;
                 $walletAddress->save();
 
             } catch (RequestException $re) {
@@ -86,5 +86,5 @@ class UpdateWalletAddress implements ShouldQueue
     {
         return ['UpdateWalletAddress',$this->id];
     }
-    
+
 }

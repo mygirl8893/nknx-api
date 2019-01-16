@@ -51,9 +51,9 @@ class CreateAddressBookItem implements ShouldQueue
 
         try {
             $client = new GuzzleHttpClient();
-    
+
             $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
-            
+
             $response = json_decode($apiRequest->getBody(), true);
             if(array_key_exists('result', $response)){
                 $responseItem = AddressBook::updateOrCreate([
@@ -64,7 +64,7 @@ class CreateAddressBookItem implements ShouldQueue
                 ]);
                 $responseItem->save();
             }
-            
+
         }
         catch(RequestException $re) {
 

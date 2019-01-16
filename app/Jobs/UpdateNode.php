@@ -69,11 +69,13 @@ class UpdateNode implements ShouldQueue
                 $client = new GuzzleHttpClient();
                 $apiRequest = $client->Post($node->alias . ':30003', $requestContent);
                 $response = json_decode($apiRequest->getBody(), true);
-                unset($response["result"]["ID"]);
+                unset($response["result"]["id"]);
                 $node->fill($response["result"]);
                 $node->online = 1;
+                $sversion = substr($response["result"]["version"] ,(strpos($response["result"]["version"],'v')+1),strpos($response["result"]["version"],'-')-(strpos($response["result"]["version"],'v')+1));
+                $node->sversion= (int)str_replace('.', '', $sversion);
 
-                //get version
+                //get latestblockheight
                 $requestContent = [
                     'headers' => [
                         'Accept' => 'application/json',
@@ -81,24 +83,28 @@ class UpdateNode implements ShouldQueue
                     ],
                     'json' => [
                         "id" => 1,
-                        "method" => "getversion",
+                        "method" => "getlatestblockheight",
                         "params" => [
                             "provider" => "nknx",
                         ],
                         "jsonrpc" => "2.0"
                     ]
                 ];
-
-
                 try {
                     $client = new GuzzleHttpClient();
                     $apiRequest = $client->Post($node->alias.':30003', $requestContent);
                     $response = json_decode($apiRequest->getBody(), true);
-                    $node->softwareVersion = $response["result"];
-                    $sversion = substr($response["result"] ,(strpos($response["result"],'v')+1),strpos($response["result"],'-')-(strpos($response["result"],'v')+1));
-                    $node->sversion= (int)str_replace('.', '', $sversion);
+                    $node->latestBlockHeight = $response["result"];
 
-                    //get latestblockheight
+                    //if node switches version reset notification
+                    if($oldSversion != $node->sversion){
+                        $node->notified_outdated = null;
+                    }
+                    //if node switches from offline to online reset notification
+                    if($oldOnline != $node->online ){
+                        $node->notified_offline = null;
+                    }
+
                     $requestContent = [
                         'headers' => [
                             'Accept' => 'application/json',
@@ -115,56 +121,20 @@ class UpdateNode implements ShouldQueue
                     ];
                     try {
                         $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post($node->alias.':30003', $requestContent);
+                        $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
                         $response = json_decode($apiRequest->getBody(), true);
-                        $node->latestBlockHeight = $response["result"];
-
-                        //if node switches version reset notification
-                        if($oldSversion != $node->sversion){
-                            $node->notified_outdated = null;
-                        }
-                        //if node switches from offline to online reset notification
-                        if($oldOnline != $node->online ){
-                            $node->notified_offline = null;
-                        }
-
-                        $requestContent = [
-                            'headers' => [
-                                'Accept' => 'application/json',
-                                'Content-Type' => 'application/json'
-                            ],
-                            'json' => [
-                                "id" => 1,
-                                "method" => "getlatestblockheight",
-                                "params" => [
-                                    "provider" => "nknx",
-                                ],
-                                "jsonrpc" => "2.0"
-                            ]
-                        ];
-                        try {
-                            $client = new GuzzleHttpClient();
-                            $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
-                            $response = json_decode($apiRequest->getBody(), true);
-                            $networkBlockHeight = $response["result"];
-                            if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $networkBlockHeight-40){
-                                $node->notified_stucked = null;
-                            }
-                        }
-                        catch(RequestException $re){
-
-                        }
-                        finally {
-                            $node->save();
-                        }
-
-
-                    } catch (RequestException $re) {
-                        $node->online = 0;
-                        if($node->isDirty()){
-                            $node->save();
+                        $networkBlockHeight = $response["result"];
+                        if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $networkBlockHeight-40){
+                            $node->notified_stucked = null;
                         }
                     }
+                    catch(RequestException $re){
+
+                    }
+                    finally {
+                        $node->save();
+                    }
+
 
                 } catch (RequestException $re) {
                     $node->online = 0;
