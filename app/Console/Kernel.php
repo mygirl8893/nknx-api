@@ -150,16 +150,16 @@ class Kernel extends ConsoleKernel
                         $client = new GuzzleHttpClient();
                         $apiRequest = $client->Post($seedNode.':30003', $requestContent);
                         $response = json_decode($apiRequest->getBody(), true);
-                        if(array_key_exists("publicKey",$response["result"])){
-                            if (!CrawlerTempNode::where('pk', '=',$response["result"]["publicKey"])->exists()) {
+                        if(array_key_exists("id",$response["result"])){
+                            if (!CrawlerTempNode::where('pk', '=',$response["result"]["id"])->exists()) {
                                     $tempNode = new CrawlerTempNode([
-                                        "pk"    =>  $response["result"]["publicKey"],
+                                        "pk"    =>  $response["result"]["id"],
                                         "ip"    =>  $seedNode,
                                         "port"  =>  30003,
                                         "state" =>  0
                                     ]);
                                     $tempNode->save();
-                                    NodeCrawler::dispatch($response["result"]["publicKey"],$seedNode,30003)->onQueue('nodeCrawler');
+                                    NodeCrawler::dispatch($response["result"]["id"],$seedNode,30003)->onQueue('nodeCrawler');
                             }
                         }
                     }

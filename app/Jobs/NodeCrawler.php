@@ -101,7 +101,7 @@ class NodeCrawler implements ShouldQueue
                         if(is_array($neighbors)){
 
                             foreach ($neighbors as $neighbor){
-                                $pubkey = $neighbor["publicKey"];
+                                $pubkey = $neighbor["id"];
                                 preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $neighbor["addr"], $matches);
                                 $host = $matches[0];
                                 $port = 30003;
