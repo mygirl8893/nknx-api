@@ -50,7 +50,7 @@ class NodeCrawler implements ShouldQueue
                 $crawlerTempNode->state = 1;
                 //if not try to reach it
                 $requestContent = [
-                    'timeout' => 5,
+                    'timeout' => 2,
                     'headers' => [
                         'Accept' => 'application/json',
                         'Content-Type' => 'application/json'

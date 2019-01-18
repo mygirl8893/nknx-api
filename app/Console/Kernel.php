@@ -129,9 +129,9 @@ class Kernel extends ConsoleKernel
                     CrawlerTempNode::truncate();
                 }
                 Log::channel('nodeCrawler')->notice("Node crawling started");
-                $seedNodes = array("35.187.201.101","35.198.198.253","146.148.24.130","35.242.233.86");
+                $seedNodes = array("35.187.201.101","35.198.198.253","146.148.24.130","35.242.233.86","35.192.235.226");
                 $requestContent = [
-                    'timeout' => 1,
+                    'timeout' => 2,
                     'headers' => [
                         'Accept' => 'application/json',
                         'Content-Type' => 'application/json'
