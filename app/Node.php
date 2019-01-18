@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Node extends Model
 {
-    protected $fillable = ['label','online','syncState','jsonRpcPort','addr','version','height','latestBlockHeight','user_id','sversion','httpProxyPort','websocketPort'];
+    protected $fillable = ['label','online','syncState','jsonRpcPort','addr','version','height','latestBlockHeight','user_id','sversion','httpProxyPort','websocketPort','relayMessageCount'];
 
 
     public function user()
