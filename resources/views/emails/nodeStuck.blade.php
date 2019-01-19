@@ -16,7 +16,7 @@
           Hi {{$user['name']}},
         </h1>
         <div style="color: #636363; font-size: 14px;">
-          We recognized that some of your nodes are stucked. That means they haven't updated their status for at least 10 minutes and are more than 40 blocks behind of the current blockheight. Here is a list of them:
+          We recognized that some of your nodes are stuck. That means they haven't updated their status for at least 10 minutes and are more than 40 blocks behind of the current blockheight. Here is a list of them:
           <ul>
             @foreach ($nodes as $node)
             <li>{{ $node->alias }}

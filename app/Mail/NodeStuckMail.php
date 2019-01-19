@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NodeStuckedMail extends Mailable
+class NodeStuckMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,6 +31,6 @@ class NodeStuckedMail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.nodeStucked');
+        return $this->view('emails.nodeStuck');
     }
 }

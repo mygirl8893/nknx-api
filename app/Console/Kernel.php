@@ -25,7 +25,7 @@ use App\Jobs\NodeCrawler;
 use Mail;
 use App\Mail\NodeOfflineMail;
 use App\Mail\NodeOutdatedMail;
-use App\Mail\NodeStuckedMail;
+use App\Mail\NodeStuckMail;
 use Carbon\Carbon;
 use Queue;
 use Log;
@@ -289,16 +289,16 @@ class Kernel extends ConsoleKernel
                 ->get();
 
                 foreach ($users as $user) {
-                    $stuckedNodes = [];
+                    $stuckNodes = [];
                     foreach ($user->nodes as $node) {
                         if($node->online && $node->updated_at <= Carbon::now()->subMinutes(10) && !$node->notified_stucked && $node->height <= $networkBlockHeight-40){
-                            array_push($stuckedNodes,$node);
+                            array_push($stuckNodes,$node);
                             $node->notified_stucked = Carbon::now();
                             $node->save();
                         }
                     }
-                    if (count($stuckedNodes)){
-                        Mail::to($user->email)->send(new NodeStuckedMail($user,$stuckedNodes));
+                    if (count($stuckNodes)){
+                        Mail::to($user->email)->send(new NodeStuckMail($user,$stuckNodes));
                     }
                 }
             }
@@ -307,7 +307,7 @@ class Kernel extends ConsoleKernel
             }
 
 
-        })->everyMinute()->name('SendStuckedNotifications')->withoutOverlapping();
+        })->everyMinute()->name('SendStuckNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
