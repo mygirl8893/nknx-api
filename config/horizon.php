@@ -124,15 +124,7 @@ return [
                 'processes' => 1,
                 'tries' => 3,
                 'timeout' => 300 // Timeout after 5 minutes
-            ],
-            'supervisor-4' => [
-                'connection' => 'redis',
-                'queue' => ['nodeCrawler'],
-                'balance' => 'simple',
-                'processes' => 10,
-                'tries' => 3,
-                'timeout' => 300 // Timeout after 5 minutes
-            ],
+            ]
         ],
 
         'local' => [
@@ -159,15 +151,7 @@ return [
                 'processes' => 1,
                 'tries' => 3,
                 'timeout' => 300 // Timeout after 5 minutes
-            ],
-            'supervisor-4' => [
-                'connection' => 'redis',
-                'queue' => ['nodeCrawler'],
-                'balance' => 'simple',
-                'processes' => 10,
-                'tries' => 3,
-                'timeout' => 300 // Timeout after 5 minutes
-            ],
+            ]
         ],
     ],
 ];

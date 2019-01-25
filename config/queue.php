@@ -77,14 +77,7 @@ return [
             'queue' => 'maintenance',
             'retry_after' => 450, // Run for max 7.5 minutes
             'block_for' => null,
-        ],
-        'redis-nodeCrawler' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-            'queue' => 'nodeCrawler',
-            'retry_after' => 450, // Run for max 35 minutes
-            'block_for' => null,
-        ],
+        ]
 
     ],
 

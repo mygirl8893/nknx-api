@@ -21,7 +21,6 @@ use App\Jobs\ProcessRemoteBlock;
 use App\Jobs\UpdateNode;
 use App\Jobs\UpdateWalletAddress;
 use App\Jobs\CleanUpCachedNodes;
-use App\Jobs\NodeCrawler;
 use Mail;
 use App\Mail\NodeOfflineMail;
 use App\Mail\NodeOutdatedMail;
@@ -110,65 +109,49 @@ class Kernel extends ConsoleKernel
         })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
 
         $schedule->call(function () {
-            if (Queue::size('nodeCrawler') == 0){
-                //cleanup
-                $finalNodes = CrawlerTempNode::where('state', 1)->get();
-                if ($finalNodes){
-                    CrawledNode::truncate();
-                    $newCrawledNodes = [];
-                    foreach ($finalNodes as $finalNode){
-                        $finalCrawledNode = $finalNode->toArray();
-                        unset($finalCrawledNode["state"]);
-                        array_push($newCrawledNodes,$finalCrawledNode);
-                    }
-                    foreach (array_chunk($newCrawledNodes,1000) as $t) {
-                        CrawledNode::insert($t);
-                    }
 
-                    Log::channel('nodeCrawler')->notice("Node crawling finished");
-                    CrawlerTempNode::truncate();
-                }
-                Log::channel('nodeCrawler')->notice("Node crawling started");
-                $seedNodes = array("35.187.201.101","35.198.198.253","146.148.24.130","35.242.233.86","35.192.235.226");
-                $requestContent = [
-                    'timeout' => 2,
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json'
-                    ],
-                    'json' => [
-                        "id" => 1,
-                        "method" => "getnodestate",
-                        "params" => [
-                            "provider" => "nknx",
-                        ],
-                        "jsonrpc" => "2.0"
-                    ]
-                ];
-                foreach ($seedNodes as $seedNode){
-                    try{
-                        $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post($seedNode.':30003', $requestContent);
-                        $response = json_decode($apiRequest->getBody(), true);
-                        if(array_key_exists("id",$response["result"])){
-                            if (!CrawlerTempNode::where('pk', '=',$response["result"]["id"])->exists()) {
-                                    $tempNode = new CrawlerTempNode([
-                                        "pk"    =>  $response["result"]["id"],
-                                        "ip"    =>  $seedNode,
-                                        "port"  =>  30003,
-                                        "state" =>  0
-                                    ]);
-                                    $tempNode->save();
-                                    NodeCrawler::dispatch($response["result"]["id"],$seedNode,30003)->onQueue('nodeCrawler');
-                            }
-                        }
-                    }
-                    catch(RequestException $re){
+            $newCrawledNodes = [];
+            $client = new GuzzleHttpClient();
+            $apiRequest = $client->Get('https://testnet.nkn.org/fullnetwork/for_nknx');
+            $response = json_decode($apiRequest->getBody(), true);
 
-                    }
+            foreach ($response as $node){
+                $tempNode = new CrawledNode([
+                    "pk"    =>  $node["nodeId"],
+                    "ip"    =>  $node["ip"],
+                    "port"  =>  $node["rpcPort"],
+                ]);
+
+                //look up the cache
+                $cachedNode = CachedNode::where('ip', $tempNode->ip)->first();
+                //if node is cached get it
+                if($cachedNode){
+                    $response = $cachedNode->toArray();
+                    $cachedNode->touch();
                 }
+                //if not ask the api
+                else{
+                    $client = new GuzzleHttpClient();
+                    $apiRequest = $client->Get('https://api.ipgeolocation.io/ipgeo?apiKey='.config('geolocation.ipgeolocation_key').'&ip='.$tempNode->ip);
+                    $response = json_decode($apiRequest->getBody(), true);
+                    unset($response["ip"]);
+                    //update or create cache entry
+                    $dbCachedNode = CachedNode::firstOrCreate(array('ip' => $tempNode->ip));
+                    $dbCachedNode->fill($response);
+                    $dbCachedNode->save();
+                }
+
+                //update the values
+                $tempNode->fill($response);
+                array_push($newCrawledNodes,$tempNode->toArray());
             }
-        })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
+            CrawledNode::truncate();
+
+            foreach (array_chunk($newCrawledNodes,1000) as $t) {
+                CrawledNode::insert($t);
+            }
+
+        })->everyFiveMinutes()->name('CrawlNodes')->withoutOverlapping();
 
         $schedule->call(function () {
             //get all Users where nodeOffline notifications are turned online
