@@ -239,55 +239,34 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             //A node is considered stucked if it is more than 40 Blocks behind of current known blockheight and hasn't been updated for at least 10 minutes
-            $requestContent = [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json'
-                ],
-                'json' => [
-                    "id" => 1,
-                    "method" => "getlatestblockheight",
-                    "params" => [
-                        "provider" => "nknx",
-                    ],
-                    "jsonrpc" => "2.0"
-                ]
-            ];
+            $latestblock = Block::orderBy('height', 'desc')->first();
 
+            $networkBlockHeight = $latestblock->height;
 
-            try {
-                $client = new GuzzleHttpClient();
-                $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
-                $response = json_decode($apiRequest->getBody(), true);
-                $networkBlockHeight = $response["result"];
+            //get all Users where nodeOffline notifications are turned online
+            $users = User::whereHas('notifications_config', function($q){
+                $q->where('nodeOutdated', 1);
+            })
+            ->whereHas('nodes', function($q){
+                $q->where('updated_at', '<', Carbon::now()->subMinutes(10));
+            })
+            ->with('nodes')
+            ->get();
 
-                //get all Users where nodeOffline notifications are turned online
-                $users = User::whereHas('notifications_config', function($q){
-                    $q->where('nodeOutdated', 1);
-                })
-                ->whereHas('nodes', function($q){
-                    $q->where('updated_at', '<', Carbon::now()->subMinutes(10));
-                })
-                ->with('nodes')
-                ->get();
-
-                foreach ($users as $user) {
-                    $stuckNodes = [];
-                    foreach ($user->nodes as $node) {
-                        if($node->online && $node->updated_at <= Carbon::now()->subMinutes(10) && !$node->notified_stucked && $node->height <= $networkBlockHeight-40){
-                            array_push($stuckNodes,$node);
-                            $node->notified_stucked = Carbon::now();
-                            $node->save();
-                        }
-                    }
-                    if (count($stuckNodes)){
-                        Mail::to($user->email)->send(new NodeStuckMail($user,$stuckNodes));
+            foreach ($users as $user) {
+                $stuckNodes = [];
+                foreach ($user->nodes as $node) {
+                    if($node->online && $node->updated_at <= Carbon::now()->subMinutes(10) && !$node->notified_stucked && $node->height <= $networkBlockHeight-40){
+                        array_push($stuckNodes,$node);
+                        $node->notified_stucked = Carbon::now();
+                        $node->save();
                     }
                 }
+                if (count($stuckNodes)){
+                    Mail::to($user->email)->send(new NodeStuckMail($user,$stuckNodes));
+                }
             }
-            catch(RequestException $re){
 
-            }
 
 
         })->everyMinute()->name('SendStuckNotifications')->withoutOverlapping();

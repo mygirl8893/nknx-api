@@ -105,35 +105,12 @@ class UpdateNode implements ShouldQueue
                         $node->notified_offline = null;
                     }
 
-                    $requestContent = [
-                        'headers' => [
-                            'Accept' => 'application/json',
-                            'Content-Type' => 'application/json'
-                        ],
-                        'json' => [
-                            "id" => 1,
-                            "method" => "getlatestblockheight",
-                            "params" => [
-                                "provider" => "nknx",
-                            ],
-                            "jsonrpc" => "2.0"
-                        ]
-                    ];
-                    try {
-                        $client = new GuzzleHttpClient();
-                        $apiRequest = $client->Post('https://nknx.org:30003', $requestContent);
-                        $response = json_decode($apiRequest->getBody(), true);
-                        $networkBlockHeight = $response["result"];
-                        if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $networkBlockHeight-40){
-                            $node->notified_stucked = null;
-                        }
+                    $latestblock = Block::orderBy('height', 'desc')->first();
+                    if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $latestblock->height-40){
+                        $node->notified_stucked = null;
                     }
-                    catch(RequestException $re){
+                    $node->save();
 
-                    }
-                    finally {
-                        $node->save();
-                    }
 
 
                 } catch (RequestException $re) {
