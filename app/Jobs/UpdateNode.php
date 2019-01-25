@@ -71,54 +71,27 @@ class UpdateNode implements ShouldQueue
                 $response = json_decode($apiRequest->getBody(), true);
                 unset($response["result"]["id"]);
                 $node->fill($response["result"]);
+                $node->latestBlockHeight = $response["result"]["height"];
                 $node->online = 1;
                 $sversion = substr($response["result"]["version"] ,(strpos($response["result"]["version"],'v')+1),strpos($response["result"]["version"],'-')-(strpos($response["result"]["version"],'v')+1));
                 $node->sversion= (int)str_replace('.', '', $sversion);
 
-                //get latestblockheight
-                $requestContent = [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json'
-                    ],
-                    'json' => [
-                        "id" => 1,
-                        "method" => "getlatestblockheight",
-                        "params" => [
-                            "provider" => "nknx",
-                        ],
-                        "jsonrpc" => "2.0"
-                    ]
-                ];
-                try {
-                    $client = new GuzzleHttpClient();
-                    $apiRequest = $client->Post($node->alias.':30003', $requestContent);
-                    $response = json_decode($apiRequest->getBody(), true);
-                    $node->latestBlockHeight = $response["result"];
-
-                    //if node switches version reset notification
-                    if($oldSversion != $node->sversion){
-                        $node->notified_outdated = null;
-                    }
-                    //if node switches from offline to online reset notification
-                    if($oldOnline != $node->online ){
-                        $node->notified_offline = null;
-                    }
-
-                    $latestblock = Block::orderBy('height', 'desc')->first();
-                    if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $latestblock->height-40){
-                        $node->notified_stucked = null;
-                    }
-                    $node->save();
-
-
-
-                } catch (RequestException $re) {
-                    $node->online = 0;
-                    if($node->isDirty()){
-                        $node->save();
-                    }
+                //if node switches version reset notification
+                if($oldSversion != $node->sversion){
+                    $node->notified_outdated = null;
                 }
+                //if node switches from offline to online reset notification
+                if($oldOnline != $node->online ){
+                    $node->notified_offline = null;
+                }
+
+                $latestblock = Block::orderBy('height', 'desc')->first();
+                if($node->updated_at > Carbon::now()->subMinutes(10) || $node->height > $latestblock->height-40){
+                    $node->notified_stucked = null;
+                }
+                $node->save();
+
+
 
             } catch (RequestException $re) {
                 $node->online = 0;
