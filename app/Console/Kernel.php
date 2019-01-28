@@ -112,7 +112,7 @@ class Kernel extends ConsoleKernel
 
             $newCrawledNodes = [];
             $client = new GuzzleHttpClient();
-            $apiRequest = $client->Get('https://testnet.nkn.org/fullnetwork/for_nknx');
+            $apiRequest = $client->Get('https://testnet.nkn.org/fullnetwork/for_nknx?'.rand());
             $response = json_decode($apiRequest->getBody(), true);
 
             foreach ($response as $node){
