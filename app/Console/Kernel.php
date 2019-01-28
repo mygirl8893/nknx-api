@@ -151,7 +151,7 @@ class Kernel extends ConsoleKernel
                 CrawledNode::insert($t);
             }
 
-        })->everyFiveMinutes()->name('CrawlNodes')->withoutOverlapping();
+        })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
 
         $schedule->call(function () {
             //get all Users where nodeOffline notifications are turned online
@@ -179,7 +179,7 @@ class Kernel extends ConsoleKernel
             }
 
 
-        })->everyFiveMinutes()->name('SendOfflineNotifications')->withoutOverlapping();
+        })->everyMinute()->name('SendOfflineNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
 
@@ -235,7 +235,7 @@ class Kernel extends ConsoleKernel
             }
 
 
-        })->everyFiveMinutes()->name('SendOutdatedNotifications')->withoutOverlapping();
+        })->everyMinute()->name('SendOutdatedNotifications')->withoutOverlapping();
 
         $schedule->call(function () {
             //A node is considered stucked if it is more than 40 Blocks behind of current known blockheight and hasn't been updated for at least 10 minutes
