@@ -14,6 +14,7 @@ use GuzzleHttp\Exception\RequestException;
 use App\Node;
 use App\Block;
 use Carbon\Carbon;
+use GuzzleHttp\TransferStats;
 
 use Log;
 
@@ -49,6 +50,7 @@ class UpdateNode implements ShouldQueue
             if(!$node->alias){
                 $node->alias = $node->addr;
             }
+            $time = 0.1;
             //get main node data
             $requestContent = [
                 'timeout' => 1,
@@ -63,7 +65,11 @@ class UpdateNode implements ShouldQueue
                         "provider" => "nknx",
                     ],
                     "jsonrpc" => "2.0"
-                ]
+                ],
+                'on_stats' => function (TransferStats $stats) use (&$time){
+                    $time = $stats->getTransferTime();
+
+                }
             ];
             try {
                 $client = new GuzzleHttpClient();
@@ -72,6 +78,7 @@ class UpdateNode implements ShouldQueue
                 unset($response["result"]["id"]);
                 $node->fill($response["result"]);
                 $node->latestBlockHeight = $response["result"]["height"];
+                $node->latency = $time;
                 $node->online = 1;
                 $sversion = substr($response["result"]["version"] ,(strpos($response["result"]["version"],'v')+1),strpos($response["result"]["version"],'-')-(strpos($response["result"]["version"],'v')+1));
                 $node->sversion= (int)str_replace('.', '', $sversion);
