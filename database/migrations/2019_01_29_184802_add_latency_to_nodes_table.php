@@ -14,7 +14,7 @@ class AddLatencyToNodesTable extends Migration
     public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->float('latency', 8, 2)->nullable();
+            $table->decimal('latency', 5, 4)->nullable();
         });
     }
 
