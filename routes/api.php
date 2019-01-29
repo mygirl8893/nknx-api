@@ -39,7 +39,7 @@ Route::get('statistics/monthly/blocks', 'StatisticController@blocks_monthly');
 Route::get('statistics/monthly/transactions', 'StatisticController@transactions_monthly');
 Route::get('statistics/monthly/transfers', 'StatisticController@transfers_monthly');
 Route::get('statistics/miners', 'StatisticController@miners_overall');
-
+Route::get('statistics/network', 'StatisticController@network');
 
 //get all outputs
 Route::get('outputs', 'OutputController@showAll');
