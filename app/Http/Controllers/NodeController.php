@@ -82,6 +82,14 @@ class NodeController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         $nodes = Node::where('user_id',$user->id)->get();
+
+        $collection = collect(Node::orderBy('last_24hours', 'DESC')->get());
+
+        foreach($nodes as $node){
+            $data       = $collection->where('nodeId', $node->nodeId);
+            $node->rank = $data->keys()->first() + 1;
+        }
+
         return response()->json($nodes);
 
     }
