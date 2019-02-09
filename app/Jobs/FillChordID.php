@@ -75,8 +75,4 @@ class FillChordID implements ShouldQueue
         }
 
     }
-    public function tags()
-    {
-        return ['FillChordID',$this->blockheight];
-    }
 }
