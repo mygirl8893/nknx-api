@@ -75,6 +75,7 @@ class UpdateNode implements ShouldQueue
                 $client = new GuzzleHttpClient();
                 $apiRequest = $client->Post($node->alias . ':30003', $requestContent);
                 $response = json_decode($apiRequest->getBody(), true);
+                $node->nodeId = $response["result"]["id"];
                 unset($response["result"]["id"]);
                 $node->fill($response["result"]);
                 $node->latestBlockHeight = $response["result"]["height"];
