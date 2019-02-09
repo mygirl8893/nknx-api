@@ -56,7 +56,7 @@ Route::post('auth/reset/{token}', 'AuthController@setNewPasswordFromToken');
 Route::post('auth/reset', 'AuthController@resetPassword');
 
 Route::get('maintenance/updateChord', 'MaintenanceController@fillChordID');
-
+Route::get('maintenance/test', 'MaintenanceController@test');
 
 Route::post('auth/login', 'AuthController@login');
 Route::group(['middleware' => 'jwt.auth'], function(){

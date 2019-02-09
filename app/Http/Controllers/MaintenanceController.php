@@ -8,6 +8,8 @@ use GuzzleHttp\Exception\RequestException;
 
 use App\Block;
 use App\Jobs\FillChordID;
+use DB;
+use Carbon\Carbon;
 
 
 class MaintenanceController extends Controller
@@ -22,5 +24,17 @@ class MaintenanceController extends Controller
         //FillChordID::dispatch($id);
     }
 
+    public function test(){
+        $id="be522453fae3cfe25efa14521d94f464e41a48147675dae86efded4a9fba9286";
+
+        $blocks_query = Block::select(DB::raw("COUNT(*) as count, WEEK(timestamp) AS week"))
+                ->where('chordID',$id)
+                ->orderBy(DB::raw('WEEK(timestamp)'), 'desc')
+                ->groupBy(DB::raw('WEEK(timestamp)'))
+                ->where('timestamp', '>=', Carbon::now()->subWeeks(1));
+        $stats = $blocks_query
+                        ->first();
+        return response()->json($stats->count);
+    }
 
 }

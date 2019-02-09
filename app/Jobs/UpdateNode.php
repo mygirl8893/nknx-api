@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use GuzzleHttp\TransferStats;
 
 use Log;
+use DB;
 
 
 class UpdateNode implements ShouldQueue
@@ -83,6 +84,40 @@ class UpdateNode implements ShouldQueue
                 $node->online = 1;
                 $sversion = substr($response["result"]["version"] ,(strpos($response["result"]["version"],'v')+1),strpos($response["result"]["version"],'-')-(strpos($response["result"]["version"],'v')+1));
                 $node->sversion= (int)str_replace('.', '', $sversion);
+
+
+                $blocks_query = Block::select(DB::raw("COUNT(*) as count, DAY(timestamp) AS day"))
+                ->where('chordID',$node->nodeId)
+                ->orderBy(DB::raw('DAY(timestamp)'), 'desc')
+                ->groupBy(DB::raw('DAY(timestamp)'))
+                ->where('timestamp', '>=', Carbon::now()->subDays(1));
+                $stats = $blocks_query
+                        ->first();
+
+                $node->last_24hours($stats->count);
+
+
+                $blocks_query = Block::select(DB::raw("COUNT(*) as count, WEEK(timestamp) AS week"))
+                ->where('chordID',$node->nodeId)
+                ->orderBy(DB::raw('WEEK(timestamp)'), 'desc')
+                ->groupBy(DB::raw('WEEK(timestamp)'))
+                ->where('timestamp', '>=', Carbon::now()->subWeeks(1));
+                $stats = $blocks_query
+                        ->first();
+
+                $node->last_week($stats->count);
+
+
+                $blocks_query = Block::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
+                ->where('chordID',$node->nodeId)
+                ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
+                ->groupBy(DB::raw('MONTH(timestamp)'))
+                ->where('timestamp', '>=', Carbon::now()->subMonths(1));
+                $stats = $blocks_query
+                        ->first();
+
+                $node->last_month($stats->count);
+
 
                 //if node switches version reset notification
                 if($oldSversion != $node->sversion){
