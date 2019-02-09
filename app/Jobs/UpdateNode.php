@@ -94,7 +94,14 @@ class UpdateNode implements ShouldQueue
                 $stats = $blocks_query
                         ->first();
 
-                $node->last_24hours($stats->count);
+                if($stats){
+                    $node->last_24hours = $stats->count;
+                }
+                else{
+                    $node->last_24hours = 0;
+                }
+
+
 
 
                 $blocks_query = Block::select(DB::raw("COUNT(*) as count, WEEK(timestamp) AS week"))
@@ -104,8 +111,12 @@ class UpdateNode implements ShouldQueue
                 ->where('timestamp', '>=', Carbon::now()->subWeeks(1));
                 $stats = $blocks_query
                         ->first();
-
-                $node->last_week($stats->count);
+                if($stats){
+                    $node->last_week = $stats->count;
+                }
+                else{
+                    $node->last_week = 0;
+                }
 
 
                 $blocks_query = Block::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
@@ -115,8 +126,12 @@ class UpdateNode implements ShouldQueue
                 ->where('timestamp', '>=', Carbon::now()->subMonths(1));
                 $stats = $blocks_query
                         ->first();
-
-                $node->last_month($stats->count);
+                if($stats){
+                    $node->last_month = $stats->count;
+                }
+                else{
+                    $node->last_month = 0;
+                }
 
 
                 //if node switches version reset notification
