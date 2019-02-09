@@ -49,7 +49,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-       /* $schedule->call(function () {
+        $schedule->call(function () {
             if (Queue::size('blockchainCrawler') <= 60){
                 //get current blockchain height
                 $currentBlockchainHeight = 0;
@@ -92,7 +92,7 @@ class Kernel extends ConsoleKernel
                     ProcessRemoteBlock::dispatch($i)->onQueue('blockchainCrawler');
                 }
             }
-        })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping(); */
+        })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
 
         $schedule->call(function () {
             $nodes= Node::all();
@@ -101,7 +101,7 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute()->name('UpdateAllNodes')->withoutOverlapping();
 
-        /*$schedule->call(function () {
+        $schedule->call(function () {
             $walletAddresses= WalletAddress::all();
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
@@ -273,7 +273,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
-        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping(); */
+        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();
     }
 
     /**
