@@ -14,7 +14,7 @@ class MaintenanceController extends Controller
 {
 
     public function fillChordID(){
-        $blocks = Block::whereNull('chordID')->limit(10000)->get();
+        $blocks = Block::whereNull('chordID')->limit(100000)->get();
         foreach ($blocks as $block) {
             FillChordID::dispatch($block);
         }
