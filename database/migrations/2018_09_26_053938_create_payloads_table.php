@@ -15,7 +15,7 @@ class CreatePayloadsTable extends Migration
     {
         Schema::create('payloads', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('sigchain');
+            $table->text('sigChain');
             $table->string('submitter');
             $table->integer('transaction_id');
             $table->timestamps();

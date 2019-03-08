@@ -26,8 +26,6 @@ class UpdateNodesTable extends Migration
             $table->dropColumn('txnCnt');
             $table->dropColumn('rxTxnCnt');
             $table->dropColumn('chordID');
-            $table->renameColumn('jsonPort', 'jsonRpcPort');
-            $table->renameColumn('softwareVersion', 'version');
             $table->integer('httpProxyPort')->nullable();
             $table->integer('websocketPort')->nullable();
         });
@@ -42,8 +40,6 @@ class UpdateNodesTable extends Migration
     {
         $table->dropColumn('httpProxyPort');
         $table->dropColumn('websocketPort');
-        $table->renameColumn('jsonRpcPort', 'jsonPort');
-        $table->renameColumn('version', 'softwareVersion');
         $table->integer('state')->nullable();
         $table->integer('port')->nullable();
         $table->integer('nodePort')->nullable();
