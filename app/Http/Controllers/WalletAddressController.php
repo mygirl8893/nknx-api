@@ -304,7 +304,7 @@ class WalletAddressController extends Controller
      */
     public function getMiningOutputMonthly(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
-        $outputs_query = Output::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
+        $outputs_query = Output::select(DB::raw("COUNT(*) as count, EXTRACT(MONTH from timestamp AS month"))
         ->when($latest, function ($q, $latest) {
             return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         })
@@ -312,8 +312,8 @@ class WalletAddressController extends Controller
             $q->where('txType', 0);
         })
         ->where("address",$walletAddress->address)
-        ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
-        ->groupBy(DB::raw('MONTH(timestamp)'));
+        ->orderBy(DB::raw('EXTRACT(MONTH from timestamp'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(MONTH from timestamp'));
         $outputs = $outputs_query
                 ->get();
         return response()->json($outputs);

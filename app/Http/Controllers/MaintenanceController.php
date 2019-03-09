@@ -27,10 +27,10 @@ class MaintenanceController extends Controller
     public function test(){
         $id="be522453fae3cfe25efa14521d94f464e41a48147675dae86efded4a9fba9286";
 
-        $blocks_query = Block::select(DB::raw("COUNT(*) as count, WEEK(timestamp) AS week"))
+        $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(WEEK from timestamp) AS week"))
                 ->where('chordID',$id)
-                ->orderBy(DB::raw('WEEK(timestamp)'), 'desc')
-                ->groupBy(DB::raw('WEEK(timestamp)'))
+                ->orderBy(DB::raw('EXTRACT(WEEK from timestamp)'), 'desc')
+                ->groupBy(DB::raw('EXTRACT(WEEK from timestamp)'))
                 ->where('timestamp', '>=', Carbon::now()->subWeeks(1));
         $stats = $blocks_query
                         ->first();
