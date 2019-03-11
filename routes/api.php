@@ -49,25 +49,15 @@ Route::get('addresses/{address}', 'AddressController@show');
 
 Route::get('crawledNodes', 'CrawledNodesController@showAll');
 
-Route::post('auth/register', 'AuthController@register');
-Route::get('auth/verify/{token}', 'AuthController@verifyUser');
-
-Route::post('auth/reset/{token}', 'AuthController@setNewPasswordFromToken');
-Route::post('auth/reset', 'AuthController@resetPassword');
-
 Route::get('maintenance/updateChord', 'MaintenanceController@fillChordID');
 Route::get('maintenance/test', 'MaintenanceController@test');
 
-Route::post('auth/login', 'AuthController@login');
-Route::group(['middleware' => 'jwt.auth'], function(){
+Route::group(['middleware' => 'jwt'], function(){
 
   Route::get('auth/user/notifications', 'NotificationsConfigController@showNotificationsConfig');
   Route::put('auth/user/notifications', 'NotificationsConfigController@updateNotificationsConfig');
-
   Route::get('auth/user', 'AuthController@user');
-  Route::post('auth/logout', 'AuthController@logout');
-  Route::get('auth/resendVerification', 'AuthController@resendVerification');
-  Route::post('auth/changeUser', 'AuthController@changeUser');
+
   Route::resource('nodes', 'NodeController')->except([
     'create', 'edit', 'update'
   ]);

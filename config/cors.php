@@ -10,10 +10,12 @@ return [
      | to accept any value.
      |
      */
-    'supportsCredentials' => false,
+    'supportsCredentials' => true,
+    'allowedOrigins' => ['http://localhost:3000'],
+    'allowedOriginsPatterns' => [],
     'allowedOrigins' => ['*'],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'], // ex: ['GET', 'POST', 'PUT',  'DELETE']
-    'exposedHeaders' => ['Authorization'],
-    'maxAge' => 3600,
+    'exposedHeaders' => [],
+    'maxAge' => 0,
 ];
