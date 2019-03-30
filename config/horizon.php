@@ -105,6 +105,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['default'],
                 'balance' => 'simple',
+                'memory'=> 128,
                 'processes' => 60,
                 'tries' => 3,
                 'timeout' => 60 // Timeout after 60 seconds
@@ -113,6 +114,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['blockchainCrawler'],
                 'balance' => 'simple',
+                'memory'=> 128,
                 'processes' => 1,
                 'tries' => 3,
                 'timeout' => 60 // Timeout after 60 seconds
@@ -121,6 +123,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['maintenance'],
                 'balance' => 'simple',
+                'memory'=> 128,
                 'processes' => 1,
                 'tries' => 3,
                 'timeout' => 300 // Timeout after 5 minutes
@@ -132,6 +135,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['default'],
                 'balance' => 'simple',
+                'memory'=> 128,
                 'processes' => 60,
                 'tries' => 3,
                 'timeout' => 60 // Timeout after 60 seconds
@@ -140,6 +144,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['blockchainCrawler'],
                 'balance' => 'simple',
+                'memory'=> 128,
                 'processes' => 1,
                 'tries' => 3,
                 'timeout' => 60 // Timeout after 60 seconds
@@ -148,6 +153,7 @@ return [
                 'connection' => 'redis',
                 'queue' => ['maintenance'],
                 'balance' => 'simple',
+                'memory'=> 128,
                 'processes' => 1,
                 'tries' => 3,
                 'timeout' => 300 // Timeout after 5 minutes
