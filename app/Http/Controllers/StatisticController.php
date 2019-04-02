@@ -211,7 +211,7 @@ class StatisticController extends Controller
      */
     public function network(){
 
-        $mainNode = Node::where('addr','tcp://68.183.218.144:30001')->first();
+        $mainNode = Node::where('addr','tcp://68.183.209.199:30001')->first();
         $avg_lat = Node::whereNotNull('latency')->get()->avg('latency');
         $latest_block = Block::orderBy('height', 'desc')->first();
 
