@@ -95,14 +95,14 @@ class Kernel extends ConsoleKernel
         })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
 
         $schedule->call(function () {
-            $nodes= Node::all();
+            $nodes= Node::get();
             foreach ($nodes as $node) {
                 UpdateNode::dispatch($node->id);
             }
         })->everyMinute()->name('UpdateAllNodes')->withoutOverlapping();
 
         $schedule->call(function () {
-            $walletAddresses= WalletAddress::all();
+            $walletAddresses= WalletAddress::get();
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
