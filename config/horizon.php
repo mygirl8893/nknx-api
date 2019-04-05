@@ -106,7 +106,7 @@ return [
                 'queue' => ['default'],
                 'balance' => 'simple',
                 'memory'=> 128,
-                'processes' => 70,
+                'processes' => 60,
                 'tries' => 3,
                 'timeout' => 60 // Timeout after 60 seconds
             ],
@@ -136,7 +136,7 @@ return [
                 'queue' => ['default'],
                 'balance' => 'simple',
                 'memory'=> 128,
-                'processes' => 70,
+                'processes' => 60,
                 'tries' => 3,
                 'timeout' => 60 // Timeout after 60 seconds
             ],
