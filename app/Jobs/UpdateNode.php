@@ -86,7 +86,7 @@ class UpdateNode implements ShouldQueue
                 $node->sversion= (int)str_replace('.', '', $sversion);
 
 
-                $blocks_query = Block::select(DB::raw("COUNT(*) as count, DAY(timestamp) AS day"))
+                /*$blocks_query = Block::select(DB::raw("COUNT(*) as count, DAY(timestamp) AS day"))
                 ->where('chordID',$node->nodeId)
                 ->orderBy(DB::raw('DAY(timestamp)'), 'desc')
                 ->groupBy(DB::raw('DAY(timestamp)'))
@@ -131,7 +131,7 @@ class UpdateNode implements ShouldQueue
                 }
                 else{
                     $node->last_month = 0;
-                }
+                }*/
 
 
                 //if node switches version reset notification
