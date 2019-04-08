@@ -41,12 +41,12 @@ class StatisticController extends Controller
             $latest = 31;
         };
 
-        $blocks_query = Block::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
+        $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(DATE from timestamp) AS date"))
         ->when($pubkey, function ($q, $pubkey) {
             return $q->where('signer',$pubkey);
         })
-        ->orderBy(DB::raw('DATE(timestamp)'), 'desc')
-        ->groupBy(DB::raw('DATE(timestamp)'))
+        ->orderBy(DB::raw('EXTRACT(DATE from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(DATE from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->limit($latest);
         });
@@ -68,9 +68,9 @@ class StatisticController extends Controller
             $latest = 31;
         };
 
-        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
-        ->orderBy(DB::raw('DATE(timestamp)'), 'desc')
-        ->groupBy(DB::raw('DATE(timestamp)'))
+        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(DATE from timestamp) AS date"))
+        ->orderBy(DB::raw('EXTRACT(DATE from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(DATE from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->limit($latest);
         });
@@ -91,10 +91,10 @@ class StatisticController extends Controller
         if(!$latest || $latest > 31){
             $latest = 31;
         };
-        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, DATE(timestamp) AS date"))
+        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(DATE from timestamp) AS date"))
         ->where('txType',16)
-        ->orderBy(DB::raw('DATE(timestamp)'), 'desc')
-        ->groupBy(DB::raw('DATE(timestamp)'))
+        ->orderBy(DB::raw('EXTRACT(DATE from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(DATE from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->limit($latest);
         });
@@ -119,12 +119,12 @@ class StatisticController extends Controller
             $latest = 12;
         };
 
-        $blocks_query = Block::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
+        $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(MONTH from timestamp) AS month"))
         ->when($pubkey, function ($q, $pubkey) {
             return $q->where('signer',$pubkey);
         })
-        ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
-        ->groupBy(DB::raw('MONTH(timestamp)'))
+        ->orderBy(DB::raw('EXTRACT(MONTH from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(MONTH from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         });
@@ -146,9 +146,9 @@ class StatisticController extends Controller
             $latest = 12;
         };
 
-        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
-        ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
-        ->groupBy(DB::raw('MONTH(timestamp)'))
+        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(MONTH from timestamp) AS month"))
+        ->orderBy(DB::raw('EXTRACT(MONTH from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(MONTH from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         });
@@ -169,10 +169,10 @@ class StatisticController extends Controller
         if(!$latest || $latest > 12){
             $latest = 12;
         };
-        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
+        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(MONTH from timestamp) AS month"))
         ->where('txType',16)
-        ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
-        ->groupBy(DB::raw('MONTH(timestamp)'))
+        ->orderBy(DB::raw('EXTRACT(MONTH from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(MONTH from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->where('timestamp', '>=', Carbon::now()->subMonths($latest));
         });

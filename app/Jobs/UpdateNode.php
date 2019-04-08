@@ -86,11 +86,13 @@ class UpdateNode implements ShouldQueue
                 $node->sversion= (int)str_replace('.', '', $sversion);
 
 
-                /*$blocks_query = Block::select(DB::raw("COUNT(*) as count, DAY(timestamp) AS day"))
+                $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(DAY from timestamp) AS day"))
                 ->where('chordID',$node->nodeId)
-                ->orderBy(DB::raw('DAY(timestamp)'), 'desc')
-                ->groupBy(DB::raw('DAY(timestamp)'))
-                ->where('timestamp', '>=', Carbon::now()->subDays(1));
+                ->where('timestamp', '>=', Carbon::now()->subDays(1))
+                ->groupBy(DB::raw('EXTRACT(DAY from timestamp)'))
+                ->orderBy(DB::raw('EXTRACT(DAY from timestamp)'), 'desc');
+
+
                 $stats = $blocks_query
                         ->first();
 
@@ -104,11 +106,12 @@ class UpdateNode implements ShouldQueue
 
 
 
-                $blocks_query = Block::select(DB::raw("COUNT(*) as count, WEEK(timestamp) AS week"))
+                $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(WEEK from timestamp) AS week"))
                 ->where('chordID',$node->nodeId)
-                ->orderBy(DB::raw('WEEK(timestamp)'), 'desc')
-                ->groupBy(DB::raw('WEEK(timestamp)'))
-                ->where('timestamp', '>=', Carbon::now()->subWeeks(1));
+                ->where('timestamp', '>=', Carbon::now()->subWeeks(1))
+                ->groupBy(DB::raw('EXTRACT(WEEK from timestamp)'))
+                ->orderBy(DB::raw('EXTRACT(WEEK from timestamp)'), 'desc');
+
                 $stats = $blocks_query
                         ->first();
                 if($stats){
@@ -119,11 +122,12 @@ class UpdateNode implements ShouldQueue
                 }
 
 
-                $blocks_query = Block::select(DB::raw("COUNT(*) as count, MONTH(timestamp) AS month"))
+                $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(MONTH from timestamp) AS month"))
                 ->where('chordID',$node->nodeId)
-                ->orderBy(DB::raw('MONTH(timestamp)'), 'desc')
-                ->groupBy(DB::raw('MONTH(timestamp)'))
-                ->where('timestamp', '>=', Carbon::now()->subMonths(1));
+                ->where('timestamp', '>=', Carbon::now()->subMonths(1))
+                ->groupBy(DB::raw('EXTRACT(MONTH from timestamp)'))
+                ->orderBy(DB::raw('EXTRACT(MONTH from timestamp)'), 'desc');
+
                 $stats = $blocks_query
                         ->first();
                 if($stats){
@@ -131,7 +135,7 @@ class UpdateNode implements ShouldQueue
                 }
                 else{
                     $node->last_month = 0;
-                }*/
+                }
 
 
                 //if node switches version reset notification
