@@ -20,8 +20,6 @@ Route::get('blocks/{block_id}', 'BlockController@show');
 //get transactions of specific block
 Route::get('blocks/{block_id}/transactions', 'BlockController@showBlockTransactions');
 
-Route::get('checkPort','PortCheckController@checkPort');
-
 //get all transactions
 Route::get('transactions', 'TransactionController@showAll');
 Route::get('transactions/{tHash}', 'TransactionController@show');
@@ -60,7 +58,7 @@ Route::get('maintenance/test', 'MaintenanceController@test');
 
 Route::post('auth/login', 'AuthController@login');
 Route::group(['middleware' => 'jwt.auth'], function(){
-
+  Route::get('checkPort','PortCheckController@checkPort');
   Route::get('auth/user/notifications', 'NotificationsConfigController@showNotificationsConfig');
   Route::put('auth/user/notifications', 'NotificationsConfigController@updateNotificationsConfig');
 
