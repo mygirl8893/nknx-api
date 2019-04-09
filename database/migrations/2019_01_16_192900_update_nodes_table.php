@@ -19,7 +19,6 @@ class UpdateNodesTable extends Migration
             $table->dropColumn('nodePort');
             $table->dropColumn('chordPort');
             $table->dropColumn('wsPort');
-            $table->dropColumn('version');
             $table->dropColumn('time');
             $table->dropColumn('services');
             $table->dropColumn('relay');
@@ -46,7 +45,6 @@ class UpdateNodesTable extends Migration
         $table->integer('chordPort')->nullable();
         $table->integer('wsPort')->nullable();
         $table->BigInteger('time')->nullable();
-        $table->integer('version')->nullable();
         $table->integer('services')->nullable();
         $table->boolean('relay')->nullable();
         $table->BigInteger('txnCnt')->nullable();
