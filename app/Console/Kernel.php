@@ -94,14 +94,14 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute()->name('SyncWithBlockchain')->withoutOverlapping();
 
-        /*$schedule->call(function () {
+        $schedule->call(function () {
             $nodes= Node::get();
             foreach ($nodes as $node) {
                 UpdateNode::dispatch($node->id);
             }
         })->everyMinute()->name('UpdateAllNodes')->withoutOverlapping();
 
-        $schedule->call(function () {
+        /*$schedule->call(function () {
             $walletAddresses= WalletAddress::get();
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
@@ -273,7 +273,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
-        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();*/
+        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();
     }
 
     /**
