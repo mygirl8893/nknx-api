@@ -41,12 +41,12 @@ class StatisticController extends Controller
             $latest = 31;
         };
 
-        $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(DATE from timestamp) AS date"))
+        $blocks_query = Block::select(DB::raw("COUNT(*) as count, EXTRACT(DAY from timestamp) AS date"))
         ->when($pubkey, function ($q, $pubkey) {
             return $q->where('signer',$pubkey);
         })
-        ->orderBy(DB::raw('EXTRACT(DATE from timestamp)'), 'desc')
-        ->groupBy(DB::raw('EXTRACT(DATE from timestamp)'))
+        ->orderBy(DB::raw('EXTRACT(DAY from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(DAY from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->limit($latest);
         });
@@ -68,9 +68,9 @@ class StatisticController extends Controller
             $latest = 31;
         };
 
-        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(DATE from timestamp) AS date"))
-        ->orderBy(DB::raw('EXTRACT(DATE from timestamp)'), 'desc')
-        ->groupBy(DB::raw('EXTRACT(DATE from timestamp)'))
+        $transactions_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(DAY from timestamp) AS date"))
+        ->orderBy(DB::raw('EXTRACT(DAY from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(DAY from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->limit($latest);
         });
@@ -91,10 +91,10 @@ class StatisticController extends Controller
         if(!$latest || $latest > 31){
             $latest = 31;
         };
-        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(DATE from timestamp) AS date"))
+        $transfers_query = Transaction::select(DB::raw("COUNT(*) as count, EXTRACT(DAY from timestamp) AS date"))
         ->where('txType',16)
-        ->orderBy(DB::raw('EXTRACT(DATE from timestamp)'), 'desc')
-        ->groupBy(DB::raw('EXTRACT(DATE from timestamp)'))
+        ->orderBy(DB::raw('EXTRACT(DAY from timestamp)'), 'desc')
+        ->groupBy(DB::raw('EXTRACT(DAY from timestamp)'))
         ->when($latest, function ($q, $latest) {
             return $q->limit($latest);
         });
