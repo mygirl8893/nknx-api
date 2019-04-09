@@ -273,7 +273,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
-        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();
+        })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();*/
     }
 
     /**
