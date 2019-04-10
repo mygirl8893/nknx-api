@@ -101,14 +101,14 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute()->name('UpdateAllNodes')->withoutOverlapping();
 
-        $schedule->call(function () {
+        /*$schedule->call(function () {
             $walletAddresses= WalletAddress::get();
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
         })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
 
-        /*$schedule->call(function () {
+        $schedule->call(function () {
 
             $newCrawledNodes = [];
             $client = new GuzzleHttpClient();
