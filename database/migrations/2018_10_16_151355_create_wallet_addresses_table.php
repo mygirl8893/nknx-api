@@ -17,7 +17,7 @@ class CreateWalletAddressesTable extends Migration
             $table->increments('id');
             $table->string('label')->nullable()->default("");
             $table->string('address');
-            $table->integer('balance');
+            $table->decimal('balance', 8, 2);
             $table->integer('user_id');
             $table->timestamps();
         });

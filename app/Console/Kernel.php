@@ -101,14 +101,14 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute()->name('UpdateAllNodes')->withoutOverlapping();
 
-        /*$schedule->call(function () {
+        $schedule->call(function () {
             $walletAddresses= WalletAddress::get();
             foreach ($walletAddresses as $walletAddress){
                 UpdateWalletAddress::dispatch($walletAddress->id);
             }
         })->everyMinute()->name('UpdateAllWalletAddresses')->withoutOverlapping();
 
-        $schedule->call(function () {
+        /*$schedule->call(function () {
 
             $newCrawledNodes = [];
             $client = new GuzzleHttpClient();
@@ -151,7 +151,7 @@ class Kernel extends ConsoleKernel
                 CrawledNode::insert($t);
             }
 
-        })->everyMinute()->name('CrawlNodes')->withoutOverlapping();
+        })->everyMinute()->name('CrawlNodes')->withoutOverlapping();*/
 
         $schedule->call(function () {
             //get all Users where nodeOffline notifications are turned online
@@ -271,7 +271,7 @@ class Kernel extends ConsoleKernel
 
         })->everyMinute()->name('SendStuckNotifications')->withoutOverlapping();
 
-        $schedule->call(function () {
+        /*$schedule->call(function () {
             CleanUpCachedNodes::dispatch()->onQueue('maintenance');
         })->monthly()->name('CleanUpCachedNodes')->withoutOverlapping();*/
     }
