@@ -243,7 +243,7 @@ class WalletAddressController extends Controller
      */
     public function getMiningOutputDaily(WalletAddress $walletAddress,Request $request){
         $latest = $request->get('latest');
-        $outputs_query = Output::select(DB::raw("COUNT(*) as count, EXTRACT(DAY from timestamp) AS date"))
+        $outputs_query = Output::select(DB::raw("COUNT(*) as count, timestamp::timestamp::date AS date"))
         ->when($latest, function ($q, $latest) {
             return $q->where('timestamp', '>=', Carbon::now()->subDays($latest));
         })
@@ -251,8 +251,8 @@ class WalletAddressController extends Controller
             $q->where('txType', 0);
         })
         ->where("address",$walletAddress->address)
-        ->orderBy(DB::raw('EXTRACT(DAY from timestamp)'), 'desc')
-        ->groupBy(DB::raw('EXTRACT(DAY from timestamp)'));
+        ->orderBy(DB::raw('timestamp::timestamp::date'), 'desc')
+        ->groupBy(DB::raw('timestamp::timestamp::date'));
         $outputs = $outputs_query
                 ->get();
         return response()->json($outputs);
