@@ -102,7 +102,7 @@ class CrawledNodesController extends Controller
     public function showAll(Request $request){
         $withLocation = $request->get('withLocation', false);
         if($withLocation){
-            $nodes = CrawledNode::select('country_name', 'country_code2', 'city', 'isp', 'latitude', 'longitude')->get();
+            $nodes = CrawledNode::select('country_name', 'country_code2', 'city', 'isp', 'latitude', 'longitude','organization')->get();
         }
         else{
             $nodes = CrawledNode::all()->pluck('ip');
