@@ -19,7 +19,7 @@ class CrawledNodesController extends Controller
 	 *
 	 * Returns a list of all node-ips crawled by the API
      * @queryParam withLocation Add location data to the result
-     * 
+     *
      * @response [
      *  {
      *      "id": 3,
@@ -102,15 +102,15 @@ class CrawledNodesController extends Controller
     public function showAll(Request $request){
         $withLocation = $request->get('withLocation', false);
         if($withLocation){
-            $nodes = CrawledNode::all();
+            $nodes = CrawledNode::select('country_name', 'country_code2', 'city', 'isp', 'provider', 'latitude', 'longitude')->get();
         }
         else{
             $nodes = CrawledNode::all()->pluck('ip');
         }
-       
+
         return response()->json($nodes);
     }
 
-    
+
 
 }
