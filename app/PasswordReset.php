@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PasswordReset extends Model
 {
     protected $guarded = [];
+    protected $primaryKey = 'user_id';
 
     public function user()
     {
